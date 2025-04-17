@@ -76,6 +76,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users."${userData.user}" = import ./home.nix;
+            home-manager.extraSpecialArgs = { inherit userData; };
           }
         ];
       };

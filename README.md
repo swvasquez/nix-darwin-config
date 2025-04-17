@@ -16,13 +16,15 @@ make setup
 To provide user related data, create a file called `user-data.nix` of the form
 
 ```nix
-{ 
-    user = "${USER}";
-    uid = ${USER_ID};  # No quotations needed
+{
+  user = "${USER}";
+  uid = ${USER_ID};  # No quotations needed
+  gitUserName = "${GIT_USER_NAME}";
+  gitUserEmail = "${GIT_USER_EMAIL}";
 }
 ```
 
-where `${USER}` should be replaced with your username.
+with the right-hand side values specified.
 
 ## Build
 
