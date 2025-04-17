@@ -3,6 +3,7 @@
 !.gitignore
 !flake.lock
 !flake.nix
+!home.nix
 !Makefile
 !README.md
 !TODO.md

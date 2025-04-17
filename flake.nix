@@ -5,6 +5,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-24.11-darwin";
     nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -12,6 +14,7 @@
       self,
       nix-darwin,
       nixpkgs,
+      home-manager,
     }:
     let
       # Load user-specific data from user-data.nix
@@ -60,7 +63,21 @@
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#default
       darwinConfigurations."default" = nix-darwin.lib.darwinSystem {
-        modules = [ configuration ];
+        modules = [
+          configuration
+          {
+            users.users."${userData.user}" = {
+              name = "${userData.user}";
+              home = "/Users/${userData.user}";
+            };
+          }
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users."${userData.user}" = import ./home.nix;
+          }
+        ];
       };
     };
 }
