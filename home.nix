@@ -19,4 +19,6 @@
     userEmail = "${userData.gitUserEmail}";
     extraConfig.core.editor = "vim";
   };
+
+  programs.lazygit.enable = true;
 }
