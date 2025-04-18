@@ -20,5 +20,6 @@
     extraConfig.core.editor = "vim";
   };
 
+  programs.helix.enable = true;
   programs.lazygit.enable = true;
 }
