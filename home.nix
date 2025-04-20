@@ -38,6 +38,14 @@
   programs.zed-editor = {
     enable = true;
     userSettings = {
+      auto_install_extensions = {
+        make = true;
+        nix = true;
+      };
+      extensions = [
+        "make"
+        "nix"
+      ];
       vim_mode = true;
     };
   };
