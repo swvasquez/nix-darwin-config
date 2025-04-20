@@ -58,6 +58,9 @@
 
           # The platform the configuration will be used on.
           nixpkgs.hostPlatform = "aarch64-darwin";
+
+          # Allow unfree software to be installed via nixpkgs
+          nixpkgs.config.allowUnfree = true;
         };
     in
     {
@@ -66,12 +69,6 @@
       darwinConfigurations."default" = nix-darwin.lib.darwinSystem {
         modules = [
           configuration
-          {
-            users.users."${userData.user}" = {
-              name = "${userData.user}";
-              home = "/Users/${userData.user}";
-            };
-          }
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
