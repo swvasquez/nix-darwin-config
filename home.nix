@@ -34,4 +34,6 @@
       jnoortheen.nix-ide
     ];
   };
+
+  programs.zed-editor.enable = true;
 }

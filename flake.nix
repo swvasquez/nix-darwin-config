@@ -71,7 +71,10 @@
             onActivation.cleanup = "uninstall";
             taps = [ ];
             brews = [ ];
-            casks = [ "visual-studio-code" ];
+            casks = [
+              "visual-studio-code"
+              "zed"
+            ];
           };
 
           # Use overlays to customize nixpkgs
