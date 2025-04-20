@@ -26,5 +26,6 @@
   programs.vscode = {
     enable = true;
     userSettings.files.autoSave = "afterDelay";
+    extensions = with pkgs.vscode-marketplace; [ ];
   };
-} 
+}

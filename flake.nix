@@ -7,6 +7,7 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-24.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
   };
 
   outputs =
@@ -15,6 +16,7 @@
       nix-darwin,
       nixpkgs,
       home-manager,
+      nix-vscode-extensions,
     }:
     let
       # Load user-specific data from user-data.nix
@@ -71,6 +73,11 @@
             brews = [ ];
             casks = [ "visual-studio-code" ];
           };
+
+          # Use overlays to customize nixpkgs
+          nixpkgs.overlays = [
+            nix-vscode-extensions.overlays.default
+          ];
         };
     in
     {
