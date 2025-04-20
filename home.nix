@@ -25,8 +25,12 @@
 
   programs.vscode = {
     enable = true;
-    userSettings.files.autoSave = "afterDelay";
+    userSettings = {
+      files.autoSave = "afterDelay";
+      workbench.colorTheme = "GitHub Dark";
+    };
     extensions = with pkgs.vscode-marketplace; [
+      github.github-vscode-theme
       jnoortheen.nix-ide
     ];
   };
