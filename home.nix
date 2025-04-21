@@ -26,6 +26,7 @@
   programs.vscode = {
     enable = true;
     userSettings = {
+      extensions.showRecommendationsOnlyOnDemand = true;
       files.autoSave = "afterDelay";
       workbench.colorTheme = "GitHub Dark";
     };
