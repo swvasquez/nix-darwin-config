@@ -28,6 +28,7 @@
     userSettings = {
       extensions.showRecommendationsOnlyOnDemand = true;
       files.autoSave = "afterDelay";
+      telemetry.telemetryLevel = "off";
       workbench.colorTheme = "GitHub Dark";
     };
     extensions = with pkgs.vscode-marketplace; [
