@@ -48,6 +48,10 @@
         "make"
         "nix"
       ];
+      telemetry = {
+        diagnostics = false;
+        metrics = false;
+      };
       vim_mode = true;
     };
   };
