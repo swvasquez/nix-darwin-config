@@ -49,6 +49,10 @@
           # $ darwin-rebuild changelog
           system.stateVersion = 5;
 
+          # Show hidden files in Finder
+          system.defaults.finder.AppleShowAllFiles = true;
+          system.defaults.finder._FXSortFoldersFirst = true;
+
           # The platform the configuration will be used on.
           nixpkgs.hostPlatform = "aarch64-darwin";
 
