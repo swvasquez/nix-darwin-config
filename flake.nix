@@ -65,6 +65,7 @@
             pkgs.bash
             pkgs.markdownlint-cli
             pkgs.nixfmt-rfc-style
+            pkgs.uv
             pkgs.vim
           ];
 
