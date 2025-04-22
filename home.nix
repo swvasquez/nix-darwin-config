@@ -55,4 +55,11 @@
       vim_mode = true;
     };
   };
+
+  programs.zellij = {
+    enable = true;
+    settings = {
+      simplified_ui = true;
+    };
+  };
 }
