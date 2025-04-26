@@ -15,5 +15,6 @@
     enable = true;
     userName = "${userData.gitUserName}";
     userEmail = "${userData.gitUserEmail}";
+    extraConfig.core.editor = "vim";
   };
 }
