@@ -10,6 +10,14 @@ This repository uses Determinate Systems' downstream distribution of Nix. To ins
 make setup
 ```
 
+## Build
+
+To apply changes defined in `flake.nix`, run
+
+```bash
+make build
+```
+
 ## Uninstall
 
 To uninstall Determinate Nix, run
