@@ -14,6 +14,8 @@
       nixpkgs,
     }:
     let
+      # Load user-specific data from user-data.nix
+      userData = import ./user-data.nix;
       configuration =
         { pkgs, ... }:
         {

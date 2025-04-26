@@ -13,6 +13,14 @@ install Determinate Nix, run
 make setup
 ```
 
+To provide user related data, create a file called `user-data.nix` of the form
+
+```nix
+{ user = "${USER}"; }
+```
+
+where `${USER}` should be replaced with your username.
+
 ## Build
 
 To apply changes defined in `flake.nix`, run
