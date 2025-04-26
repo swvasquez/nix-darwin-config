@@ -26,3 +26,11 @@ To uninstall Determinate Nix, run
 make uninstall
 ```
 
+# Format
+
+To format all Nix files in the current directory in place, run
+	
+```bash
+make format
+```
+

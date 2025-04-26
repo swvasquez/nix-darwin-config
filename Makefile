@@ -46,3 +46,11 @@ uninstall-nix-darwin:
 init-flake:
 	nix flake init -t nix-darwin/nix-darwin-${NIX_DARWIN_VER}
 
+# --------------------------------------------- UTILS ----------------------------------------------
+# Utilities
+# --------------------------------------------------------------------------------------------------
+
+format:
+	 find . -name '*.nix' -print0 | xargs -0 nixfmt
+
+
