@@ -19,8 +19,10 @@ setup: determinate-nix
 uninstall: uninstall-determinate-nix
 
 # ------------------------------------ NIX -------------------------------------
-# Manage Determinate Nix
+# Manage Determinate Nix and nix-darwin
 # ------------------------------------------------------------------------------
+
+NIX_DARWIN_VER ?= 24.11
 
 determinate-nix:
 	curl --proto '=https' --tlsv1.2 -sSf -L \
@@ -28,4 +30,7 @@ determinate-nix:
 
 uninstall-determinate-nix:
 	/nix/nix-installer uninstall
+
+init-flake:
+	nix flake init -t nix-darwin/nix-darwin-${NIX_DARWIN_VER}
 

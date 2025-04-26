@@ -1,6 +1,7 @@
 *
 
 !.gitignore
+!flake.nix
 !Makefile
 !README.md
 !TODO.md
