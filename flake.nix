@@ -10,6 +10,9 @@
   outputs = inputs@{ self, nix-darwin, nixpkgs }:
   let
     configuration = { pkgs, ... }: {
+      # Turn off nix-darwin’s management of the Nix installation
+      nix.enable = false;	
+      
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
