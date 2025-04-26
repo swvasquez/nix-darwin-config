@@ -34,15 +34,6 @@
           };
           users.knownUsers = [ "${userData.user}" ];
 
-          # List packages installed in system profile. To search by name, run:
-          # $ nix-env -qaP | grep wget
-          environment.systemPackages = [
-            pkgs.bash
-            pkgs.nixfmt-rfc-style
-            pkgs.markdownlint-cli
-            pkgs.vim
-          ];
-
           # Necessary for using flakes on this system.
           nix.settings.experimental-features = "nix-command flakes";
 
@@ -61,6 +52,25 @@
 
           # Allow unfree software to be installed via nixpkgs
           nixpkgs.config.allowUnfree = true;
+
+          # List packages installed in system profile. To search by name, run:
+          # $ nix-env -qaP | grep wget
+          environment.systemPackages = [
+            pkgs.bash
+            pkgs.markdown-cli
+            pkgs.nixfmt-rfc-style
+            pkgs.vim
+          ];
+
+          # Install packages via homebrew. Casks are useful for GUI applications
+          # that the user wants to access via Spotlight.
+          homebrew = {
+            enable = true;
+            onActivation.cleanup = "uninstall";
+            taps = [ ];
+            brews = [ ];
+            casks = [ "visual-studio-code" ];
+          };
         };
     in
     {
