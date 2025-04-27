@@ -16,6 +16,9 @@ and configured via Home Manager.
 differs from that accessed through a dedicated terminal. This difference causes
 `bash` to point to the original (outdated) version instead of the one installed via
 `nix-darwin`.
+- Setting `system.defaults.trackpad.Clicking = true` alters the trackpad
+behavior as expected, but the associated indicator in System Settings remains
+unchanged.
 
 ## Resolved
 

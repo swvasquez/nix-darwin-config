@@ -53,6 +53,9 @@
           system.defaults.finder.AppleShowAllFiles = true;
           system.defaults.finder._FXSortFoldersFirst = true;
 
+          # Enable tap-to-click
+          system.defaults.trackpad.Clicking = true;
+
           # The platform the configuration will be used on.
           nixpkgs.hostPlatform = "aarch64-darwin";
 
