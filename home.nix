@@ -34,6 +34,7 @@
     extensions = with pkgs.vscode-marketplace; [
       github.github-vscode-theme
       jnoortheen.nix-ide
+      leanprover.lean4
     ];
   };
 
