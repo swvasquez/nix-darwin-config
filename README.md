@@ -1,10 +1,13 @@
 # nix-darwin-config
 
-All steps needed to deploy the provided Nix configuration files are accessible through the repository's `Makefile`. Note that some commands may need to be run with `sudo`.
+All steps needed to deploy the provided Nix configuration files are accessible
+through the repository's `Makefile`. Note that some commands may need to be run
+with `sudo`.
 
 ## Setup
 
-This repository uses Determinate Systems' downstream distribution of Nix. To install Determinate Nix, run
+This repository uses Determinate Systems' downstream distribution of Nix. To
+install Determinate Nix, run
 
 ```bash
 make setup
@@ -26,11 +29,10 @@ To uninstall Determinate Nix, run
 make uninstall
 ```
 
-# Format
+## Format
 
 To format all Nix files in the current directory in place, run
-	
+
 ```bash
 make format
 ```
-

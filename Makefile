@@ -50,7 +50,10 @@ init-flake:
 # Utilities
 # --------------------------------------------------------------------------------------------------
 
-format:
+format: format-markdown format-nix
+
+format-markdown:
+	 find . -name '*.md' -print0 | xargs -0 markdownlint --fix
+
+format-nix:
 	 find . -name '*.nix' -print0 | xargs -0 nixfmt
-
-
