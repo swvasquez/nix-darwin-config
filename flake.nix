@@ -37,6 +37,7 @@
           # List packages installed in system profile. To search by name, run:
           # $ nix-env -qaP | grep wget
           environment.systemPackages = [
+            pkgs.bash
             pkgs.nixfmt-rfc-style
             pkgs.markdownlint-cli
             pkgs.vim
