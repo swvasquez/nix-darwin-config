@@ -59,7 +59,7 @@
           # $ nix-env -qaP | grep wget
           environment.systemPackages = [
             pkgs.bash
-            pkgs.markdown-cli
+            pkgs.markdownlint-cli
             pkgs.nixfmt-rfc-style
             pkgs.vim
           ];
@@ -72,6 +72,7 @@
             taps = [ ];
             brews = [ ];
             casks = [
+              "iterm2"
               "visual-studio-code"
               "zed"
             ];
