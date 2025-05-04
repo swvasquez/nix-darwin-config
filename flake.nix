@@ -26,7 +26,10 @@
           users.users."${userData.user}" = {
             name = "${userData.user}";
             home = "/Users/${userData.user}";
+            uid = userData.uid;
+            shell = pkgs.bashInteractive; # Updates MacOS' outdated copy of bash
           };
+          users.knownUsers = [ "${userData.user}" ];
 
           # List packages installed in system profile. To search by name, run:
           # $ nix-env -qaP | grep wget

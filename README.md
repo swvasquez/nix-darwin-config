@@ -16,7 +16,10 @@ make setup
 To provide user related data, create a file called `user-data.nix` of the form
 
 ```nix
-{ user = "${USER}"; }
+{ 
+    user = "${USER}";
+    uid = ${USER_ID};  # No quotations needed
+}
 ```
 
 where `${USER}` should be replaced with your username.
