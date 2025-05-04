@@ -22,6 +22,12 @@
           # Turn off nix-darwin’s management of the Nix installation
           nix.enable = false;
 
+          # Specify user using data from user-data.nix
+          users.users."${userData.user}" = {
+            name = "${userData.user}";
+            home = "/Users/${userData.user}";
+          };
+
           # List packages installed in system profile. To search by name, run:
           # $ nix-env -qaP | grep wget
           environment.systemPackages = [
