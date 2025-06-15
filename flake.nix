@@ -81,6 +81,7 @@
             taps = [ ];
             brews = [ ];
             casks = [
+              "bitwarden"
               "iterm2"
               "visual-studio-code"
               "zed"
