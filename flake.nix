@@ -62,6 +62,9 @@
           # Allow unfree software to be installed via nixpkgs
           nixpkgs.config.allowUnfree = true;
 
+          # Enable Touch ID for Sudo
+          security.pam.enableSudoTouchIdAuth = true;
+
           # List packages installed in system profile. To search by name, run:
           # $ nix-env -qaP | grep wget
           environment.systemPackages = [
