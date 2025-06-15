@@ -19,6 +19,7 @@ differs from that accessed through a dedicated terminal. This difference causes
 - Setting `system.defaults.trackpad.Clicking = true` alters the trackpad
 behavior as expected, but the associated indicator in System Settings remains
 unchanged.
+- `bitwarden-cli` fails to build when installed by `nixpkgs`.
 
 ## Resolved
 

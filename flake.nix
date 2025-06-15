@@ -79,7 +79,7 @@
             enable = true;
             onActivation.cleanup = "uninstall";
             taps = [ ];
-            brews = [ ];
+            brews = [ "bitwarden-cli" ];
             casks = [
               "bitwarden"
               "iterm2"
