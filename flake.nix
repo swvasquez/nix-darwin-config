@@ -69,6 +69,7 @@
           # $ nix-env -qaP | grep wget
           environment.systemPackages = [
             pkgs.bash
+            pkgs.fzf
             pkgs.gnumake # Update MacOS' outdated copy of Make
             pkgs.markdownlint-cli
             pkgs.nixfmt-rfc-style
