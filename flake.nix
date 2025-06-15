@@ -93,6 +93,9 @@
             ];
           };
 
+          # Prevent Dock from showing recently used applications
+          system.defaults.dock.show-recents = false;
+
           # Use overlays to customize nixpkgs
           nixpkgs.overlays = [
             nix-vscode-extensions.overlays.default
