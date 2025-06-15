@@ -83,6 +83,7 @@
             casks = [
               "bitwarden"
               "iterm2"
+              "keepassxc"
               "visual-studio-code"
               "zed"
               "zotero"
