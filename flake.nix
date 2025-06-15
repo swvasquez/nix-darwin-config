@@ -84,6 +84,7 @@
               "iterm2"
               "visual-studio-code"
               "zed"
+              "zotero"
             ];
           };
 
