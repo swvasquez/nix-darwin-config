@@ -96,6 +96,13 @@
           # Prevent Dock from showing recently used applications
           system.defaults.dock.show-recents = false;
 
+          # Specify applications to be displayed in Dock
+          system.defaults.dock.persistent-apps = [
+            "/System/Applications/App Store.app"
+            "/System/Applications/System Settings.app"
+            "/System/Applications/Utilities/Terminal.app"
+          ];
+
           # Use overlays to customize nixpkgs
           nixpkgs.overlays = [
             nix-vscode-extensions.overlays.default
