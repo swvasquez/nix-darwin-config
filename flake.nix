@@ -82,7 +82,11 @@
           # that the user wants to access via Spotlight.
           homebrew = {
             enable = true;
-            onActivation.cleanup = "uninstall";
+            onActivation = {
+              autoUpdate = true;
+              cleanup = "uninstall";
+              upgrade = true;
+            };
             taps = [ ];
             brews = [ "bitwarden-cli" ];
             casks = [
