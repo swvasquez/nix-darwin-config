@@ -97,6 +97,9 @@
               "zed"
               "zotero"
             ];
+            "masApps" = {
+              "Logic Pro" = 634148309;
+            };
           };
 
           # Prevent Dock from showing recently used applications
