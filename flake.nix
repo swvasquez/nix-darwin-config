@@ -91,6 +91,7 @@
             casks = [
               "bitwarden"
               "iterm2"
+              "google-chrome"
               "keepassxc"
               "ollama-app"
               "visual-studio-code"
