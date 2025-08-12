@@ -90,6 +90,7 @@
             brews = [ "bitwarden-cli" ];
             casks = [
               "bitwarden"
+              "firefox"
               "iterm2"
               "google-chrome"
               "keepassxc"
