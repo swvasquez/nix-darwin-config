@@ -54,7 +54,7 @@
         metrics = false;
       };
       autosave.after_delay.milliseconds = 1000;
-      vim_mode = true;
+      helix_mode = true;
     };
   };
 
