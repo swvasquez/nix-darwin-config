@@ -73,6 +73,7 @@
             pkgs.gnumake # Update MacOS' outdated copy of Make
             pkgs.markdownlint-cli
             pkgs.nixfmt-rfc-style
+            pkgs.shellcheck
             pkgs.uv
             pkgs.vim
           ];
