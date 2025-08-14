@@ -44,15 +44,15 @@
 
   programs.zed-editor = {
     enable = true;
+    extensions = [
+      "make"
+      "nix"
+    ];
     userSettings = {
       auto_install_extensions = {
         make = true;
         nix = true;
       };
-      extensions = [
-        "make"
-        "nix"
-      ];
       telemetry = {
         diagnostics = false;
         metrics = false;
