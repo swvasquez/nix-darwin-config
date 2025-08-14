@@ -50,6 +50,8 @@ init-flake:
 # Utilities
 # --------------------------------------------------------------------------------------------------
 
+check: check-bash
+
 format: format-markdown format-nix
 
 format-markdown:
@@ -57,3 +59,7 @@ format-markdown:
 
 format-nix:
 	 find . -name '*.nix' -print0 | xargs -0 nixfmt
+
+check-bash: SOURCE = ${PWD}
+check-bash: 
+	find ${SOURCE} -name "*.sh" -exec shellcheck -s bash {} \;
