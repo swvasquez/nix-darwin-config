@@ -7,4 +7,5 @@
 !Makefile
 !README.md
 !TODO.md
-
+!dotfiles
+!dotfiles/**

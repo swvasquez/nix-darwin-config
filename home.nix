@@ -8,10 +8,14 @@
 {
   home.stateVersion = "24.11";
 
+  home.file = {
+    ".bashrc".source = ./dotfiles/bash/.bashrc;
+    ".bash_profile".source = ./dotfiles/bash/.bash_profile;
+    ".bash_aliases".source = ./dotfiles/bash/.bash_aliases;
+  };
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-
-  programs.bash.enable = true;
 
   programs.git = {
     enable = true;

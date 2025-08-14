@@ -49,3 +49,13 @@ To format all Nix files in the current directory in place, run
 ```bash
 make format
 ```
+
+## Check
+
+To run static analysis on provided scripts, run
+
+```bash
+make check
+```
+
+Currently static analysis only entails running ShellCheck on Bash scripts.

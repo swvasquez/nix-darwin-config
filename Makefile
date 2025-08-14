@@ -62,4 +62,4 @@ format-nix:
 
 check-bash: SOURCE = ${PWD}
 check-bash: 
-	find ${SOURCE} -name "*.sh" -exec shellcheck -s bash {} \;
+	find ${SOURCE} -name "*.sh" -o -name ".bash*" -exec shellcheck -s bash {} \;
