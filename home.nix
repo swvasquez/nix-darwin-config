@@ -46,11 +46,13 @@
   programs.zed-editor = {
     enable = true;
     extensions = [
+      "basher"
       "make"
       "nix"
     ];
     userSettings = {
       auto_install_extensions = {
+        basher = true;
         make = true;
         nix = true;
       };
