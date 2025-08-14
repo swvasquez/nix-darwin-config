@@ -50,9 +50,14 @@ init-flake:
 # Utilities
 # --------------------------------------------------------------------------------------------------
 
-check: check-bash
+check: check-bash check-json
 
-format: format-markdown format-nix
+format: format-markdown format-nix format-json
+
+format-json: SOURCE = ${PWD}
+format-json:
+	find ${SOURCE} -name "*.json" -exec \
+		sh -c 'jq . {} > {}.tmp && mv {}.tmp {} || rm {}.tmp' \; 
 
 format-markdown:
 	 find . -name '*.md' -print0 | xargs -0 markdownlint --fix
@@ -61,5 +66,9 @@ format-nix:
 	 find . -name '*.nix' -print0 | xargs -0 nixfmt
 
 check-bash: SOURCE = ${PWD}
-check-bash: 
+check-bash:
 	find ${SOURCE} -name "*.sh" -o -name ".bash*" -exec shellcheck -s bash {} \;
+
+check-json: SOURCE = ${PWD}
+check-json:
+	find ${SOURCE} -name "*.json" -exec jq type {} 1>/dev/null \;

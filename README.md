@@ -44,7 +44,7 @@ make uninstall
 
 ## Format
 
-To format all Nix files in the current directory in place, run
+To format all Markdown, JSON, and Nix files in the current directory in place, run
 
 ```bash
 make format
@@ -58,4 +58,5 @@ To run static analysis on provided scripts, run
 make check
 ```
 
-Currently static analysis only entails running ShellCheck on Bash scripts.
+Currently static analysis only entails running ShellCheck on Bash scripts and
+verifying that JSON files consist of valid JSON.
