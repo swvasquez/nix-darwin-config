@@ -94,6 +94,7 @@
               "iterm2"
               "google-chrome"
               "keepassxc"
+              "logseq"
               "ollama-app"
               "visual-studio-code"
               "zed"
