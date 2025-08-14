@@ -39,6 +39,7 @@
       github.github-vscode-theme
       jnoortheen.nix-ide
       leanprover.lean4
+      timonwong.shellcheck
     ];
   };
 
