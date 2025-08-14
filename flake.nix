@@ -71,6 +71,7 @@
             pkgs.bash
             pkgs.fzf
             pkgs.gnumake # Update MacOS' outdated copy of Make
+            pkgs.jq
             pkgs.markdownlint-cli
             pkgs.nixfmt-rfc-style
             pkgs.shellcheck
