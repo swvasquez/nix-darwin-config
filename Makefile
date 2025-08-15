@@ -52,7 +52,11 @@ init-flake:
 
 check: check-bash check-json
 
-format: format-markdown format-nix format-json
+format: format-markdown format-nix format-json format-bash
+
+format-bash: SOURCE = ${PWD}
+format-bash:
+	find ${SOURCE} -name "*.sh" -o -name ".bash*" -exec shfmt -w -ln bash {} \;
 
 format-json: SOURCE = ${PWD}
 format-json:

@@ -44,7 +44,8 @@ make uninstall
 
 ## Format
 
-To format all Markdown, JSON, and Nix files in the current directory in place, run
+To format all Markdown, JSON, Bash, and Nix files in the current directory in 
+place, run
 
 ```bash
 make format
