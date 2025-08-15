@@ -95,11 +95,12 @@
             casks = [
               "bitwarden"
               "firefox"
-              "iterm2"
               "google-chrome"
+              "iterm2"
               "keepassxc"
               "logseq"
               "ollama-app"
+              "spotify"
               "visual-studio-code"
               "zed"
               "zotero"
@@ -116,6 +117,7 @@
           system.defaults.dock.persistent-apps = [
             "/Applications/Logseq.app"
             "/Applications/Firefox.app"
+            "/Applications/Spotify.app"
             "/Applications/iTerm.app"
             "/Applications/Visual Studio Code.app"
             "/Applications/Zed.app"
