@@ -114,9 +114,14 @@
 
           # Specify applications to be displayed in Dock
           system.defaults.dock.persistent-apps = [
-            "/System/Applications/App Store.app"
+            "/Applications/Logseq.app"
+            "/Applications/Firefox.app"
+            "/Applications/iTerm.app"
+            "/Applications/Visual Studio Code.app"
+            "/Applications/Zed.app"
+            "/Applications/Zotero.app"
+            "/System/Applications/Shortcuts.app"
             "/System/Applications/System Settings.app"
-            "/System/Applications/Utilities/Terminal.app"
           ];
 
           # Use overlays to customize nixpkgs
