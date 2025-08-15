@@ -76,6 +76,7 @@
             pkgs.moreutils
             pkgs.nixfmt-rfc-style
             pkgs.shellcheck
+            pkgs.shfmt
             pkgs.uv
             pkgs.vim
           ];
