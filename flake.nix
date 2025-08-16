@@ -113,6 +113,15 @@
           # Prevent Dock from showing recently used applications
           system.defaults.dock.show-recents = false;
 
+          # Hide Dock when cursor is hovering elsewhere
+          system.defaults.dock.autohide = true;
+
+          # Delay between displaying Dock and activation
+          system.defaults.dock.autohide-delay = 0.0;
+
+          # Time it takes for the to Dock appear/hide
+          system.defaults.dock.autohide-time-modifier = 0.15;
+
           # Specify applications to be displayed in Dock
           system.defaults.dock.persistent-apps = [
             "/Applications/Logseq.app"
