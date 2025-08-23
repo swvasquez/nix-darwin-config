@@ -30,6 +30,7 @@
   programs.vscode = {
     enable = true;
     userSettings = {
+      editor.minimap.enabled = false;
       extensions.showRecommendationsOnlyOnDemand = true;
       files.autoSave = "afterDelay";
       telemetry.telemetryLevel = "off";
