@@ -99,6 +99,7 @@
               "iterm2"
               "keepassxc"
               "logseq"
+              "obsidian"
               "ollama-app"
               "spotify"
               "visual-studio-code"
