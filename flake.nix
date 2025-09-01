@@ -71,12 +71,14 @@
             pkgs.bash
             pkgs.fzf
             pkgs.gnumake # Update MacOS' outdated copy of Make
+            pkgs.gnupg
             pkgs.jq
             pkgs.just
             pkgs.markdownlint-cli
             pkgs.moreutils
             pkgs.nodejs_22
             pkgs.nixfmt-rfc-style
+            pkgs.pass
             pkgs.shellcheck
             pkgs.shfmt
             pkgs.uv
