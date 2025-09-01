@@ -75,6 +75,7 @@
             pkgs.just
             pkgs.markdownlint-cli
             pkgs.moreutils
+            pkgs.nodejs_22
             pkgs.nixfmt-rfc-style
             pkgs.shellcheck
             pkgs.shfmt
