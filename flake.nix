@@ -105,6 +105,7 @@
               "logseq"
               "obsidian"
               "ollama-app"
+              "orbstack"
               "spotify"
               "visual-studio-code"
               "zed"
