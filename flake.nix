@@ -100,6 +100,7 @@
               "bitwarden"
               "firefox"
               "google-chrome"
+              "iina"
               "iterm2"
               "keepassxc"
               "logseq"
