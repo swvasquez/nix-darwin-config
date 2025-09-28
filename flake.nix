@@ -27,7 +27,7 @@
           # Turn off nix-darwin’s management of the Nix installation
           nix.enable = false;
 
-          # Allow nix-darwin to configure zsh
+          # Allow nix-darwin to configure Zsh
           programs.zsh.enable = false;
 
           # Specify user using data from user-data.nix
@@ -101,6 +101,7 @@
             brews = [ "bitwarden-cli" ];
             casks = [
               "bitwarden"
+              "discord"
               "firefox"
               "google-chrome"
               "iina"
