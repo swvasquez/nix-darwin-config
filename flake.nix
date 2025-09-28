@@ -27,6 +27,9 @@
           # Turn off nix-darwin’s management of the Nix installation
           nix.enable = false;
 
+          # Allow nix-darwin to configure zsh
+          programs.zsh.enable = false;
+
           # Specify user using data from user-data.nix
           users.users."${userData.user}" = {
             name = "${userData.user}";

@@ -20,6 +20,10 @@ differs from that accessed through a dedicated terminal. This difference causes
 behavior as expected, but the associated indicator in System Settings remains
 unchanged.
 - `bitwarden-cli` fails to build when installed by `nixpkgs`.
+- Soon after updating MacOS to 26.0, rebuilding would raise an error regarding
+unexpected files `/etc/{zshrc,zprofile}`. Setting `programs.zsh.enable = false;`
+resolved the issue. If this issue was in fact related to the OS update, it may
+be addressed by future versions of `nix-darwin`.
 
 ## Resolved
 
