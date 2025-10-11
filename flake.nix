@@ -59,6 +59,10 @@
           # Enable tap-to-click
           system.defaults.trackpad.Clicking = true;
 
+          # Remap caps lock key to escape
+          system.keyboard.enableKeyMapping = true;
+          system.keyboard.remapCapsLockToEscape = true;
+
           # The platform the configuration will be used on.
           nixpkgs.hostPlatform = "aarch64-darwin";
 
