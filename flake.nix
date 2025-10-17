@@ -88,6 +88,7 @@
             pkgs.pass
             pkgs.shellcheck
             pkgs.shfmt
+            pkgs.starship
             pkgs.uv
             pkgs.vim
           ];
@@ -107,6 +108,7 @@
               "bitwarden"
               "discord"
               "firefox"
+              "ghostty"
               "google-chrome"
               "iina"
               "iterm2"

@@ -10,5 +10,8 @@ shopt -s extglob
 shopt -s globstar
 shopt -s checkjobs
 
+# Enable Starship
+eval "$(starship init bash)"
+
 # shellcheck disable=SC1091
 [[ -f ${HOME}/.bash_aliases ]] && . "${HOME}/.bash_aliases"
