@@ -12,6 +12,7 @@
     ".bashrc".source = ./dotfiles/bash/.bashrc;
     ".bash_profile".source = ./dotfiles/bash/.bash_profile;
     ".bash_aliases".source = ./dotfiles/bash/.bash_aliases;
+    ".config/starship.toml".source = ./dotfiles/starship/starship.toml;
   };
 
   # Let Home Manager install and manage itself.

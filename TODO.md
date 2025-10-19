@@ -24,6 +24,11 @@ unchanged.
 unexpected files `/etc/{zshrc,zprofile}`. Setting `programs.zsh.enable = false;`
 resolved the issue. If this issue was in fact related to the OS update, it may
 be addressed by future versions of `nix-darwin`.
+- Trouble installing Nerd Fonts via `nixpkgs`.
+- The Home Manager option to enable Bash integration with Starship doesn't seem
+to work. Manually managing associated dotfile instead.
+- Noticed that running either `bash -l` or `exec bash -l` loads the initially
+installed, older version of Bash.
 
 ## Resolved
 
