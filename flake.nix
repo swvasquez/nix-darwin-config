@@ -114,6 +114,7 @@
               "iterm2"
               "keepassxc"
               "logseq"
+              "mullvad-vpn"
               "obsidian"
               "ollama-app"
               "orbstack"
