@@ -91,6 +91,7 @@
             pkgs.starship
             pkgs.uv
             pkgs.vim
+            pkgs.wakeonlan
           ];
 
           # Install packages via homebrew. Casks are useful for GUI applications
