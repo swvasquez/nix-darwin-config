@@ -115,6 +115,7 @@
               "iina"
               "iterm2"
               "keepassxc"
+              "libreoffice"
               "logseq"
               "mullvad-browser"
               "mullvad-vpn"
