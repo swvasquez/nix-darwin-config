@@ -121,6 +121,7 @@
               "ollama-app"
               "orbstack"
               "spotify"
+              "tailscale-app"
               "visual-studio-code"
               "zed"
               "zotero"
