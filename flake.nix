@@ -89,6 +89,7 @@
             pkgs.shellcheck
             pkgs.shfmt
             pkgs.starship
+            pkgs.tailscale
             pkgs.uv
             pkgs.vim
             pkgs.wakeonlan
