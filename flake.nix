@@ -121,6 +121,7 @@
               "obsidian"
               "ollama-app"
               "orbstack"
+              "raspberry-pi-imager"
               "spotify"
               "tailscale-app"
               "visual-studio-code"
