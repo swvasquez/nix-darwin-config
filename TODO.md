@@ -29,6 +29,10 @@ be addressed by future versions of `nix-darwin`.
 to work. Manually managing associated dotfile instead.
 - Noticed that running either `bash -l` or `exec bash -l` loads the initially
 installed, older version of Bash.
+- There's a non-breaking mismatch between Homebrew's `tailscale-app` and the
+`nixpkgs` copy of the Tailscale CLI `tailscale`. The GUI app provides an option
+to install the correct version of the CLI. Removing the `nixpkgs` version
+until it's easier to install GUI applications via `nix-darwin`.
 
 ## Resolved
 
