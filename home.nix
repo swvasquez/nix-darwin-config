@@ -31,6 +31,7 @@
   programs.vscode = {
     enable = true;
     userSettings = {
+      chat.disableAIFeatures = true;
       editor.minimap.enabled = false;
       extensions.showRecommendationsOnlyOnDemand = true;
       files.autoSave = "afterDelay";
