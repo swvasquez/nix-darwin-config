@@ -75,6 +75,7 @@
           # List packages installed in system profile. To search by name, run:
           # $ nix-env -qaP | grep wget
           environment.systemPackages = [
+            pkgs.ansible
             pkgs.bash
             pkgs.fzf
             pkgs.gnumake # Update MacOS' outdated copy of Make
