@@ -145,6 +145,9 @@
           # Time it takes for the to Dock appear/hide
           system.defaults.dock.autohide-time-modifier = 0.15;
 
+          # Disable bouncing application animation
+          system.defaults.dock.launchanim = false;
+
           # Specify applications to be displayed in Dock
           system.defaults.dock.persistent-apps = [
             "/Applications/Logseq.app"
