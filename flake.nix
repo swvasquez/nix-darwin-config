@@ -126,6 +126,7 @@
               "spotify"
               "tailscale-app"
               "visual-studio-code"
+              "winbox"
               "zed"
               "zotero"
             ];
