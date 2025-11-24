@@ -42,6 +42,7 @@
       github.github-vscode-theme
       jnoortheen.nix-ide
       leanprover.lean4
+      nefrob.vscode-just-syntax
       tailscale.vscode-tailscale
       timonwong.shellcheck
     ];
