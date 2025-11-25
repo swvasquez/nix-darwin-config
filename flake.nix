@@ -150,6 +150,9 @@
           # Disable bouncing application animation
           system.defaults.dock.launchanim = false;
 
+          # Disable desktop from showing when wallpaper is clicked
+          system.defaults.WindowManager.EnableStandardClickToShowDesktop = false;
+
           # Specify applications to be displayed in Dock
           system.defaults.dock.persistent-apps = [
             "/Applications/Logseq.app"
