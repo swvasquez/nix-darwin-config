@@ -82,6 +82,7 @@
             pkgs.gnupg
             pkgs.jq
             pkgs.just
+            pkgs.kind
             pkgs.markdownlint-cli
             pkgs.moreutils
             pkgs.nodejs_22
