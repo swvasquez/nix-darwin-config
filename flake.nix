@@ -80,6 +80,7 @@
             pkgs.fzf
             pkgs.gnumake # Update MacOS' outdated copy of Make
             pkgs.gnupg
+            pkgs.go
             pkgs.jq
             pkgs.just
             pkgs.kind
