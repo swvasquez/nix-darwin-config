@@ -43,6 +43,7 @@
       jnoortheen.nix-ide
       leanprover.lean4
       nefrob.vscode-just-syntax
+      redhat.ansible
       tailscale.vscode-tailscale
       timonwong.shellcheck
     ];
