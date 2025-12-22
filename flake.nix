@@ -107,7 +107,7 @@
               upgrade = true;
             };
             taps = [ ];
-            brews = [ "bitwarden-cli" ];
+            brews = [ "bitwarden-cli" "gemini-cli" ];
             casks = [
               "bitwarden"
               "discord"
