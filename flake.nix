@@ -107,9 +107,13 @@
               upgrade = true;
             };
             taps = [ ];
-            brews = [ "bitwarden-cli" "gemini-cli" ];
+            brews = [
+              "bitwarden-cli"
+              "gemini-cli"
+            ];
             casks = [
               "bitwarden"
+              "claude-code"
               "discord"
               "firefox"
               "ghostty"
