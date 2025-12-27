@@ -1,34 +1,37 @@
 # nix-darwin-config
 
-All steps needed to deploy the provided Nix configuration files are accessible
-through the repository's `Makefile`. Note that some commands may need to be run
-with `sudo`.
+This repository contains Nix configuration files managed via a `Makefile`. All
+deployment steps are automated.
+
+> **Note:** Some commands may require `sudo` privileges.
 
 ## Setup
 
-This repository uses Determinate Systems' downstream distribution of Nix. To
-install Determinate Nix, run
+This configuration uses the [Determinate Systems](https://determinate.systems/)
+distribution of Nix.
 
-```bash
-make setup
-```
+1. **Install Nix:**
 
-To provide user related data, create a file called `user-data.nix` of the form
+    ```bash
+    make setup
+    ```
 
-```nix
-{
-  user = "${USER}";
-  uid = ${USER_ID};  # No quotations needed
-  gitUserName = "${GIT_USER_NAME}";
-  gitUserEmail = "${GIT_USER_EMAIL}";
-}
-```
+2. **Configure User Data:**
 
-with the right-hand side values specified.
+    Create a file named `user-data.nix` in the root directory with your user details:
+
+    ```nix
+    {
+      user = "your_username";
+      uid = 1000; # Replace with your actual UID
+      gitUserName = "Your Name";
+      gitUserEmail = "your.email@example.com";
+    }
+    ```
 
 ## Build
 
-To apply changes defined in `flake.nix`, run
+Apply the configuration defined in `flake.nix`:
 
 ```bash
 make build
@@ -36,28 +39,30 @@ make build
 
 ## Uninstall
 
-To uninstall Determinate Nix, run
+Remove Determinate Nix and related components:
 
 ```bash
 make uninstall
 ```
 
-## Format
+## Development Utilities
 
-To format all Markdown, JSON, Bash, and Nix files in the current directory in
-place, run
+### Format Code
+
+Format all Markdown, JSON, Bash, and Nix files in the current directory:
 
 ```bash
 make format
 ```
 
-## Check
+### Static Analysis
 
-To run static analysis on provided scripts, run
+Run static checks on scripts (ShellCheck for Bash, syntax check for JSON):
 
 ```bash
 make check
 ```
 
-Currently static analysis only entails running ShellCheck on Bash scripts and
-verifying that JSON files consist of valid JSON.
+## Acknowledgements
+
+Code was generated with AI assistance.

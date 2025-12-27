@@ -1,11 +1,15 @@
 *
 
+!dotfiles
+!dotfiles/**
+!modules
+!modules/darwin.nix
+!modules/home.nix
 !.gitignore
 !flake.lock
 !flake.nix
-!home.nix
+!GEMINI.md
+!LICENSE
 !Makefile
 !README.md
 !TODO.md
-!dotfiles
-!dotfiles/**

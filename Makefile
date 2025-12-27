@@ -76,3 +76,5 @@ check-bash:
 check-json: SOURCE = ${PWD}
 check-json:
 	find ${SOURCE} -name "*.json" -exec jq type {} 1>/dev/null \;
+
+
