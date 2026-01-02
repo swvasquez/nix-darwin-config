@@ -1,4 +1,10 @@
-# Guidelines
+# Agent Instructions
+
+**CRITICAL:** This file contains mandatory project guidelines. You MUST
+consult and follow these rules whenever performing code reviews, editing files,
+or answering questions about the project structure.
+
+## Guidelines
 
 When ask to review the `README.md`
 
@@ -22,5 +28,10 @@ When asked to review `TODO.md`
 if empty
 - Do not delete entries
 - Do not merge entries
+
+When asked to review files in `dotfiles/bash`
+
+- Add descriptions to any `bash` functions
+- Run `make format-bash check-bash` at the end and resolve any issues
 
 Follow the above guidelines unless explicitly asked otherwise.
