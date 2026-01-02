@@ -28,7 +28,7 @@ uninstall: uninstall-nix-darwin uninstall-determinate-nix
 # Manage Determinate Nix and nix-darwin
 # --------------------------------------------------------------------------------------------------
 
-NIX_DARWIN_VER ?= 24.11
+NIX_DARWIN_VER ?= 25.11
 
 determinate-nix:
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
@@ -76,5 +76,3 @@ check-bash:
 check-json: SOURCE = ${PWD}
 check-json:
 	find ${SOURCE} -name "*.json" -exec jq type {} 1>/dev/null \;
-
-

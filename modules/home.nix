@@ -6,7 +6,7 @@
 }:
 
 {
-  home.stateVersion = "24.11";
+  home.stateVersion = "25.11";
 
   home.file = {
     ".bashrc".source = ../dotfiles/bash/.bashrc;
@@ -20,9 +20,13 @@
 
   programs.git = {
     enable = true;
-    userName = "${userData.gitUserName}";
-    userEmail = "${userData.gitUserEmail}";
-    extraConfig.core.editor = "vim";
+    settings = {
+      user = {
+        name = "${userData.gitUserName}";
+        email = "${userData.gitUserEmail}";
+      };
+      core.editor = "vim";
+    };
   };
 
   programs.helix.enable = true;
@@ -30,23 +34,26 @@
 
   programs.vscode = {
     enable = true;
-    userSettings = {
-      chat.disableAIFeatures = true;
-      editor.minimap.enabled = false;
-      extensions.showRecommendationsOnlyOnDemand = true;
-      files.autoSave = "afterDelay";
-      telemetry.telemetryLevel = "off";
-      workbench.colorTheme = "GitHub Dark";
+    profiles.default = {
+      userSettings = {
+        chat.disableAIFeatures = true;
+        editor.minimap.enabled = false;
+        extensions.showRecommendationsOnlyOnDemand = true;
+        files.autoSave = "afterDelay";
+        telemetry.telemetryLevel = "off";
+        workbench.colorTheme = "GitHub Dark";
+
+      };
+      extensions = with pkgs.vscode-marketplace; [
+        github.github-vscode-theme
+        jnoortheen.nix-ide
+        leanprover.lean4
+        nefrob.vscode-just-syntax
+        redhat.ansible
+        tailscale.vscode-tailscale
+        timonwong.shellcheck
+      ];
     };
-    extensions = with pkgs.vscode-marketplace; [
-      github.github-vscode-theme
-      jnoortheen.nix-ide
-      leanprover.lean4
-      nefrob.vscode-just-syntax
-      redhat.ansible
-      tailscale.vscode-tailscale
-      timonwong.shellcheck
-    ];
   };
 
   programs.zed-editor = {

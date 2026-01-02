@@ -20,6 +20,7 @@
     shell = pkgs.bashInteractive; # Updates MacOS' outdated copy of bash
   };
   users.knownUsers = [ "${userData.user}" ];
+  system.primaryUser = "${userData.user}";
 
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
@@ -49,7 +50,7 @@
   nixpkgs.config.allowUnfree = true;
 
   # Enable Touch ID for Sudo
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
