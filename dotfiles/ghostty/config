@@ -1,0 +1,2 @@
+# Needed for helix-editor Alt-* commands
+macos-option-as-alt = true

@@ -61,6 +61,7 @@
     pkgs.gnumake # Update MacOS' outdated copy of Make
     pkgs.gnupg
     pkgs.go
+    pkgs.helix
     pkgs.jq
     pkgs.just
     pkgs.kind

@@ -33,6 +33,9 @@ installed, older version of Bash.
 `nixpkgs` copy of the Tailscale CLI `tailscale`. The GUI app provides an option
 to install the correct version of the CLI. Removing the `nixpkgs` version
 until it's easier to install GUI applications via `nix-darwin`.
+- Reduce the dependency on Home Manager by installing packages directly through
+`environment.systemPackages`. Treat Home Manager like GNU Stow by primarily
+using it to symlink `dotfiles` configuration files to a subdirectory of `$HOME`.
 
 ## Resolved
 

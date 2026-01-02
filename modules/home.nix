@@ -13,6 +13,7 @@
     ".bash_profile".source = ../dotfiles/bash/.bash_profile;
     ".bash_aliases".source = ../dotfiles/bash/.bash_aliases;
     ".config/starship.toml".source = ../dotfiles/starship/starship.toml;
+    ".config/ghostty/config".source = ../dotfiles/ghostty/config;
   };
 
   # Let Home Manager install and manage itself.
@@ -29,7 +30,6 @@
     };
   };
 
-  programs.helix.enable = true;
   programs.lazygit.enable = true;
 
   programs.vscode = {
