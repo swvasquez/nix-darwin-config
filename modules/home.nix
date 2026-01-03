@@ -14,6 +14,7 @@
     ".bash_aliases".source = ../dotfiles/bash/.bash_aliases;
     ".config/starship.toml".source = ../dotfiles/starship/starship.toml;
     ".config/ghostty/config".source = ../dotfiles/ghostty/config;
+    ".config/zed/settings.json".source = ../dotfiles/zed/settings.json;
   };
 
   # Let Home Manager install and manage itself.
@@ -53,28 +54,6 @@
         tailscale.vscode-tailscale
         timonwong.shellcheck
       ];
-    };
-  };
-
-  programs.zed-editor = {
-    enable = true;
-    extensions = [
-      "basher"
-      "make"
-      "nix"
-    ];
-    userSettings = {
-      auto_install_extensions = {
-        basher = true;
-        make = true;
-        nix = true;
-      };
-      telemetry = {
-        diagnostics = false;
-        metrics = false;
-      };
-      autosave.after_delay.milliseconds = 1000;
-      helix_mode = true;
     };
   };
 
