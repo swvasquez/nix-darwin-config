@@ -15,6 +15,7 @@
     ".config/starship.toml".source = ../dotfiles/starship/starship.toml;
     ".config/ghostty/config".source = ../dotfiles/ghostty/config;
     ".config/zed/settings.json".source = ../dotfiles/zed/settings.json;
+    ".config/k9s/config.yaml".source = ../dotfiles/k9s/config.yaml;
   };
 
   # Let Home Manager install and manage itself.

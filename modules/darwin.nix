@@ -64,7 +64,9 @@
     pkgs.helix
     pkgs.jq
     pkgs.just
+    pkgs.k9s
     pkgs.kind
+    pkgs.kubectl
     pkgs.markdownlint-cli
     pkgs.moreutils
     pkgs.nodejs_22
