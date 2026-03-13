@@ -72,6 +72,7 @@
     pkgs.nodejs_22
     pkgs.nixfmt-rfc-style
     pkgs.pass
+    pkgs.ripgrep
     pkgs.shellcheck
     pkgs.shfmt
     pkgs.starship
