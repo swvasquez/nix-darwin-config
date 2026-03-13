@@ -92,6 +92,7 @@
     taps = [ ];
     brews = [
       "bitwarden-cli"
+      "helm"
       "gemini-cli"
     ];
     casks = [

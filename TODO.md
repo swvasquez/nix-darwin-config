@@ -36,6 +36,8 @@ until it's easier to install GUI applications via `nix-darwin`.
 - Reduce the dependency on Home Manager by installing packages directly through
 `environment.systemPackages`. Treat Home Manager like GNU Stow by primarily
 using it to symlink `dotfiles` configuration files to a subdirectory of `$HOME`.
+- The `helm` via `nixpkgs` is not compatible with MacOS. Migrate installation
+of `helm` from Homebrew to `nixpkgs` if this changes.
 
 ## Resolved
 
