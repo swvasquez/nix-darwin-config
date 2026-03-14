@@ -1,2 +1,8 @@
 # Needed for helix-editor Alt-* commands
 macos-option-as-alt = true
+
+# Because ghostty is relatively new, terminfo data that SSH hosts use
+# during SSH sessions may not available by default. This causes
+# expected terminal functionality to fail when SSHing from ghostty.
+# https://ghostty.org/docs/help/terminfo
+shell-integration-features = ssh-terminfo,ssh-env
