@@ -13,5 +13,13 @@
   "telemetry": {
     "diagnostics": false,
     "metrics": false
+  },
+  "agent_servers": {
+    "gemini": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry"
+    }
   }
 }
