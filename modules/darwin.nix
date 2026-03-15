@@ -149,7 +149,7 @@
     "/Applications/Logseq.app"
     "/Applications/Firefox.app"
     "/Applications/Spotify.app"
-    "/Applications/iTerm.app"
+    "/Applications/Ghostty.app"
     "/Applications/Visual Studio Code.app"
     "/Applications/Zed.app"
     "/Applications/Zotero.app"
