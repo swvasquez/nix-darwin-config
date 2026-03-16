@@ -16,6 +16,7 @@
     ".config/ghostty/config".source = ../dotfiles/ghostty/config;
     ".config/zed/settings.json".source = ../dotfiles/zed/settings.json;
     ".config/k9s/config.yaml".source = ../dotfiles/k9s/config.yaml;
+    ".gemini/settings.json".source = ../dotfiles/gemini/settings.json;
   };
 
   # Let Home Manager install and manage itself.
