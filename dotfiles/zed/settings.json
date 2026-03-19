@@ -1,25 +1,33 @@
 {
+  "show_wrap_guides": true,
+  "wrap_guides": [80, 100],
   "auto_install_extensions": {
     "basher": true,
     "make": true,
-    "nix": true
+    "nix": true,
   },
   "autosave": {
     "after_delay": {
-      "milliseconds": 1000
-    }
+      "milliseconds": 1000,
+    },
   },
   "helix_mode": true,
   "telemetry": {
     "diagnostics": false,
-    "metrics": false
+    "metrics": false,
   },
   "agent_servers": {
     "gemini": {
-      "type": "registry"
+      "type": "registry",
     },
     "claude-acp": {
-      "type": "registry"
-    }
-  }
+      "type": "registry",
+    },
+  },
+  "languages": {
+    "Markdown": {
+      "preferred_line_length": 80,
+      "soft_wrap": "preferred_line_length",
+    },
+  },
 }
