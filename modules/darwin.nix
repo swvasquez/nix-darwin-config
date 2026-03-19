@@ -98,7 +98,7 @@
     ];
     casks = [
       "bitwarden"
-      "claude-code"
+      "claude"
       "discord"
       "firefox"
       "ghostty"
