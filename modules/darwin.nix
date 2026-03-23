@@ -96,6 +96,11 @@
       "helm"
       "gemini-cli"
       "graphviz"
+      {
+        name = "syncthing";
+        start_service = true;
+        restart_service = "changed";
+      }
     ];
     casks = [
       "bitwarden"

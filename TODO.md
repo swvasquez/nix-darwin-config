@@ -38,6 +38,9 @@ until it's easier to install GUI applications via `nix-darwin`.
 using it to symlink `dotfiles` configuration files to a subdirectory of `$HOME`.
 - The `helm` via `nixpkgs` is not compatible with MacOS. Migrate installation
 of `helm` from Homebrew to `nixpkgs` if this changes.
+- Installs Syncthing via Homebrew to allow running as a background service. If
+the `nixpkgs` version of Syncthing supports similar functionality in the future,
+install using `nixpkgs`.
 
 ## Resolved
 
