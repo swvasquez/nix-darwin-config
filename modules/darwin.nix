@@ -95,9 +95,11 @@
       "bitwarden-cli"
       "helm"
       "gemini-cli"
+      "graphviz"
     ];
     casks = [
       "bitwarden"
+      "claude"
       "claude-code"
       "discord"
       "firefox"
