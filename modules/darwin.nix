@@ -57,6 +57,7 @@
   environment.systemPackages = [
     pkgs.ansible
     pkgs.bash
+    pkgs.elan
     pkgs.fzf
     pkgs.gnumake # Update MacOS' outdated copy of Make
     pkgs.gnupg
