@@ -106,6 +106,7 @@
     ];
     casks = [
       "bitwarden"
+      "blackhole-16ch"
       "claude"
       "claude-code"
       "discord"
