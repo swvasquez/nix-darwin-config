@@ -59,6 +59,7 @@
     pkgs.bash
     pkgs.elan
     pkgs.fzf
+    pkgs.git-crypt
     pkgs.gnumake # Update MacOS' outdated copy of Make
     pkgs.gnupg
     pkgs.go

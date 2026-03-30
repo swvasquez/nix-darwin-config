@@ -5,7 +5,9 @@
 !modules
 !modules/darwin.nix
 !modules/home.nix
+!.gitattributes
 !.gitignore
+!user-data.nix
 !flake.lock
 !flake.nix
 !GEMINI.md
