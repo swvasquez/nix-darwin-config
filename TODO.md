@@ -41,6 +41,10 @@ of `helm` from Homebrew to `nixpkgs` if this changes.
 - Installs Syncthing via Homebrew to allow running as a background service. If
 the `nixpkgs` version of Syncthing supports similar functionality in the future,
 install using `nixpkgs`.
+- Installs `yt-dlp` via Homebrew instead of `nixpkgs` because the `nixpkgs`
+version is older than 90 days. `yt-dlp` updates frequently to keep up with
+YouTube changes, so recency matters. Migrate to `nixpkgs` if it becomes
+up to date.
 
 ## Resolved
 

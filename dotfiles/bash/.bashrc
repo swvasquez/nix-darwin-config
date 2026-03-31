@@ -37,3 +37,15 @@ activate() {
 		echo "No .venv found in $(pwd)"
 	fi
 }
+
+# Downloads a YouTube video at max resolution with metadata into a UTC
+# timestamped folder
+yt-dlp-best() {
+	yt-dlp \
+		--write-info-json \
+		--restrict-filenames \
+		--merge-output-format mkv \
+		-f "bestvideo+bestaudio" \
+		-o "%(title)s-$(date -u +%Y%m%d%H%M%S)/%(title)s.%(ext)s" \
+		"$1"
+}

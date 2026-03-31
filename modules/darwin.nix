@@ -58,6 +58,7 @@
     pkgs.ansible
     pkgs.bash
     pkgs.elan
+    pkgs.ffmpeg_7-full
     pkgs.fzf
     pkgs.git-crypt
     pkgs.gnumake # Update MacOS' outdated copy of Make
@@ -104,6 +105,7 @@
         start_service = true;
         restart_service = "changed";
       }
+      "yt-dlp"
     ];
     casks = [
       "bitwarden"
