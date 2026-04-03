@@ -71,6 +71,7 @@
     pkgs.kind
     pkgs.kubectl
     pkgs.markdownlint-cli
+    pkgs.mas
     pkgs.moreutils
     pkgs.nodejs_22
     pkgs.nixfmt-rfc-style
@@ -80,6 +81,7 @@
     pkgs.shellcheck
     pkgs.shfmt
     pkgs.starship
+    pkgs.typst
     pkgs.uv
     pkgs.vim
     pkgs.wakeonlan
@@ -87,6 +89,7 @@
 
   # Install packages via homebrew. Casks are useful for GUI applications
   # that the user wants to access via Spotlight.
+  # mas needs to be installed to install packages from App Store.
   homebrew = {
     enable = true;
     onActivation = {
@@ -114,6 +117,7 @@
       "claude-code"
       "discord"
       "firefox"
+      "font-linux-libertine"
       "ghostty"
       "google-chrome"
       "iina"
