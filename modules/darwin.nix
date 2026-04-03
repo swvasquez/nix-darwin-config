@@ -78,6 +78,7 @@
     pkgs.pass
     pkgs.ranger
     pkgs.ripgrep
+    pkgs.rustup
     pkgs.shellcheck
     pkgs.shfmt
     pkgs.starship
