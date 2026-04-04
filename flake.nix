@@ -37,5 +37,6 @@
     in
     {
       darwinConfigurations."machine00" = mkSystem (import ./user-data/machine00.nix);
+      darwinConfigurations."machine01" = mkSystem (import ./user-data/machine01.nix);
     };
 }
