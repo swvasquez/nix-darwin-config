@@ -1,1 +1,1 @@
-user-data.nix filter=git-crypt diff=git-crypt
+user-data/** filter=git-crypt diff=git-crypt

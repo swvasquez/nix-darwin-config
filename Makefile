@@ -29,6 +29,7 @@ uninstall: uninstall-nix-darwin uninstall-determinate-nix
 # --------------------------------------------------------------------------------------------------
 
 NIX_DARWIN_VER ?= 25.11
+CONFIG ?= machine00
 
 determinate-nix:
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
@@ -38,7 +39,7 @@ uninstall-determinate-nix:
 	/nix/nix-installer uninstall
 
 nix-darwin:
-	nix run nix-darwin/nix-darwin-${NIX_DARWIN_VER}#darwin-rebuild -- switch --flake .#default
+	nix run nix-darwin/nix-darwin-${NIX_DARWIN_VER}#darwin-rebuild -- switch --flake .#${CONFIG}
 
 uninstall-nix-darwin:
 	nix --extra-experimental-features "nix-command flakes" run nix-darwin#darwin-uninstaller

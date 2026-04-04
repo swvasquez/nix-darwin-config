@@ -19,24 +19,23 @@
       nix-vscode-extensions,
     }:
     let
-      # Load user-specific data from user-data.nix
-      userData = import ./user-data.nix;
+      mkSystem =
+        userData:
+        nix-darwin.lib.darwinSystem {
+          specialArgs = { inherit inputs userData; };
+          modules = [
+            ./modules/darwin.nix
+            home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users."${userData.user}" = import ./modules/home.nix;
+              home-manager.extraSpecialArgs = { inherit userData; };
+            }
+          ];
+        };
     in
     {
-      # Build darwin flake using:
-      # $ darwin-rebuild build --flake .#default
-      darwinConfigurations."default" = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs userData; };
-        modules = [
-          ./modules/darwin.nix
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users."${userData.user}" = import ./modules/home.nix;
-            home-manager.extraSpecialArgs = { inherit userData; };
-          }
-        ];
-      };
+      darwinConfigurations."machine00" = mkSystem (import ./user-data/machine00.nix);
     };
 }

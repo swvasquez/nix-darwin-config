@@ -16,9 +16,21 @@ distribution of Nix.
     make setup
     ```
 
-2. **Configure User Data:**
+2. **Unlock secrets:**
 
-    Create a file named `user-data.nix` in the root directory with your user details:
+    ```bash
+    git-crypt unlock
+    ```
+
+3. **Build:**
+
+    ```bash
+    make build CONFIG=<CONFIG_NAME>
+    ```
+
+## Adding a New Machine
+
+1. Add a new file `user-data/<CONFIG_NAME>.nix`:
 
     ```nix
     {
@@ -29,12 +41,20 @@ distribution of Nix.
     }
     ```
 
+2. Add an entry in `flake.nix`:
+
+    ```nix
+    darwinConfigurations."<CONFIG_NAME>" = mkSystem (import ./user-data/<CONFIG_NAME>.nix);
+    ```
+
+3. Commit both files (user-data will be encrypted automatically by git-crypt).
+
 ## Build
 
 Apply the configuration defined in `flake.nix`:
 
 ```bash
-make build
+make build CONFIG=<CONFIG_NAME>
 ```
 
 ## Uninstall
