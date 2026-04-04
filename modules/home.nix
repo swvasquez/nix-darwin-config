@@ -19,6 +19,7 @@
     ".gemini/settings.json".source = ../dotfiles/gemini/settings.json;
     ".config/ranger/rifle.conf".source = ../dotfiles/ranger/rifle.conf;
     ".config/helix/language.toml".source = ../dotfiles/helix/language.toml;
+    ".config/zellij/config.kdl".source = ../dotfiles/zellij/config.kdl;
   };
 
   # Let Home Manager install and manage itself.
@@ -58,13 +59,6 @@
         tailscale.vscode-tailscale
         timonwong.shellcheck
       ];
-    };
-  };
-
-  programs.zellij = {
-    enable = true;
-    settings = {
-      simplified_ui = true;
     };
   };
 }
