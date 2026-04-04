@@ -25,6 +25,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export K9S_CONFIG_DIR=${HOME}/.config/k9s
 
+# lldb-dap needed for debugging in Helix
+export PATH=${PATH}:/Library/Developer/CommandLineTools/usr/bin
+
 # ------------------------------------------------------------------------------
 # User defined functions
 # ------------------------------------------------------------------------------

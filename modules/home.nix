@@ -18,6 +18,7 @@
     ".config/k9s/config.yaml".source = ../dotfiles/k9s/config.yaml;
     ".gemini/settings.json".source = ../dotfiles/gemini/settings.json;
     ".config/ranger/rifle.conf".source = ../dotfiles/ranger/rifle.conf;
+    ".config/helix/language.toml".source = ../dotfiles/helix/language.toml;
   };
 
   # Let Home Manager install and manage itself.

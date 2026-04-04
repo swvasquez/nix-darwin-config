@@ -1,0 +1,14 @@
+# rust-analyzer is not installed by rustup by default.
+# Run: rustup component add rust-analyzer
+
+[[language]]
+name = "rust"
+auto-format = true
+
+[language-server.rust-analyzer]
+# The LSP binary to invoke
+command = "rust-analyzer"
+
+[language-server.rust-analyzer.config.check]
+# Use clippy instead of cargo check for richer lint diagnostics
+command = "clippy"
