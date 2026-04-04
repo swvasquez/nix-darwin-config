@@ -35,8 +35,17 @@
           ];
         };
     in
+    let
+      machines = [
+        "machine00"
+        "machine01"
+      ];
+      mkConfig = name: {
+        inherit name;
+        value = mkSystem (import ./user-data/${name}.nix);
+      };
+    in
     {
-      darwinConfigurations."machine00" = mkSystem (import ./user-data/machine00.nix);
-      darwinConfigurations."machine01" = mkSystem (import ./user-data/machine01.nix);
+      darwinConfigurations = builtins.listToAttrs (map mkConfig machines);
     };
 }
