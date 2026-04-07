@@ -87,6 +87,8 @@
     pkgs.vim
     pkgs.wakeonlan
     pkgs.zellij
+    pkgs.zig
+    pkgs.zls
   ];
 
   # Install packages via homebrew. Casks are useful for GUI applications
