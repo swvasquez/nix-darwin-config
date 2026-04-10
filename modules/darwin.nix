@@ -71,7 +71,6 @@
     pkgs.kind
     pkgs.kubectl
     pkgs.markdownlint-cli
-    pkgs.mas
     pkgs.moreutils
     pkgs.nodejs_22
     pkgs.nixfmt-rfc-style
@@ -112,6 +111,7 @@
         start_service = true;
         restart_service = "changed";
       }
+      "mas"
       "yt-dlp"
     ];
     casks = [

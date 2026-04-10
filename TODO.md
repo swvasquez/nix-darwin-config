@@ -45,6 +45,9 @@ install using `nixpkgs`.
 version is older than 90 days. `yt-dlp` updates frequently to keep up with
 YouTube changes, so recency matters. Migrate to `nixpkgs` if it becomes
 up to date.
+- Intsalls `mas` via Homebrew instead of `nixpkgs` because the `nixpkgs`
+version fails to install Logic Pro. Migrate back to `nixpkgs` if issue is
+resolved.
 
 ## Resolved
 
