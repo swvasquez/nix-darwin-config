@@ -20,6 +20,18 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 [[ -f ${HOME}/.bash_aliases ]] && . "${HOME}/.bash_aliases"
 
 # ------------------------------------------------------------------------------
+# Editing mode configuration
+# ------------------------------------------------------------------------------
+
+# Vi editing mode
+set -o vi
+
+# Visually indicate if in insert or normal (command) mode
+bind 'set show-mode-in-prompt on'
+bind 'set vi-ins-mode-string \1\e[6 q\2'
+bind 'set vi-cmd-mode-string \1\e[2 q\2'
+
+# ------------------------------------------------------------------------------
 # User defined variables
 # ------------------------------------------------------------------------------
 
