@@ -1,3 +1,5 @@
+# shellcheck disable=SC2148
+
 # The ShellCheck disable directive applies to the entire file when placed at
 # the beginning of a file.
 

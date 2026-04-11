@@ -1,3 +1,10 @@
+# shellcheck disable=SC2148
+
+# Add nix-darwin PATH before the interactive guard so that non-interactive and
+# login shells (e.g. `bash`, `bash -l`) also have Nix binaries in PATH. This
+# must remain above the interactive-only section below.
+export PATH="/run/current-system/sw/bin:${PATH}"
+
 # Commands that should be applied only for interactive shells.
 [[ $- == *i* ]] || return
 
