@@ -43,6 +43,15 @@
   system.keyboard.enableKeyMapping = true;
   system.keyboard.remapCapsLockToEscape = true;
 
+  # Remap right option to right control
+  # Verify with: hidutil property --get UserKeyMapping
+  system.keyboard.userKeyMapping = [
+    {
+      HIDKeyboardModifierMappingSrc = 30064771302;
+      HIDKeyboardModifierMappingDst = 30064771300;
+    }
+  ];
+
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
 
