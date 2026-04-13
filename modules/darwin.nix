@@ -74,6 +74,7 @@
     pkgs.gnupg
     pkgs.go
     pkgs.helix
+    pkgs.hyperfine
     pkgs.jq
     pkgs.just
     pkgs.k9s
