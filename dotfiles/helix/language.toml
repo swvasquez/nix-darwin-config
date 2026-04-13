@@ -12,3 +12,11 @@ command = "rust-analyzer"
 [language-server.rust-analyzer.config.check]
 # Use clippy instead of cargo check for richer lint diagnostics
 command = "clippy"
+
+[[language]]
+name = "lean"
+language-servers = ["lean4"]
+
+[language-server.lean4]
+command = "lean"
+args = ["--server"]
