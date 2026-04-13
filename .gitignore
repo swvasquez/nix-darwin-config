@@ -5,6 +5,8 @@
 !modules
 !modules/darwin.nix
 !modules/home.nix
+!scripts
+!scripts/*.sh
 !user-data
 !user-data/*.nix
 !.gitattributes
@@ -16,3 +18,4 @@
 !Makefile
 !README.md
 !TODO.md
+!versions.csv

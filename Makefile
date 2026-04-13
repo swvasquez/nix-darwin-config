@@ -10,7 +10,7 @@ SHELLFLAGS += -o pipefail -e
 # Apply nix-darwin changes
 # --------------------------------------------------------------------------------------------------
 
-build: nix-darwin
+build: nix-darwin versions
 
 # --------------------------------------------- SETUP ----------------------------------------------
 # Install Nix and dependencies
@@ -39,7 +39,7 @@ uninstall-determinate-nix:
 	/nix/nix-installer uninstall
 
 nix-darwin:
-	nix run nix-darwin/nix-darwin-${NIX_DARWIN_VER}#darwin-rebuild -- switch --flake .#${CONFIG}
+	sudo nix run nix-darwin/nix-darwin-${NIX_DARWIN_VER}#darwin-rebuild -- switch --flake .#${CONFIG}
 
 uninstall-nix-darwin:
 	nix --extra-experimental-features "nix-command flakes" run nix-darwin#darwin-uninstaller
@@ -50,6 +50,9 @@ init-flake:
 # --------------------------------------------- UTILS ----------------------------------------------
 # Utilities
 # --------------------------------------------------------------------------------------------------
+
+versions:
+	${SHELL} scripts/versions.sh
 
 check: check-bash check-json
 

@@ -51,7 +51,8 @@ distribution of Nix.
 
 ## Build
 
-Apply the configuration defined in `flake.nix`:
+Apply the configuration defined in `flake.nix`. Also generates `versions.csv`
+with installed package versions for nixpkgs, brews, casks, and mas apps:
 
 ```bash
 make build CONFIG=<CONFIG_NAME>
@@ -82,6 +83,12 @@ Run static checks on scripts (ShellCheck for Bash, syntax check for JSON):
 ```bash
 make check
 ```
+
+## Notes
+
+- `versions.csv` is not a lockfile — versions may vary machine to machine.
+  It provides a rough reference of what versions were present on a working
+  system.
 
 ## Acknowledgements
 
