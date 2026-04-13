@@ -42,6 +42,9 @@ eval "$(starship init bash)"
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Atuin
+eval "$(atuin init bash)"
+
 # Zoxide (needs to run after Starship integration)
 eval "$(zoxide init bash)"
 

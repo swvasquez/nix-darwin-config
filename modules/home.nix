@@ -22,6 +22,7 @@
     ".config/helix/language.toml".source = ../dotfiles/helix/language.toml;
     ".config/helix/themes/gruvbox.toml".source = ../dotfiles/helix/themes/gruvbox.toml;
     ".config/zellij/config.kdl".source = ../dotfiles/zellij/config.kdl;
+    ".config/atuin/config.toml".source = ../dotfiles/atuin/config.toml;
   };
 
   # Let Home Manager install and manage itself.
