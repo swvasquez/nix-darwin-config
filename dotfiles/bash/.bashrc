@@ -17,12 +17,6 @@ shopt -s extglob
 shopt -s globstar
 shopt -s checkjobs
 
-# Enable Starship
-eval "$(starship init bash)"
-
-# Add /opt/homebrew to path
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
 # shellcheck disable=SC1091
 [[ -f ${HOME}/.bash_aliases ]] && . "${HOME}/.bash_aliases"
 
@@ -39,7 +33,20 @@ bind 'set vi-ins-mode-string \1\e[6 q\2'
 bind 'set vi-cmd-mode-string \1\e[2 q\2'
 
 # ------------------------------------------------------------------------------
-# User defined variables
+# Shell integrations
+# ------------------------------------------------------------------------------
+
+# Zoxide
+eval "$(zoxide init bash)"
+
+# Starship
+eval "$(starship init bash)"
+
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# ------------------------------------------------------------------------------
+# $PATH updates
 # ------------------------------------------------------------------------------
 
 export K9S_CONFIG_DIR=${HOME}/.config/k9s

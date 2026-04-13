@@ -97,6 +97,7 @@
     pkgs.zellij
     pkgs.zig
     pkgs.zls
+    pkgs.zoxide
   ];
 
   # Install packages via homebrew. Casks are useful for GUI applications
