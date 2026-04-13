@@ -6,3 +6,7 @@ macos-option-as-alt = true
 # expected terminal functionality to fail when SSHing from ghostty.
 # https://ghostty.org/docs/help/terminfo
 shell-integration-features = ssh-terminfo,ssh-env
+
+# Dim unfocused splits
+unfocused-split-opacity = 0.75
+unfocused-split-fill = #000000
