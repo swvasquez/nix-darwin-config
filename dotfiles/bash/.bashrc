@@ -36,14 +36,14 @@ bind 'set vi-cmd-mode-string \1\e[2 q\2'
 # Shell integrations
 # ------------------------------------------------------------------------------
 
-# Zoxide
-eval "$(zoxide init bash)"
-
 # Starship
 eval "$(starship init bash)"
 
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Zoxide (needs to run after Starship integration)
+eval "$(zoxide init bash)"
 
 # ------------------------------------------------------------------------------
 # $PATH updates
