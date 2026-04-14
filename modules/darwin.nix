@@ -67,6 +67,7 @@
     pkgs.atuin
     pkgs.ansible
     pkgs.bash
+    pkgs.bash-preexec # Needed for atuin to work in certain terminals
     pkgs.elan
     pkgs.ffmpeg_7-full
     pkgs.fzf
@@ -101,6 +102,9 @@
     pkgs.zls
     pkgs.zoxide
   ];
+
+  # Needed to expose bash-preexec.sh at /run/current-system/sw/share/bash/
+  environment.pathsToLink = [ "/share/bash" ];
 
   # Install packages via homebrew. Casks are useful for GUI applications
   # that the user wants to access via Spotlight.
