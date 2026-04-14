@@ -82,3 +82,19 @@ yt-dlp-best() {
 		-o "%(title)s-$(date -u +%Y%m%d%H%M%S)/%(title)s.%(ext)s" \
 		"$1"
 }
+
+# This allows "ranger" to exit in the selected directory via "Q"
+# Function adapted from:
+# https://github.com/ranger/ranger/wiki/Integration-with-other-programs#make-your-shell-change-to-rangers-directory-on-quit
+ranger() {
+	local IFS=$'\t\n'
+	local tempfile
+	tempfile="$(mktemp -t tmp.XXXXXX)" || return
+
+	command ranger --cmd="map Q chain shell echo %d > ${tempfile}; quitall" "$@"
+
+	if [[ -s "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$PWD" ]]; then
+		cd -- "$(cat "$tempfile")" || return
+	fi
+	command rm -f -- "$tempfile" 2>/dev/null
+}
