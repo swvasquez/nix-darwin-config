@@ -16,6 +16,7 @@
     ".config/ghostty/config".source = ../dotfiles/ghostty/config;
     ".config/zed/settings.json".source = ../dotfiles/zed/settings.json;
     ".config/k9s/config.yaml".source = ../dotfiles/k9s/config.yaml;
+    ".config/k9s/skins/gruvbox.yaml".source = ../dotfiles/k9s/skins/gruvbox.yaml;
     ".gemini/settings.json".source = ../dotfiles/gemini/settings.json;
     ".config/ranger/rc.conf".source = ../dotfiles/ranger/rc.conf;
     ".config/ranger/rifle.conf".source = ../dotfiles/ranger/rifle.conf;
