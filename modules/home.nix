@@ -8,24 +8,20 @@
 {
   home.stateVersion = "25.11";
 
-  home.file = {
-    ".bashrc".source = ../dotfiles/bash/.bashrc;
-    ".bash_profile".source = ../dotfiles/bash/.bash_profile;
-    ".bash_aliases".source = ../dotfiles/bash/.bash_aliases;
-    ".config/starship.toml".source = ../dotfiles/starship/starship.toml;
-    ".config/ghostty/config".source = ../dotfiles/ghostty/config;
-    ".config/zed/settings.json".source = ../dotfiles/zed/settings.json;
-    ".config/k9s/config.yaml".source = ../dotfiles/k9s/config.yaml;
-    ".config/k9s/skins/gruvbox.yaml".source = ../dotfiles/k9s/skins/gruvbox.yaml;
-    ".gemini/settings.json".source = ../dotfiles/gemini/settings.json;
-    ".config/ranger/rc.conf".source = ../dotfiles/ranger/rc.conf;
-    ".config/ranger/rifle.conf".source = ../dotfiles/ranger/rifle.conf;
-    ".config/helix/config.toml".source = ../dotfiles/helix/config.toml;
-    ".config/helix/language.toml".source = ../dotfiles/helix/language.toml;
-    ".config/helix/themes/gruvbox.toml".source = ../dotfiles/helix/themes/gruvbox.toml;
-    ".config/zellij/config.kdl".source = ../dotfiles/zellij/config.kdl;
-    ".config/atuin/config.toml".source = ../dotfiles/atuin/config.toml;
-  };
+  # Dotfile mappings are defined in dotfiles/dotfiles.json.
+  # Add entries there to symlink additional files without modifying this file.
+  home.file =
+    let
+      mappings = builtins.fromJSON (builtins.readFile ../dotfiles/dotfiles.json);
+    in
+    builtins.listToAttrs (
+      map (m: {
+        name = m.dest;
+        value = {
+          source = ../dotfiles + "/${m.src}";
+        };
+      }) mappings
+    );
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

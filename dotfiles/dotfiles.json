@@ -1,0 +1,66 @@
+[
+  {
+    "dest": ".bashrc",
+    "src": "bash/.bashrc"
+  },
+  {
+    "dest": ".bash_profile",
+    "src": "bash/.bash_profile"
+  },
+  {
+    "dest": ".bash_aliases",
+    "src": "bash/.bash_aliases"
+  },
+  {
+    "dest": ".gemini/settings.json",
+    "src": "gemini/settings.json"
+  },
+  {
+    "dest": ".config/starship.toml",
+    "src": "starship/starship.toml"
+  },
+  {
+    "dest": ".config/atuin/config.toml",
+    "src": "atuin/config.toml"
+  },
+  {
+    "dest": ".config/ghostty/config",
+    "src": "ghostty/config"
+  },
+  {
+    "dest": ".config/helix/config.toml",
+    "src": "helix/config.toml"
+  },
+  {
+    "dest": ".config/helix/language.toml",
+    "src": "helix/language.toml"
+  },
+  {
+    "dest": ".config/helix/themes/gruvbox.toml",
+    "src": "helix/themes/gruvbox.toml"
+  },
+  {
+    "dest": ".config/k9s/config.yaml",
+    "src": "k9s/config.yaml"
+  },
+  {
+    "dest": ".config/k9s/skins/gruvbox.yaml",
+    "src": "k9s/skins/gruvbox.yaml"
+  },
+  {
+    "dest": ".config/ranger/rc.conf",
+    "src": "ranger/rc.conf"
+  },
+  {
+    "dest": ".config/ranger/rifle.conf",
+    "src": "ranger/rifle.conf"
+  },
+  {
+    "dest": ".config/zed/settings.json",
+    "src": "zed/settings.json"
+  },
+  {
+    "dest": ".config/zellij/config.kdl",
+    "src": "zellij/config.kdl"
+  }
+]
