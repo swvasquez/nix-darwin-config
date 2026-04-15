@@ -83,15 +83,13 @@ yt-dlp-best() {
 		"$1"
 }
 
-# This allows "ranger" to exit in the selected directory via "Q"
-# Function adapted from:
-# https://github.com/ranger/ranger/wiki/Integration-with-other-programs#make-your-shell-change-to-rangers-directory-on-quit
-ranger() {
-	local IFS=$'\t\n'
+# This allows "y" to exit in the selected directory via "q"
+# https://yazi-rs.github.io/docs/quick-start/#shell-wrapper
+y() {
 	local tempfile
 	tempfile="$(mktemp -t tmp.XXXXXX)" || return
 
-	command ranger --cmd="map Q chain shell echo %d > ${tempfile}; quitall" "$@"
+	command yazi "$@" --cwd-file="$tempfile"
 
 	if [[ -s "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$PWD" ]]; then
 		cd -- "$(cat "$tempfile")" || return

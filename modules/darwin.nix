@@ -87,7 +87,7 @@
     pkgs.nodejs_22
     pkgs.nixfmt-rfc-style
     pkgs.pass
-    pkgs.ranger
+    pkgs.poppler-utils
     pkgs.ripgrep
     pkgs.rustup
     pkgs.shellcheck
@@ -97,6 +97,7 @@
     pkgs.uv
     pkgs.vim
     pkgs.wakeonlan
+    pkgs.yazi
     pkgs.zellij
     pkgs.zig
     pkgs.zls
