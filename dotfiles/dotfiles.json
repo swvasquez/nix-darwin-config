@@ -56,6 +56,18 @@
     "src": "yazi/yazi.toml"
   },
   {
+    "dest": ".config/yazi/theme.toml",
+    "src": "yazi/theme.toml"
+  },
+  {
+    "dest": ".config/yazi/flavors/kanagawa.yazi/flavor.toml",
+    "src": "yazi/flavors/kanagawa.yazi/flavor.toml"
+  },
+  {
+    "dest": ".config/yazi/flavors/kanagawa.yazi/tmtheme.xml",
+    "src": "yazi/flavors/kanagawa.yazi/tmtheme.xml"
+  },
+  {
     "dest": ".config/zellij/config.kdl",
     "src": "zellij/config.kdl"
   }

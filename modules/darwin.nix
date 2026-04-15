@@ -97,7 +97,6 @@
     pkgs.uv
     pkgs.vim
     pkgs.wakeonlan
-    pkgs.yazi
     pkgs.zellij
     pkgs.zig
     pkgs.zls
@@ -129,6 +128,7 @@
         restart_service = "changed";
       }
       "mas"
+      "yazi"
       "yt-dlp"
     ];
     casks = [

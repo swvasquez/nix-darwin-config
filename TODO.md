@@ -48,6 +48,10 @@ up to date.
 - Intsalls `mas` via Homebrew instead of `nixpkgs` because the `nixpkgs`
 version fails to install Logic Pro. Migrate back to `nixpkgs` if issue is
 resolved.
+- Installs `yazi` via Homebrew instead of `nixpkgs` because the
+`nixpkgs-25.11-darwin` stable branch only has yazi `25.5.31`, which has a bug
+where flavor-based theming does not apply filetype colors. Migrate to `nixpkgs`
+if the stable branch is updated or when upgrading to `nixpkgs-26.05-darwin`.
 
 ## Resolved
 
