@@ -1,6 +1,7 @@
 theme = "gruvbox"
 
 [editor]
+auto-info = false
 color-modes = true
 
 [editor.cursor-shape]
