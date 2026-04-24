@@ -68,6 +68,7 @@
     pkgs.ansible
     pkgs.bash
     pkgs.bash-preexec # Needed for atuin to work in certain terminals
+    pkgs.btop
     pkgs.elan
     pkgs.ffmpeg_7-full
     pkgs.fzf
