@@ -29,7 +29,7 @@ uninstall: uninstall-nix-darwin uninstall-determinate-nix
 # --------------------------------------------------------------------------------------------------
 
 NIX_DARWIN_VER ?= 25.11
-CONFIG ?= machine00
+CONFIG ?= host00
 
 determinate-nix:
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \

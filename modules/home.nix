@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-  userData,
+  hostConfig,
   ...
 }:
 
@@ -30,8 +30,8 @@
     enable = true;
     settings = {
       user = {
-        name = "${userData.gitUserName}";
-        email = "${userData.gitUserEmail}";
+        name = "${hostConfig.gitUserName}";
+        email = "${hostConfig.gitUserEmail}";
       };
       core.editor = "vim";
     };

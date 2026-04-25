@@ -1,7 +1,7 @@
 {
   pkgs,
   inputs,
-  userData,
+  hostConfig,
   ...
 }:
 
@@ -12,15 +12,15 @@
   # Allow nix-darwin to configure Zsh
   programs.zsh.enable = false;
 
-  # Specify user using data from user-data.nix
-  users.users."${userData.user}" = {
-    name = "${userData.user}";
-    home = "/Users/${userData.user}";
-    uid = userData.uid;
+  # Specify user using data from config/
+  users.users."${hostConfig.user}" = {
+    name = "${hostConfig.user}";
+    home = "/Users/${hostConfig.user}";
+    uid = hostConfig.uid;
     shell = pkgs.bashInteractive; # Updates MacOS' outdated copy of bash
   };
-  users.knownUsers = [ "${userData.user}" ];
-  system.primaryUser = "${userData.user}";
+  users.knownUsers = [ "${hostConfig.user}" ];
+  system.primaryUser = "${hostConfig.user}";
 
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
@@ -113,9 +113,9 @@
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = true;
+      autoUpdate = hostConfig.brewUpdates;
       cleanup = "uninstall";
-      upgrade = true;
+      upgrade = hostConfig.brewUpdates;
     };
     taps = [ ];
     brews = [

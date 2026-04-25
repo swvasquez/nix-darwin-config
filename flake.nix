@@ -20,29 +20,29 @@
     }:
     let
       mkSystem =
-        userData:
+        hostConfig:
         nix-darwin.lib.darwinSystem {
-          specialArgs = { inherit inputs userData; };
+          specialArgs = { inherit inputs hostConfig; };
           modules = [
             ./modules/darwin.nix
             home-manager.darwinModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users."${userData.user}" = import ./modules/home.nix;
-              home-manager.extraSpecialArgs = { inherit userData; };
+              home-manager.users."${hostConfig.user}" = import ./modules/home.nix;
+              home-manager.extraSpecialArgs = { inherit hostConfig; };
             }
           ];
         };
     in
     let
       machines = [
-        "machine00"
-        "machine01"
+        "host00"
+        "host01"
       ];
       mkConfig = name: {
         inherit name;
-        value = mkSystem (import ./user-data/${name}.nix);
+        value = mkSystem (import ./config/${name}.nix);
       };
     in
     {

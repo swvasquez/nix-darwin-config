@@ -30,7 +30,7 @@ distribution of Nix.
 
 ## Adding a New Machine
 
-1. Add a new file `user-data/<CONFIG_NAME>.nix`:
+1. Add a new file `config/<CONFIG_NAME>.nix`:
 
     ```nix
     {
@@ -38,16 +38,17 @@ distribution of Nix.
       uid = 1000; # Replace with your actual UID
       gitUserName = "Your Name";
       gitUserEmail = "your.email@example.com";
+      brewUpdates = false; # Set to true to update Homebrew packages on build
     }
     ```
 
 2. Add an entry in `flake.nix`:
 
     ```nix
-    darwinConfigurations."<CONFIG_NAME>" = mkSystem (import ./user-data/<CONFIG_NAME>.nix);
+    darwinConfigurations."<CONFIG_NAME>" = mkSystem (import ./config/<CONFIG_NAME>.nix);
     ```
 
-3. Commit both files (user-data will be encrypted automatically by git-crypt).
+3. Commit both files (config will be encrypted automatically by git-crypt).
 
 ## Build
 
