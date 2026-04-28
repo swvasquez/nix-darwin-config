@@ -1,0 +1,15 @@
+// === Logseq ===
+// Logseq local backups - regenerated per device
+Logseq/Main/logseq/bak
+
+// Logseq local trash - regenerated per device
+Logseq/Main/logseq/.recycle
+
+// === Zotero ===
+// Allow only the storage folder; everything else in zotero/ is excluded
+!Zotero/storage/
+!Zotero/storage/**
+Zotero/**
+
+// === OS junk - clean up if found ===
+(?d).DS_Store

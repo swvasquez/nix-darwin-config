@@ -70,5 +70,9 @@
   {
     "dest": ".config/zellij/config.kdl",
     "src": "zellij/config.kdl"
+  },
+  {
+    "dest": "Sync/.stignore",
+    "src": "syncthing/.stignore"
   }
 ]
