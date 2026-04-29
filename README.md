@@ -40,6 +40,9 @@ distribution of Nix.
       gitUserEmail = "your.email@example.com";
       brewUpdates = false; # Set to true to update Homebrew packages on build
       syncDir = "Sync"; # Directory name relative to home for syncing homelab data
+      localRoutes = [
+        { name = "syncthing"; port = 8384; }
+      ];
     }
     ```
 

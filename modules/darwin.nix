@@ -1,10 +1,29 @@
 {
   pkgs,
+  lib,
   inputs,
   hostConfig,
   ...
 }:
+let
+  routes = hostConfig.localRoutes or [ ];
+  caddyfile = pkgs.writeText "Caddyfile" (
+    ''
+      {
+        auto_https off
+      }
 
+    ''
+    + lib.concatMapStrings (route: ''
+      http://${route.name} {
+        reverse_proxy 127.0.0.1:${toString route.port} {
+          header_up Host localhost
+        }
+      }
+
+    '') routes
+  );
+in
 {
   # Turn off nix-darwin’s management of the Nix installation
   nix.enable = false;
@@ -103,10 +122,34 @@
     pkgs.zig
     pkgs.zls
     pkgs.zoxide
-  ];
+  ] ++ lib.optional (routes != [ ]) pkgs.caddy;
 
   # Needed to expose bash-preexec.sh at /run/current-system/sw/share/bash/
   environment.pathsToLink = [ "/share/bash" ];
+
+  # Local reverse proxy: maps friendly hostnames to localhost ports.
+  # Routes are defined in config/<host>.nix as localRoutes = [{ name = "...", port = ...; }].
+  system.activationScripts.postActivation.text = lib.mkAfter ''
+    /usr/bin/sed -i "" '/# nix-local-proxy/d' /etc/hosts
+    ${lib.concatMapStrings (route: ''
+      echo "127.0.0.1 ${route.name} # nix-local-proxy" >> /etc/hosts
+    '') routes}
+  '';
+
+  launchd.daemons.caddy = lib.mkIf (routes != [ ]) {
+    serviceConfig = {
+      ProgramArguments = [
+        "${pkgs.caddy}/bin/caddy"
+        "run"
+        "--config"
+        "${caddyfile}"
+        "--adapter"
+        "caddyfile"
+      ];
+      RunAtLoad = true;
+      KeepAlive = true;
+    };
+  };
 
   # Install packages via homebrew. Casks are useful for GUI applications
   # that the user wants to access via Spotlight.
