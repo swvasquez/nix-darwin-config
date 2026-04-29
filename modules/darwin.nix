@@ -87,6 +87,7 @@
     pkgs.moreutils
     pkgs.nodejs_22
     pkgs.nixfmt-rfc-style
+    pkgs.openbao
     pkgs.pass
     pkgs.poppler-utils
     pkgs.ripgrep
