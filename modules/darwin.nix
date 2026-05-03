@@ -6,7 +6,7 @@
   ...
 }:
 let
-  routes = hostConfig.localRoutes or [ ];
+  routes = hostConfig.localRoutes;
   caddyfile = pkgs.writeText "Caddyfile" (
     ''
       {
@@ -122,7 +122,8 @@ in
     pkgs.zig
     pkgs.zls
     pkgs.zoxide
-  ] ++ lib.optional (routes != [ ]) pkgs.caddy;
+    pkgs.caddy
+  ];
 
   # Needed to expose bash-preexec.sh at /run/current-system/sw/share/bash/
   environment.pathsToLink = [ "/share/bash" ];
@@ -136,7 +137,7 @@ in
     '') routes}
   '';
 
-  launchd.daemons.caddy = lib.mkIf (routes != [ ]) {
+  launchd.daemons.caddy = {
     serviceConfig = {
       ProgramArguments = [
         "${pkgs.caddy}/bin/caddy"

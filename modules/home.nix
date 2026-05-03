@@ -33,7 +33,7 @@
         name = "${hostConfig.gitUserName}";
         email = "${hostConfig.gitUserEmail}";
       };
-      core.editor = "vim";
+      core.editor = "hx";
     };
   };
 
