@@ -228,6 +228,13 @@ in
   # Disable desktop from showing when wallpaper is clicked
   system.defaults.WindowManager.EnableStandardClickToShowDesktop = false;
 
+  # Prevent pinentry-mac from saving the GPG passphrase to the login keychain
+  system.defaults.CustomUserPreferences = {
+    "org.gpgtools.pinentry-mac" = {
+      UseKeychain = false;
+    };
+  };
+
   # Specify applications to be displayed in Dock
   system.defaults.dock.persistent-apps = [
     "/Applications/Logseq.app"
