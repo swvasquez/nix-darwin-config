@@ -1,9 +1,12 @@
 {
-  "show_wrap_guides": true,
-  "wrap_guides": [
-    80,
-    100
-  ],
+  "agent_servers": {
+    "gemini": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry"
+    }
+  },
   "auto_install_extensions": {
     "basher": true,
     "make": true,
@@ -15,22 +18,22 @@
     }
   },
   "helix_mode": true,
-  "telemetry": {
-    "diagnostics": false,
-    "metrics": false
-  },
-  "agent_servers": {
-    "gemini": {
-      "type": "registry"
-    },
-    "claude-acp": {
-      "type": "registry"
-    }
-  },
   "languages": {
     "Markdown": {
       "preferred_line_length": 80,
       "soft_wrap": "preferred_line_length"
     }
-  }
+  },
+  "show_wrap_guides": true,
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "title_bar": {
+    "show_sign_in": false
+  },
+  "wrap_guides": [
+    80,
+    100
+  ]
 }
