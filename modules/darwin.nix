@@ -14,14 +14,22 @@ let
       }
 
     ''
-    + lib.concatMapStrings (route: ''
-      http://${route.name} {
-        reverse_proxy 127.0.0.1:${toString route.port} {
-          header_up Host localhost
+    + lib.concatMapStrings (
+      route:
+      if route ? port then ''
+        http://${route.name} {
+          reverse_proxy 127.0.0.1:${toString route.port} {
+            header_up Host localhost
+          }
         }
-      }
 
-    '') routes
+      '' else ''
+        http://${route.name} {
+          reverse_proxy ${route.url}
+        }
+
+      ''
+    ) routes
   );
 in
 {
@@ -132,9 +140,11 @@ in
   # Routes are defined in config/<host>.nix as localRoutes = [{ name = "...", port = ...; }].
   system.activationScripts.postActivation.text = lib.mkAfter ''
     /usr/bin/sed -i "" '/# nix-local-proxy/d' /etc/hosts
-    ${lib.concatMapStrings (route: ''
-      echo "127.0.0.1 ${route.name} # nix-local-proxy" >> /etc/hosts
-    '') routes}
+    {
+      ${lib.concatMapStrings (route: ''
+        echo "127.0.0.1 ${route.name} # nix-local-proxy"
+      '') routes}
+    } >> /etc/hosts
   '';
 
   launchd.daemons.caddy = {

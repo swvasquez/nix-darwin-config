@@ -41,7 +41,9 @@ distribution of Nix.
       brewUpdates = false; # Set to true to update Homebrew packages on build
       syncDir = "Sync"; # Directory name relative to home for syncing homelab data
       localRoutes = [
-        { name = "syncthing"; port = 8384; }
+        { name = "service-name"; port = 1234; }           # localhost port
+        { name = "device-name"; url = "http://x.x.x.x"; } # LAN device URL
+        # extend as needed
       ];
     }
     ```
