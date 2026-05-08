@@ -16,19 +16,22 @@ let
     ''
     + lib.concatMapStrings (
       route:
-      if route ? port then ''
-        http://${route.name} {
-          reverse_proxy 127.0.0.1:${toString route.port} {
-            header_up Host localhost
+      if route ? port then
+        ''
+          http://${route.name} {
+            reverse_proxy 127.0.0.1:${toString route.port} {
+              header_up Host localhost
+            }
           }
-        }
 
-      '' else ''
-        http://${route.name} {
-          reverse_proxy ${route.url}
-        }
+        ''
+      else
+        ''
+          http://${route.name} {
+            reverse_proxy ${route.url}
+          }
 
-      ''
+        ''
     ) routes
   );
 in
@@ -226,8 +229,8 @@ in
   # Hide Dock when cursor is hovering elsewhere
   system.defaults.dock.autohide = true;
 
-  # Delay between displaying Dock and activation
-  system.defaults.dock.autohide-delay = 0.0;
+  # Effectively disable Dock (never shows on hover; toggle with ⌥⌘D)
+  system.defaults.dock.autohide-delay = 1000.0;
 
   # Time it takes for the to Dock appear/hide
   system.defaults.dock.autohide-time-modifier = 0.15;
