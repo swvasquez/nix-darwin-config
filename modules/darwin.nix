@@ -25,6 +25,17 @@ let
           }
 
         ''
+      else if lib.hasPrefix "https://" route.url then
+        ''
+          http://${route.name} {
+            reverse_proxy ${route.url} {
+              transport http {
+                tls_insecure_skip_verify
+              }
+            }
+          }
+
+        ''
       else
         ''
           http://${route.name} {
