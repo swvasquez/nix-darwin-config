@@ -234,6 +234,9 @@ in
     };
   };
 
+  # Move Dock to the right side of the screen
+  system.defaults.dock.orientation = "right";
+
   # Prevent Dock from showing recently used applications
   system.defaults.dock.show-recents = false;
 
