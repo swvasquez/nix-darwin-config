@@ -173,8 +173,25 @@ in
       ];
       RunAtLoad = true;
       KeepAlive = true;
+      StandardOutPath = "/var/log/caddy.log";
+      StandardErrorPath = "/var/log/caddy.err.log";
+      # launchd starts daemons with no $HOME, so Caddy falls back to a relative
+      # ./caddy data dir and fails to create its storage (read-only cwd), exiting
+      # 78/EX_CONFIG. Point HOME at root's home (the passwd default) so Caddy uses
+      # /var/root/Library/Application Support/Caddy.
+      EnvironmentVariables = {
+        HOME = "/var/root";
+      };
     };
   };
+
+  # Rotate Caddy's launchd logs via macOS's built-in newsyslog job.
+  # Rotate at 5 MB, keep 5 bzip2-compressed copies (size-triggered only).
+  environment.etc."newsyslog.d/caddy.conf".text = ''
+    # logfilename          [owner:group]  mode count size(KB) when  flags
+    /var/log/caddy.log      root:wheel     644  5     5120     *     J
+    /var/log/caddy.err.log  root:wheel     644  5     5120     *     J
+  '';
 
   # Install packages via homebrew. Casks are useful for GUI applications
   # that the user wants to access via Spotlight.
