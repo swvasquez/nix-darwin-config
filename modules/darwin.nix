@@ -159,6 +159,18 @@ in
         echo "127.0.0.1 ${route.name} # nix-local-proxy"
       '') routes}
     } >> /etc/hosts
+
+    # Without this, user defaults written earlier in activation (e.g. the
+    # symbolic hotkeys) only take effect after a logout/login; activateSettings
+    # makes the running session re-read them immediately. It is a private
+    # framework binary that must run inside the user's GUI session; activation
+    # runs under `set -e`, so skip it quietly if macOS ever removes it or there
+    # is no session (headless rebuilds).
+    activateSettings=/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings
+    if [ -x "$activateSettings" ]; then
+      launchctl asuser "$(id -u -- "${hostConfig.user}")" \
+        sudo --user="${hostConfig.user}" -- "$activateSettings" -u || true
+    fi
   '';
 
   launchd.daemons.caddy = {
@@ -278,6 +290,47 @@ in
       UseKeychain = false;
     };
   };
+
+  # Enable the Mission Control "Switch to Desktop 1-9" shortcuts (⌃1-⌃9).
+  # There is no single option that enables these as a group: macOS stores one
+  # symbolic hotkey entry per desktop (IDs 118-126 for Desktops 1-9), so each
+  # desktop's shortcut has to be set individually — hence the nine entries
+  # generated below. Each entry's parameter list is
+  # [ asciiCode virtualKeycode modifierMask ], with 262144 being the Ctrl mask.
+  # NOTE: activation replaces the whole AppleSymbolicHotKeys dict, so shortcut
+  # customizations made by hand in System Settings (they live in this same
+  # dict) reset to macOS defaults on every rebuild; declare them here instead.
+  system.defaults.CustomUserPreferences."com.apple.symbolichotkeys".AppleSymbolicHotKeys =
+    let
+      # ANSI virtual keycodes for the digit keys 1-9
+      digitKeycodes = [
+        18
+        19
+        20
+        21
+        23
+        22
+        26
+        28
+        25
+      ];
+    in
+    builtins.listToAttrs (
+      builtins.genList (i: {
+        name = toString (118 + i);
+        value = {
+          enabled = 1;
+          value = {
+            parameters = [
+              (49 + i) # ASCII code of the digit (i + 1)
+              (builtins.elemAt digitKeycodes i)
+              262144
+            ];
+            type = "standard";
+          };
+        };
+      }) 9
+    );
 
   # Specify applications to be displayed in Dock
   system.defaults.dock.persistent-apps = [
