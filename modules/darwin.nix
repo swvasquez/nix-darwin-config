@@ -281,6 +281,10 @@ in
   # Disable bouncing application animation
   system.defaults.dock.launchanim = false;
 
+  # Keep Spaces in a fixed order instead of rearranging them by most recent
+  # use, so the ⌃1-⌃9 desktop shortcuts always target the same desktop
+  system.defaults.dock.mru-spaces = false;
+
   # Disable desktop from showing when wallpaper is clicked
   system.defaults.WindowManager.EnableStandardClickToShowDesktop = false;
 
