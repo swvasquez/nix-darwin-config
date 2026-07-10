@@ -288,6 +288,12 @@ in
   # Disable desktop from showing when wallpaper is clicked
   system.defaults.WindowManager.EnableStandardClickToShowDesktop = false;
 
+  # Reduce motion (Accessibility): swap the space-switching/app-opening
+  # animations for quick fades.
+  # NOTE: com.apple.universalaccess is TCC-protected — the terminal running
+  # darwin-rebuild needs Full Disk Access, or this write fails activation.
+  system.defaults.universalaccess.reduceMotion = true;
+
   # Prevent pinentry-mac from saving the GPG passphrase to the login keychain
   system.defaults.CustomUserPreferences = {
     "org.gpgtools.pinentry-mac" = {
@@ -301,9 +307,10 @@ in
   # desktop's shortcut has to be set individually — hence the nine entries
   # generated below. Each entry's parameter list is
   # [ asciiCode virtualKeycode modifierMask ], with 262144 being the Ctrl mask.
-  # NOTE: activation replaces the whole AppleSymbolicHotKeys dict, so shortcut
-  # customizations made by hand in System Settings (they live in this same
-  # dict) reset to macOS defaults on every rebuild; declare them here instead.
+  # NOTE: activation replaces the whole AppleSymbolicHotKeys dict. That is
+  # intentional — keyboard shortcuts are managed declaratively here, so any
+  # customization made by hand in System Settings (same dict) resets to macOS
+  # defaults on the next rebuild; declare shortcut changes here instead.
   system.defaults.CustomUserPreferences."com.apple.symbolichotkeys".AppleSymbolicHotKeys =
     let
       # ANSI virtual keycodes for the digit keys 1-9
