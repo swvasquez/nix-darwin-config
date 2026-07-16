@@ -52,6 +52,15 @@ sudo -u "$ORIGINAL_USER" bash -s "$DARWIN_NIX" "$OUTPUT" << 'EOF'
 DARWIN_NIX="$1"
 OUTPUT="$2"
 
+# DO NOT REMOVE. Without this, the mas step below prints:
+#   /etc/zshenv:4: SSH_CONNECTION: parameter not set
+# `mas` (7.x) is a zsh script with a nounset shebang (#!/bin/zsh -...u). Starting
+# zsh sources /etc/zshenv, whose Determinate-nix "set up Nix over SSH" hook reads
+# $SSH_CONNECTION with no default -> unset + nounset = abort. sudo stripped the
+# env on the way in, so define it empty here ("" = not an SSH session, which is
+# the hook's intended no-op case). Cosmetic noise only, but this silences it.
+export SSH_CONNECTION="${SSH_CONNECTION:-}"
+
 brew_to_csv() {
   awk -v type="$1" '{sub(/,.*/, "", $2); print $1","$2","type}'
 }
