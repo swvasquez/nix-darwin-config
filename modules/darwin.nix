@@ -171,6 +171,30 @@ in
       launchctl asuser "$(id -u -- "${hostConfig.user}")" \
         sudo --user="${hostConfig.user}" -- "$activateSettings" -u || true
     fi
+
+    # Stop macOS from relaunching apps after a restart/shutdown. On macOS 26 the
+    # "reopen these apps" list is NOT the legacy ByHost/com.apple.loginwindow
+    # plist or the TALLogoutSavesState defaults key (both verified ignored via
+    # the unified log). loginwindow's PersistentAppsSupport loads the list from a
+    # group container instead:
+    #   ~/Library/Group Containers/group.com.apple.loginwindow.persistent-apps/persistantApps
+    # macOS rewrites that file at every shutdown and reads it at the next boot
+    # before activation runs, and there is no supported defaults/MDM key to turn
+    # it off. Its only top-level key is PersistentApps, so the fix is to empty
+    # that array and mark the file immutable (chflags uchg): the shutdown-time
+    # write is then blocked (direct write and atomic rename both verified), so
+    # nothing is left to relaunch after any restart — clean shutdown or forced
+    # power-off. Runs as the user (the file is in their home); nouchg first keeps
+    # rebuilds idempotent. To undo, delete this block and run once:
+    #   chflags nouchg ~/Library/Group\ Containers/group.com.apple.loginwindow.persistent-apps/persistantApps
+    launchctl asuser "$(id -u -- "${hostConfig.user}")" \
+      sudo --user="${hostConfig.user}" -- /bin/sh -c '
+        pa="/Users/${hostConfig.user}/Library/Group Containers/group.com.apple.loginwindow.persistent-apps/persistantApps"
+        [ -e "$pa" ] || exit 0
+        /usr/bin/chflags nouchg "$pa" 2>/dev/null || true
+        /usr/libexec/PlistBuddy -c "Delete :PersistentApps" -c "Add :PersistentApps array" "$pa" 2>/dev/null || true
+        /usr/bin/chflags uchg "$pa" || true
+      ' || true
   '';
 
   launchd.daemons.caddy = {
