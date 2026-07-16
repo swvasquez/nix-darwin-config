@@ -373,10 +373,8 @@ in
     "/Applications/Firefox.app"
     "/Applications/Spotify.app"
     "/Applications/Ghostty.app"
-    "/Applications/Visual Studio Code.app"
     "/Applications/Zed.app"
     "/Applications/Zotero.app"
-    "/System/Applications/Shortcuts.app"
     "/System/Applications/System Settings.app"
   ];
 
