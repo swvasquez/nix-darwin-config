@@ -272,7 +272,6 @@ in
       "mullvad-browser"
       "mullvad-vpn"
       "obsidian"
-      "ollama-app"
       "orbstack"
       "raspberry-pi-imager"
       "spotify"
