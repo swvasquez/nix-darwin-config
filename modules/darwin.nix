@@ -113,6 +113,7 @@ in
     pkgs.elan
     pkgs.ffmpeg_7-full
     pkgs.fzf
+    pkgs.gh
     pkgs.git-crypt
     pkgs.gnumake # Update MacOS' outdated copy of Make
     pkgs.gnupg
