@@ -200,15 +200,13 @@ in
   '';
 
   launchd.daemons.caddy = {
+    # Use `command` rather than serviceConfig.ProgramArguments: nix-darwin only
+    # wraps the former in `/bin/wait4path /nix/store && exec ...`. Without that
+    # guard a boot can beat the /nix volume mount, launchd finds no executable,
+    # and parks the job permanently (KeepAlive only revives jobs that actually
+    # ran, not ones that failed to launch). See nix-darwin issue #1043.
+    command = "${pkgs.caddy}/bin/caddy run --config ${caddyfile} --adapter caddyfile";
     serviceConfig = {
-      ProgramArguments = [
-        "${pkgs.caddy}/bin/caddy"
-        "run"
-        "--config"
-        "${caddyfile}"
-        "--adapter"
-        "caddyfile"
-      ];
       RunAtLoad = true;
       KeepAlive = true;
       StandardOutPath = "/var/log/caddy.log";
