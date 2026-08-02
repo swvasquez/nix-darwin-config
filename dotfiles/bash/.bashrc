@@ -35,6 +35,17 @@ bind 'set vi-cmd-mode-string \1\e[2 q\2'
 # ------------------------------------------------------------------------------
 # Shell integrations
 # ------------------------------------------------------------------------------
+#
+# When adding a new shell integration, consider the following heuristics:
+#   1. If its init appends to precmd_functions or preexec_functions (Atuin
+#      does), source it below bash-preexec, which is what creates those arrays.
+#   2. Check whether its init prepends or appends to PROMPT_COMMAND. Prepending
+#      inverts the order, so a tool sourced further down runs earlier at the
+#      prompt. Zoxide and Direnv both prepend, which is why Direnv is sourced
+#      last: it needs to run first, before anything else reads the environment.
+#   3. Confirm its hook restores "$?" and PIPESTATUS before returning. A hook
+#      that runs ahead of Starship and clobbers either breaks its status
+#      modules.
 
 # Starship
 eval "$(starship init bash)"
@@ -48,6 +59,9 @@ eval "$(atuin init bash)"
 
 # Zoxide (needs to run after Starship integration)
 eval "$(zoxide init bash)"
+
+# Direnv (prepends to PROMPT_COMMAND; sourced last so its hook executes first)
+eval "$(direnv hook bash)"
 
 # ------------------------------------------------------------------------------
 # Environment variables
