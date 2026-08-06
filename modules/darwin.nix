@@ -269,6 +269,7 @@ in
       "keepassxc"
       "libreoffice"
       "logseq"
+      "logseq-og"
       "mullvad-browser"
       "mullvad-vpn"
       "obsidian"
@@ -368,7 +369,7 @@ in
 
   # Specify applications to be displayed in Dock
   system.defaults.dock.persistent-apps = [
-    "/Applications/Logseq.app"
+    "/Applications/Logseq-OG.app"
     "/Applications/Firefox.app"
     "/Applications/Spotify.app"
     "/Applications/Ghostty.app"
