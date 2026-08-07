@@ -263,6 +263,7 @@ in
       "firefox"
       "font-linux-libertine"
       "ghostty"
+      "github"
       "google-chrome"
       "iina"
       "iterm2"
