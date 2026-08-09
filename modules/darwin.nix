@@ -112,6 +112,7 @@ in
     pkgs.btop
     pkgs.direnv
     pkgs.elan
+    pkgs.eza
     pkgs.ffmpeg_7-full
     pkgs.fzf
     pkgs.gh
@@ -138,6 +139,7 @@ in
     pkgs.shellcheck
     pkgs.shfmt
     pkgs.starship
+    pkgs.tree
     pkgs.typst
     pkgs.uv
     pkgs.vim
