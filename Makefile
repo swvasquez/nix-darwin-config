@@ -38,8 +38,17 @@ determinate-nix:
 uninstall-determinate-nix:
 	/nix/nix-installer uninstall
 
+# Rebuild using the darwin-rebuild already installed in the system profile,
+# which is the version pinned by flake.lock. On a machine that has never been
+# built, that binary does not exist yet, so fall back to fetching one from
+# upstream for the first switch only.
 nix-darwin:
-	sudo nix run nix-darwin/nix-darwin-${NIX_DARWIN_VER}#darwin-rebuild -- switch --flake .#${CONFIG}
+	if command -v darwin-rebuild >/dev/null 2>&1; then \
+		sudo darwin-rebuild switch --flake .#${CONFIG}; \
+	else \
+		sudo nix run nix-darwin/nix-darwin-${NIX_DARWIN_VER}#darwin-rebuild \
+			-- switch --flake .#${CONFIG}; \
+	fi
 
 # Refresh flake.lock. Inputs track release branches, so this picks up upstream
 # changes within the pinned release rather than moving between releases.
