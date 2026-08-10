@@ -1,7 +1,6 @@
 {
-  config,
   pkgs,
-  hostConfig,
+  osConfig,
   ...
 }:
 
@@ -31,8 +30,8 @@
     ignores = [ ".DS_Store" ];
     settings = {
       user = {
-        name = "${hostConfig.gitUserName}";
-        email = "${hostConfig.gitUserEmail}";
+        name = osConfig.host.gitUserName;
+        email = osConfig.host.gitUserEmail;
       };
       core.editor = "hx";
     };

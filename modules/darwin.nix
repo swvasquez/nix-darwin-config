@@ -1,12 +1,46 @@
 {
+  config,
   pkgs,
   lib,
   inputs,
-  hostConfig,
   ...
 }:
 let
-  routes = hostConfig.localRoutes;
+  routes = config.host.localRoutes;
+
+  vhost =
+    name: route:
+    # LAN devices served over https present self-signed certificates.
+    if lib.hasPrefix "https://" route.url then
+      ''
+        http://${name} {
+          reverse_proxy ${route.url}:${toString route.port} {
+            transport http {
+              tls_insecure_skip_verify
+            }
+          }
+        }
+
+      ''
+    # Services on this machine need a rewritten Host header, as some of them
+    # (Syncthing) reject requests that do not look local.
+    else if lib.hasPrefix "http://127.0.0.1" route.url then
+      ''
+        http://${name} {
+          reverse_proxy ${route.url}:${toString route.port} {
+            header_up Host localhost
+          }
+        }
+
+      ''
+    else
+      ''
+        http://${name} {
+          reverse_proxy ${route.url}:${toString route.port}
+        }
+
+      '';
+
   caddyfile = pkgs.writeText "Caddyfile" (
     ''
       {
@@ -14,36 +48,7 @@ let
       }
 
     ''
-    + lib.concatMapStrings (
-      route:
-      if route ? port then
-        ''
-          http://${route.name} {
-            reverse_proxy 127.0.0.1:${toString route.port} {
-              header_up Host localhost
-            }
-          }
-
-        ''
-      else if lib.hasPrefix "https://" route.url then
-        ''
-          http://${route.name} {
-            reverse_proxy ${route.url} {
-              transport http {
-                tls_insecure_skip_verify
-              }
-            }
-          }
-
-        ''
-      else
-        ''
-          http://${route.name} {
-            reverse_proxy ${route.url}
-          }
-
-        ''
-    ) routes
+    + lib.concatStrings (lib.mapAttrsToList vhost routes)
   );
 in
 {
@@ -54,14 +59,14 @@ in
   programs.zsh.enable = false;
 
   # Specify user using data from config/
-  users.users."${hostConfig.user}" = {
-    name = "${hostConfig.user}";
-    home = "/Users/${hostConfig.user}";
-    uid = hostConfig.uid;
+  users.users."${config.host.user}" = {
+    name = "${config.host.user}";
+    home = "/Users/${config.host.user}";
+    uid = config.host.uid;
     shell = pkgs.bashInteractive; # Updates MacOS' outdated copy of bash
   };
-  users.knownUsers = [ "${hostConfig.user}" ];
-  system.primaryUser = "${hostConfig.user}";
+  users.knownUsers = [ "${config.host.user}" ];
+  system.primaryUser = "${config.host.user}";
 
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
@@ -154,14 +159,15 @@ in
   # Needed to expose bash-preexec.sh at /run/current-system/sw/share/bash/
   environment.pathsToLink = [ "/share/bash" ];
 
-  # Local reverse proxy: maps friendly hostnames to localhost ports.
-  # Routes are defined in config/<host>.nix as localRoutes = [{ name = "...", port = ...; }].
+  # Local reverse proxy: maps friendly hostnames to local ports or LAN devices.
+  # Routes are defined in config/<host>.nix as host.localRoutes; see the option
+  # description in modules/host.nix.
   system.activationScripts.postActivation.text = lib.mkAfter ''
     /usr/bin/sed -i "" '/# nix-local-proxy/d' /etc/hosts
     {
-      ${lib.concatMapStrings (route: ''
-        echo "127.0.0.1 ${route.name} # nix-local-proxy"
-      '') routes}
+      ${lib.concatMapStrings (name: ''
+        echo "127.0.0.1 ${name} # nix-local-proxy"
+      '') (lib.attrNames routes)}
     } >> /etc/hosts
 
     # Without this, user defaults written earlier in activation (e.g. the
@@ -172,8 +178,8 @@ in
     # is no session (headless rebuilds).
     activateSettings=/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings
     if [ -x "$activateSettings" ]; then
-      launchctl asuser "$(id -u -- "${hostConfig.user}")" \
-        sudo --user="${hostConfig.user}" -- "$activateSettings" -u || true
+      launchctl asuser "$(id -u -- "${config.host.user}")" \
+        sudo --user="${config.host.user}" -- "$activateSettings" -u || true
     fi
 
     # Stop macOS from relaunching apps after a restart/shutdown. On macOS 26 the
@@ -191,9 +197,9 @@ in
     # power-off. Runs as the user (the file is in their home); nouchg first keeps
     # rebuilds idempotent. To undo, delete this block and run once:
     #   chflags nouchg ~/Library/Group\ Containers/group.com.apple.loginwindow.persistent-apps/persistantApps
-    launchctl asuser "$(id -u -- "${hostConfig.user}")" \
-      sudo --user="${hostConfig.user}" -- /bin/sh -c '
-        pa="/Users/${hostConfig.user}/Library/Group Containers/group.com.apple.loginwindow.persistent-apps/persistantApps"
+    launchctl asuser "$(id -u -- "${config.host.user}")" \
+      sudo --user="${config.host.user}" -- /bin/sh -c '
+        pa="/Users/${config.host.user}/Library/Group Containers/group.com.apple.loginwindow.persistent-apps/persistantApps"
         [ -e "$pa" ] || exit 0
         /usr/bin/chflags nouchg "$pa" 2>/dev/null || true
         /usr/libexec/PlistBuddy -c "Delete :PersistentApps" -c "Add :PersistentApps array" "$pa" 2>/dev/null || true
@@ -237,9 +243,9 @@ in
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = hostConfig.brewUpdates;
+      autoUpdate = config.host.brewUpdates;
       cleanup = "uninstall";
-      upgrade = hostConfig.brewUpdates;
+      upgrade = config.host.brewUpdates;
     };
     taps = [ ];
     brews = [

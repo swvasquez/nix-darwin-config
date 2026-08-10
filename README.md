@@ -30,31 +30,43 @@ distribution of Nix.
 
 ## Adding a New Machine
 
-1. Add a new file `config/<CONFIG_NAME>.nix`:
+1. Add a new file `config/<CONFIG_NAME>.nix`. It sets the `host.*` options
+    declared in `modules/host.nix`; every option is mandatory, so a machine's
+    file describes it completely:
 
     ```nix
     {
-      user = "your_username";
-      uid = 1000; # Replace with your actual UID
-      gitUserName = "Your Name";
-      gitUserEmail = "your.email@example.com";
-      brewUpdates = false; # Set to true to update Homebrew packages on build
-      syncDir = "Sync"; # Directory name relative to home for syncing homelab data
-      localRoutes = [
-        { name = "service-name"; port = 1234; }           # localhost port
-        { name = "device-name"; url = "http://x.x.x.x"; } # LAN device URL
-        # extend as needed
-      ];
+      host = {
+        user = "your_username";
+        uid = 501; # Replace with your actual UID
+        gitUserName = "Your Name";
+        gitUserEmail = "your.email@example.com";
+        brewUpdates = false; # Set to true to update Homebrew packages on build
+        syncDir = "Sync"; # Directory name relative to home for syncing homelab data
+        localRoutes = {
+          service-name = {
+            url = "http://127.0.0.1"; # this machine
+            port = 1234;
+          };
+          device-name = {
+            url = "http://x.x.x.x"; # LAN device
+            port = 80;
+          };
+        };
+      };
     }
     ```
 
-2. Add an entry in `flake.nix`:
+    Each entry in `localRoutes` is proxied to `url:port`. Both are always
+    stated explicitly.
 
-    ```nix
-    darwinConfigurations."<CONFIG_NAME>" = mkSystem (import ./config/<CONFIG_NAME>.nix);
-    ```
+2. Add `<CONFIG_NAME>` to the `machines` list in `flake.nix`.
 
 3. Commit both files (config will be encrypted automatically by git-crypt).
+
+Options are typed, so a misspelled name or an out-of-range port fails the
+build with a message pointing at the mistake, rather than silently producing a
+broken configuration.
 
 ## Build
 

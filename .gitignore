@@ -3,8 +3,7 @@
 !dotfiles
 !dotfiles/**
 !modules
-!modules/darwin.nix
-!modules/home.nix
+!modules/*.nix
 !scripts
 !scripts/*.sh
 !config

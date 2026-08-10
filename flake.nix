@@ -19,19 +19,20 @@
       nix-vscode-extensions,
     }:
     let
+      # Each machine is described by config/<name>.nix, which sets the `host.*`
+      # options declared in modules/host.nix. Those options are read via
+      # `config.host` by the modules below, so nothing is threaded through
+      # specialArgs except the flake inputs themselves.
       mkSystem =
-        hostConfig:
+        hostModule:
         nix-darwin.lib.darwinSystem {
-          specialArgs = { inherit inputs hostConfig; };
+          specialArgs = { inherit inputs; };
           modules = [
+            ./modules/host.nix
+            hostModule
             ./modules/darwin.nix
             home-manager.darwinModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users."${hostConfig.user}" = import ./modules/home.nix;
-              home-manager.extraSpecialArgs = { inherit hostConfig; };
-            }
+            ./modules/home-manager.nix
           ];
         };
     in
@@ -42,7 +43,7 @@
       ];
       mkConfig = name: {
         inherit name;
-        value = mkSystem (import ./config/${name}.nix);
+        value = mkSystem ./config/${name}.nix;
       };
     in
     {
