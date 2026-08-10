@@ -9,13 +9,16 @@
 
   # Dotfile mappings are defined in dotfiles/dotfiles.json.
   # Add entries there to symlink additional files without modifying this file.
+  #
+  # A destination may contain @syncDir@, which is replaced with host.syncDir so
+  # the mapping follows that option instead of hardcoding the directory name.
   home.file =
     let
       mappings = builtins.fromJSON (builtins.readFile ../dotfiles/dotfiles.json);
     in
     builtins.listToAttrs (
       map (m: {
-        name = m.dest;
+        name = builtins.replaceStrings [ "@syncDir@" ] [ osConfig.host.syncDir ] m.dest;
         value = {
           source = ../dotfiles + "/${m.src}";
         };
