@@ -41,6 +41,11 @@ uninstall-determinate-nix:
 nix-darwin:
 	sudo nix run nix-darwin/nix-darwin-${NIX_DARWIN_VER}#darwin-rebuild -- switch --flake .#${CONFIG}
 
+# Refresh flake.lock. Inputs track release branches, so this picks up upstream
+# changes within the pinned release rather than moving between releases.
+update:
+	nix flake update
+
 uninstall-nix-darwin:
 	nix --extra-experimental-features "nix-command flakes" run nix-darwin#darwin-uninstaller
 
