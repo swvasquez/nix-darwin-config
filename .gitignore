@@ -13,7 +13,6 @@
 !.gitignore
 !flake.lock
 !flake.nix
-!GEMINI.md
 !LICENSE
 !Makefile
 !README.md
