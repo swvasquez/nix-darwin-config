@@ -9,6 +9,7 @@
   },
   "auto_install_extensions": {
     "basher": true,
+    "dockerfile": true,
     "make": true,
     "nix": true
   },
