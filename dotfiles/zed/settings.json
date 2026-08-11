@@ -11,7 +11,8 @@
     "basher": true,
     "dockerfile": true,
     "make": true,
-    "nix": true
+    "nix": true,
+    "toml": true
   },
   "autosave": {
     "after_delay": {
