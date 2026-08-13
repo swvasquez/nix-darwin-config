@@ -3,3 +3,4 @@
 # Add any Bash aliases to this file
 
 alias zj=zellij
+alias lzd=lazydocker

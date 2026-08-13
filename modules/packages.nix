@@ -37,6 +37,7 @@
     pkgs.k9s
     pkgs.kind
     pkgs.kubectl
+    pkgs.lazydocker # Needs OrbStack running to provide the Docker socket
     pkgs.markdownlint-cli
     pkgs.moreutils
     pkgs.nodejs_22
