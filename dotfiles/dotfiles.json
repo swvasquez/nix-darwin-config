@@ -72,6 +72,10 @@
     "src": "zellij/config.kdl"
   },
   {
+    "dest": "Library/Preferences/glow/glow.yml",
+    "src": "glow/glow.yml"
+  },
+  {
     "dest": "@syncDir@/.stignore",
     "src": "syncthing/.stignore"
   }
