@@ -6,6 +6,19 @@ deployment steps are automated.
 > [!NOTE]
 > Developed with AI assistance.
 
+## Design Principles
+
+- **Not fully pure.** Nix flakes can build a system purely, meaning every
+  input is pinned and the same files always produce the same machine
+  configuration. This repository relaxes that guarantee. Homebrew and Mac App
+  Store apps are installed by their own tools and their versions are free to
+  drift.
+- **Limited use of Home Manager.** Home Manager can manage program
+  configuration in fine detail. Here it mainly links dotfiles into place from
+  the mappings in `dotfiles/dotfiles.json`, similar to GNU Stow. Its options
+  step in when a value has to change per host. This means the dotfiles can be
+  copied and used outside of nix-darwin.
+
 ## Setup
 
 This configuration uses the [Determinate Systems](https://determinate.systems/)
@@ -71,8 +84,9 @@ broken configuration.
 
 ## Build
 
-Apply the configuration defined in `flake.nix`. Also generates `versions.csv`
-with installed package versions for nixpkgs, brews, casks, and mas apps:
+Apply the configuration defined in `flake.nix`. The build also writes
+`versions.csv`, which lists the installed versions of nixpkgs packages, brews,
+casks, and mas apps:
 
 ```bash
 make build CONFIG=<CONFIG_NAME>
@@ -107,11 +121,11 @@ make check
 ## AI Assistance
 
 Claude Code can be run against this repository inside a Docker Sandboxes
-microVM, isolated from the host and with the local network denied.
-[`.sbx/kit/spec.yaml`](.sbx/kit/spec.yaml) describes the sandbox and the
-[`Makefile`](Makefile) drives it. Claude Code is configured in
-[`.sbx/kit/settings.json`](.sbx/kit/settings.json). To use the sandbox, install
-`sbx`.
+microVM, isolated from the host and with the local network denied. The sandbox
+is described in [`.sbx/kit/spec.yaml`](.sbx/kit/spec.yaml) and driven by the
+[`Makefile`](Makefile), and Claude Code itself is configured in
+[`.sbx/kit/settings.json`](.sbx/kit/settings.json). Running it requires `sbx`,
+which must be installed on the host.
 
 | Command | Description |
 | --- | --- |
