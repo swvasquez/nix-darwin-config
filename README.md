@@ -3,7 +3,8 @@
 This repository contains Nix configuration files managed via a `Makefile`. All
 deployment steps are automated.
 
-> **Note:** Some commands may require `sudo` privileges.
+> [!NOTE]
+> Developed with AI assistance.
 
 ## Setup
 
@@ -103,12 +104,25 @@ Run static checks on scripts (ShellCheck for Bash, syntax check for JSON):
 make check
 ```
 
+## AI Assistance
+
+Claude Code can be run against this repository inside a Docker Sandboxes
+microVM, isolated from the host and with the local network denied.
+[`.sbx/kit/spec.yaml`](.sbx/kit/spec.yaml) describes the sandbox and the
+[`Makefile`](Makefile) drives it. Claude Code is configured in
+[`.sbx/kit/settings.json`](.sbx/kit/settings.json). To use the sandbox, install
+`sbx`.
+
+| Command | Description |
+| --- | --- |
+| `make sbx-up` | Build and start the sandbox, replacing any existing one |
+| `make sbx-login` | Sign in to Claude Code inside the sandbox |
+| `make sbx-agent` | Attach Claude Code to the running sandbox |
+| `make sbx-shell` | Open a login shell in the running sandbox |
+
 ## Notes
 
+- Some commands may require `sudo` privileges.
 - `versions.csv` is not a lockfile — versions may vary machine to machine.
   It provides a rough reference of what versions were present on a working
   system.
-
-## Acknowledgements
-
-Code was generated with AI assistance.

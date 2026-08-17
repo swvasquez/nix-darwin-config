@@ -8,6 +8,9 @@
 !scripts/*.sh
 !config
 !config/*.nix
+!.sbx
+!.sbx/kit
+!.sbx/kit/**
 !.gitattributes
 !.gitignore
 !flake.lock
