@@ -54,6 +54,7 @@ eval "$(starship init bash)"
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Atuin
+# shellcheck source=/dev/null
 source /run/current-system/sw/share/bash/bash-preexec.sh
 eval "$(atuin init bash)"
 
@@ -86,6 +87,7 @@ export PATH=${PATH}:/Library/Developer/CommandLineTools/usr/bin
 # Activates the python virtual environment if it exists in the current directory
 activate() {
 	if [[ -f ".venv/bin/activate" ]]; then
+		# shellcheck source=/dev/null
 		source .venv/bin/activate
 	else
 		echo "No .venv found in $(pwd)"

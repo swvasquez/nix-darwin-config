@@ -118,32 +118,47 @@ sbx-shell:
 # Utilities
 # --------------------------------------------------------------------------------------------------
 
-versions:
-	${SHELL} scripts/versions.sh
+SOURCE ?= .
+EXCLUDE := .sbx
+
+# $(call walk,<root>,<pruned dirs>,<name tests>,<command>)
+define walk
+find $(1) \( $(foreach d,$(2),-name $(d) -o) -false \) -prune -o -type f \( $(3) \) -exec $(4) {} +
+endef
 
 check: check-bash check-json
-
+	
 format: format-markdown format-nix format-json format-bash
 
-format-bash: SOURCE = ${PWD}
+format-bash: FILES := -name '*.sh' -o -name '.bash*'
+format-bash: CMD   := shfmt -w -ln bash
 format-bash:
-	find ${SOURCE} -name "*.sh" -o -name ".bash*" -exec shfmt -w -ln bash {} \;
+	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
 
-format-json: SOURCE = ${PWD}
+format-json: FILES := -name '*.json'
+format-json: CMD   := sh -c 'for f; do jq . "$$f" | sponge "$$f"; done' sh
 format-json:
-	find ${SOURCE} -name "*.json" -exec \
-		sh -c 'jq . {} > {}.tmp && mv {}.tmp {} || rm {}.tmp' \; 
+	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
 
+format-markdown: FILES := -name '*.md'
+format-markdown: CMD   := markdownlint --fix
 format-markdown:
-	 find . -name '*.md' -print0 | xargs -0 markdownlint --fix
+	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
 
+format-nix: FILES := -name '*.nix'
+format-nix: CMD   := nixfmt
 format-nix:
-	 find . -name '*.nix' -print0 | xargs -0 nixfmt
+	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
 
-check-bash: SOURCE = ${PWD}
+check-bash: FILES := -name '*.sh' -o -name '.bash*'
+check-bash: CMD   := shellcheck -s bash
 check-bash:
-	find ${SOURCE} -name "*.sh" -o -name ".bash*" -exec shellcheck -s bash {} \;
+	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
 
-check-json: SOURCE = ${PWD}
+check-json: FILES := -name '*.json'
+check-json: CMD   := sh -c 'jq type "$$@" >/dev/null' sh
 check-json:
-	find ${SOURCE} -name "*.json" -exec jq type {} 1>/dev/null \;
+	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
+
+versions:
+	${SHELL} scripts/versions.sh

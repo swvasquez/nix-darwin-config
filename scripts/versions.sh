@@ -15,12 +15,12 @@ OUTPUT="versions.csv"
 
 # For brews/casks: name is always single word, strip build metadata after comma
 brew_to_csv() {
-  awk -v type="$1" '{sub(/,.*/, "", $2); print $1","$2","type}'
+	awk -v type="$1" '{sub(/,.*/, "", $2); print $1","$2","type}'
 }
 
 # For mas: name may have spaces, version is last field
 mas_to_csv() {
-  awk '{
+	awk '{
     version=$(NF); name="";
     for (i=1; i<NF; i++) name=name (i>1?" ":"") $i;
     print name","version",mas"
@@ -31,26 +31,26 @@ export -f brew_to_csv
 export -f mas_to_csv
 
 echo "Generating versions.csv..."
-echo "name,version,type" > "$OUTPUT"
+echo "name,version,type" >"$OUTPUT"
 
 # Extract nixpkgs packages (requires sudo)
 echo "  nixpkgs..."
-awk '/systemPackages = \[/,/\];/' "$PACKAGES_NIX" \
-  | grep -E '^\s+pkgs\.' \
-  | grep -oE 'pkgs\.\S+' \
-  | sed 's/pkgs\.//' \
-  | while read -r pkg; do
-      version=$(nix eval --raw "nixpkgs#${pkg}.version" 2>/dev/null || true)
-      if [[ -n "$version" ]]; then
-        echo "$pkg,$version,nixpkgs"
-      fi
-    done >> "$OUTPUT"
+awk '/systemPackages = \[/,/\];/' "$PACKAGES_NIX" |
+	grep -E '^\s+pkgs\.' |
+	grep -oE 'pkgs\.\S+' |
+	sed 's/pkgs\.//' |
+	while read -r pkg; do
+		version=$(nix eval --raw "nixpkgs#${pkg}.version" 2>/dev/null || true)
+		if [[ -n "$version" ]]; then
+			echo "$pkg,$version,nixpkgs"
+		fi
+	done >>"$OUTPUT"
 
 # Extract brew/cask/mas packages as the original user.
 # Homebrew explicitly refuses to run as root, so we drop back to the invoking
 # user via SUDO_USER when this script is run with sudo.
 ORIGINAL_USER="${SUDO_USER:-$USER}"
-sudo -u "$ORIGINAL_USER" bash -s "$HOMEBREW_NIX" "$OUTPUT" << 'EOF'
+sudo -u "$ORIGINAL_USER" bash -s "$HOMEBREW_NIX" "$OUTPUT" <<'EOF'
 HOMEBREW_NIX="$1"
 OUTPUT="$2"
 
