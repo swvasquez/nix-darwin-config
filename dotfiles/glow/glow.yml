@@ -1,8 +1,12 @@
 # style name or JSON path (default "auto")
 style: "auto"
 # mouse wheel support (TUI-mode only)
-mouse: false
+mouse: true
 # use pager to display markdown
-pager: false
-# word-wrap at width (0 = disable)
-width: 84
+pager: true
+# at which column should we word wrap?
+width: 80
+# show line numbers (TUI-mode only)
+showLineNumbers: false
+# preserve newlines in the output
+preserveNewLines: false
