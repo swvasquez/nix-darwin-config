@@ -39,6 +39,7 @@
       "blackhole-16ch"
       "claude"
       "claude-code"
+      "cryptomator"
       "discord"
       "firefox"
       "font-linux-libertine"

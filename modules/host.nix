@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ config, lib, ... }:
 
 let
   routeType = lib.types.submodule {
@@ -21,6 +21,24 @@ let
       };
     };
   };
+
+  cfg = config.host;
+
+  # The comparison below is textual, so "Sync", "Sync/" and "./Sync" must reduce
+  # to one form first.
+  normalise =
+    dir: lib.concatStringsSep "/" (lib.filter (p: p != "" && p != ".") (lib.splitString "/" dir));
+
+  # Whether two directories are the same or one contains the other. `..` is not
+  # resolved (impossible without the real filesystem), so a path using one is
+  # the caller's to check.
+  overlaps =
+    a: b:
+    let
+      a' = normalise a;
+      b' = normalise b;
+    in
+    a' == b' || lib.hasPrefix "${a'}/" b' || lib.hasPrefix "${b'}/" a';
 in
 {
   # Per-machine settings. Every option is mandatory: a machine's config in
@@ -74,6 +92,26 @@ in
       example = "Sync";
     };
 
+    vaultDir = lib.mkOption {
+      type = lib.types.str;
+      description = ''
+        Directory, relative to the home directory, holding Cryptomator's
+        encrypted vaults. Only ciphertext is written here, so it belongs inside
+        `syncDir`. Stated in full, not relative to it.
+      '';
+      example = "Sync/Cryptomator";
+    };
+
+    mountDir = lib.mkOption {
+      type = lib.types.str;
+      description = ''
+        Directory, relative to the home directory, where an unlocked vault is
+        decrypted. Must stay outside `syncDir`; asserted below. Applied by
+        cryptomator.nix as `cryptomator.mountPointsDir`.
+      '';
+      example = "Vaults";
+    };
+
     localRoutes = lib.mkOption {
       type = lib.types.attrsOf routeType;
       description = ''
@@ -95,4 +133,26 @@ in
       '';
     };
   };
+
+  # A mount point inside the synced folder would hand Syncthing the plaintext of
+  # every unlocked vault, so such a configuration is refused rather than built.
+  config.assertions = [
+    {
+      assertion = !overlaps cfg.syncDir cfg.mountDir;
+      message = ''
+        host.mountDir ("${cfg.mountDir}") and host.syncDir ("${cfg.syncDir}")
+        overlap. Unlocked vaults are decrypted under mountDir, so Syncthing
+        would replicate their plaintext. Pick a mount point outside the sync
+        folder.
+      '';
+    }
+    {
+      assertion = !overlaps cfg.mountDir cfg.vaultDir;
+      message = ''
+        host.vaultDir ("${cfg.vaultDir}") and host.mountDir ("${cfg.mountDir}")
+        overlap. The encrypted vaults would be shadowed by the mount whenever
+        one is unlocked.
+      '';
+    }
+  ];
 }

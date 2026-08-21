@@ -3,6 +3,7 @@
 {
   imports = [
     ./core.nix
+    ./cryptomator.nix
     ./homebrew.nix
     ./macos.nix
     ./packages.nix

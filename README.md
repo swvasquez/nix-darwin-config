@@ -56,7 +56,9 @@ distribution of Nix.
         gitUserName = "Your Name";
         gitUserEmail = "your.email@example.com";
         brewUpdates = false; # Set to true to update Homebrew packages on build
-        syncDir = "Sync"; # Directory name relative to home for syncing homelab data
+        syncDir = "Sync"; # Syncthing folder, relative to home
+        vaultDir = "Sync/Cryptomator"; # Encrypted vaults, relative to home
+        mountDir = "Vaults"; # Where unlocked vaults are decrypted
         localRoutes = {
           service-name = {
             url = "http://127.0.0.1"; # this machine
