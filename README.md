@@ -56,7 +56,9 @@ distribution of Nix.
         gitUserName = "Your Name";
         gitUserEmail = "your.email@example.com";
         brewUpdates = false; # Set to true to update Homebrew packages on build
-        syncDir = "Sync"; # Directory name relative to home for syncing homelab data
+        syncDir = "Sync"; # Syncthing folder, relative to home
+        vaultDir = "Sync/Cryptomator"; # Encrypted vaults, relative to home
+        mountDir = "Vaults"; # Where unlocked vaults are decrypted
         localRoutes = {
           service-name = {
             url = "http://127.0.0.1"; # this machine
@@ -81,6 +83,24 @@ distribution of Nix.
 Options are typed, so a misspelled name or an out-of-range port fails the
 build with a message pointing at the mistake, rather than silently producing a
 broken configuration.
+
+## Cryptomator
+
+`vaultDir` and `mountDir` split a vault's two halves:
+
+- **`vaultDir`** holds the encrypted vaults. It sits inside `syncDir`, so
+  Syncthing replicates the ciphertext between machines. Nothing readable is
+  ever written here.
+- **`mountDir`** is where an unlocked vault is decrypted. It sits outside
+  `syncDir`, because Syncthing would replicate the plaintext that appears
+  there while a vault is open. The build refuses to evaluate if the two
+  overlap.
+
+Both directories are created on rebuild, and `mountDir` is applied through
+Cryptomator's admin configuration, so vaults mount there with no per-vault
+setup. Adding a vault stays manual: use **Add Vault -> Create New Vault** and
+pick the `vaultDir` path as the storage location, or **Open Existing Vault**
+on a second machine once Syncthing has brought the ciphertext across.
 
 ## Build
 

@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   osConfig,
   ...
@@ -24,6 +25,16 @@
         };
       }) mappings
     );
+
+  # Create both Cryptomator directories up front: host.vaultDir for the
+  # encrypted vaults, host.mountDir for where an unlocked one is decrypted.
+  # cryptomator.nix points the app at mountDir; host.nix asserts they cannot
+  # overlap syncDir. Note that locking only removes the mount — plaintext an
+  # editor or macOS cached meanwhile outlives it, unsynced but uncleaned.
+  home.activation.cryptomatorDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p "$HOME/${osConfig.host.vaultDir}"
+    run mkdir -p "$HOME/${osConfig.host.mountDir}"
+  '';
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
