@@ -162,6 +162,19 @@ setup:
           echo "export CLAUDE_CONFIG_DIR=$WORKSPACE_DIR/.sbx/claude"
           > /etc/sandbox-persistent.sh
       user: "0"
+    # sbx seeds /home/agent/.claude/.credentials.json at creation with a decoy
+    # backed by the keychain token (the proxy injects the real one). The
+    # CLAUDE_CONFIG_DIR redirect above would hide that seed from the agent, so
+    # link it into the persistent directory; ln -sfn tolerates the seed
+    # appearing later.
+    - command:
+        - sh
+        - -c
+        - >-
+          ln -sfn /home/agent/.claude/.credentials.json
+          "$WORKSPACE_DIR/.sbx/claude/.credentials.json" &&
+          chown -h agent:agent "$WORKSPACE_DIR/.sbx/claude/.credentials.json"
+      user: "0"
     # How the agent behaves in the sandbox is declared in settings.json beside
     # this file, and reaches Claude Code as the policy settings it reads from
     # /etc/claude-code on Linux. That tier is what makes the file authoritative:

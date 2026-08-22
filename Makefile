@@ -100,11 +100,9 @@ sbx-up:
 		--deny-network fe80::/10 \
 		claude .
 
-# Authenticate Claude Code and store the token in the sbx keychain. Needed once
-# per login, not per sandbox.
-# Sign in to Claude Code inside the sandbox
-sbx-login:
-	sbx run --name nix-darwin-config -- auth login
+# sbx keeps the OAuth token in the host keychain and seeds each new sandbox
+# with a stand-in credential, so the agent starts signed in. If Claude ever
+# prompts anyway, sign in at that prompt, from within the sandbox.
 
 # Attach Claude Code to the running sandbox
 sbx-agent:
