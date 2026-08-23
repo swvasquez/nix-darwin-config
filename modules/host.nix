@@ -102,6 +102,18 @@ in
       example = "Sync/Cryptomator";
     };
 
+    qgisDir = lib.mkOption {
+      type = lib.types.str;
+      description = ''
+        Directory, relative to the home directory, holding QGIS's user profiles:
+        its settings, installed plugins, processing models and scripts, and
+        project templates. It belongs inside `syncDir`, so that a second machine
+        starts QGIS with the same configuration. Stated in full, not relative to
+        it. Applied by qgis.nix as `QGIS_CUSTOM_CONFIG_PATH`.
+      '';
+      example = "Sync/QGIS";
+    };
+
     mountDir = lib.mkOption {
       type = lib.types.str;
       description = ''
@@ -152,6 +164,15 @@ in
         host.vaultDir ("${cfg.vaultDir}") and host.mountDir ("${cfg.mountDir}")
         overlap. The encrypted vaults would be shadowed by the mount whenever
         one is unlocked.
+      '';
+    }
+    {
+      assertion = !overlaps cfg.mountDir cfg.qgisDir;
+      message = ''
+        host.qgisDir ("${cfg.qgisDir}") and host.mountDir ("${cfg.mountDir}")
+        overlap. The QGIS profiles would be shadowed by the mount whenever a
+        vault is unlocked, and QGIS would build a fresh configuration in their
+        place.
       '';
     }
   ];

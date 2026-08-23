@@ -56,6 +56,7 @@
       "mullvad-vpn"
       "obsidian"
       "orbstack"
+      "qgis"
       "raspberry-pi-imager"
       "sbx"
       "spotify"

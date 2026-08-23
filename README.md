@@ -58,6 +58,7 @@ distribution of Nix.
         brewUpdates = false; # Set to true to update Homebrew packages on build
         syncDir = "Sync"; # Syncthing folder, relative to home
         vaultDir = "Sync/Cryptomator"; # Encrypted vaults, relative to home
+        qgisDir = "Sync/QGIS"; # QGIS user profiles, relative to home
         mountDir = "Vaults"; # Where unlocked vaults are decrypted
         localRoutes = {
           service-name = {

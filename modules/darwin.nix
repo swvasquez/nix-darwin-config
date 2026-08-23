@@ -8,5 +8,6 @@
     ./macos.nix
     ./packages.nix
     ./proxy.nix
+    ./qgis.nix
   ];
 }

@@ -36,6 +36,13 @@
     run mkdir -p "$HOME/${osConfig.host.mountDir}"
   '';
 
+  # QGIS creates its `profiles/` folder beneath this directory on first run;
+  # qgis.nix points the app at it through QGIS_CUSTOM_CONFIG_PATH. Created here
+  # so Syncthing has the folder to share before QGIS is ever opened.
+  home.activation.qgisDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p "$HOME/${osConfig.host.qgisDir}"
+  '';
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
