@@ -43,6 +43,18 @@
     run mkdir -p "$HOME/${osConfig.host.qgisDir}"
   '';
 
+  # Newly installed applications sometimes stay unfindable in Spotlight even
+  # once the metadata index has caught up, and restarting Spotlight has cleared
+  # it every time. That is the extent of what is established: the fix is
+  # empirical, not a diagnosis. Whether the install method matters is unknown,
+  # as is the cause — a stale app list cached by the search UI process is only a
+  # guess, and killing the process is blunt enough to mask several other
+  # candidates. launchd relaunches it immediately; `|| true` covers it not
+  # already running.
+  home.activation.restartSpotlight = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run killall Spotlight || true
+  '';
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
