@@ -5,6 +5,11 @@
 # must remain above the interactive-only section below.
 export PATH="/run/current-system/sw/bin:${PATH}"
 
+# rustup is installed via nixpkgs, so its installer never patched this file.
+# The toolchain shims (rustc, cargo, rust-analyzer) land in ~/.cargo/bin. Kept
+# above the interactive guard for the same reason as the line above.
+export PATH="${HOME}/.cargo/bin:${PATH}"
+
 # Commands that should be applied only for interactive shells.
 [[ $- == *i* ]] || return
 
