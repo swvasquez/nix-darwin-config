@@ -19,6 +19,7 @@
     pkgs.ansible
     pkgs.bash
     pkgs.bash-preexec # Needed for atuin to work in certain terminals
+    pkgs.bat
     pkgs.btop
     pkgs.direnv
     pkgs.elan
