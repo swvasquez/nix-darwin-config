@@ -120,27 +120,39 @@ sbx-shell:
 # .pre-commit-config.yaml, not here. These targets just pick which hooks run.
 
 # Wire prek into this clone's git hooks, so every hook in
-# .pre-commit-config.yaml also runs on `git commit` (once per clone; `make
-# build` and the sbx kit already install the `prek` binary itself - this just
-# points git at it). Using prek, not pre-commit: pre-commit's nixpkgs build
-# crashes on aarch64-darwin.
+# .pre-commit-config.yaml runs on `git commit` and `git push` (once per
+# clone; `make build` and the sbx kit already install the `prek` binary
+# itself - this just points git at it). A hook without a `stages:` key only
+# fires on `pre-commit` regardless. Using prek, not pre-commit: pre-commit's
+# nixpkgs build crashes on aarch64-darwin.
 hooks:
-	prek install
+	prek install --hook-type pre-commit --hook-type pre-push
+
+# prek's own `--all-files` only walks `git ls-files` (tracked), so an
+# untracked or staged-but-uncommitted file would be invisible to it. This
+# hands every hook the tracked-plus-untracked file list explicitly instead,
+# so nothing has to be `git add`ed to get checked or formatted.
+ALL_FILES := $(shell git ls-files --cached --others --exclude-standard)
+
+.SILENT: check format
 
 check:
-	prek run shellcheck --all-files
-	prek run jq-check --all-files
+	prek run shellcheck --files $(ALL_FILES)
+	prek run jq-check --files $(ALL_FILES)
 	prek run git-crypt-verify-staged --all-files
+	prek run gitleaks-untracked --all-files
+	prek run gitleaks-staged --all-files
+	prek run gitleaks-history --all-files
 
 # A fixer hook exits non-zero when it modifies a file (that's how prek flags
 # "this needed fixing" in CI) - the leading '-' keeps that from aborting the
 # remaining formatters here, since the point of `make format` is to fix
 # everything in one pass, not stop at the first thing that needed fixing.
 format:
-	-prek run shfmt --all-files
-	-prek run nixfmt --all-files
-	-prek run markdownlint --all-files
-	-prek run jq-format --all-files
+	-prek run shfmt --files $(ALL_FILES)
+	-prek run nixfmt --files $(ALL_FILES)
+	-prek run markdownlint --files $(ALL_FILES)
+	-prek run jq-format --files $(ALL_FILES)
 
 versions:
 	${SHELL} scripts/versions.sh

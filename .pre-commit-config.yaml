@@ -48,6 +48,58 @@ repos:
         language: system
         types: [json]
 
+      # Three gitleaks passes, one per place a secret can be hiding at commit
+      # time. Rules/allowlist come from .gitleaks.toml (keeps the
+      # git-crypt-encrypted paths above out of scope). `--redact` on all
+      # three keeps a found secret from being echoed into the terminal or CI
+      # logs.
+
+      # Files git itself calls untracked (`git ls-files --others
+      # --exclude-standard` - same set `git status` lists, so .gitignore is
+      # already honored and nothing under .git/ ever shows up). Neither
+      # `git diff` nor `git log` sees these, so they're invisible to the two
+      # hooks below; gitleaks has no "scan just these paths" mode, so they're
+      # copied to a scratch dir and scanned there with `--no-git`.
+      - id: gitleaks-untracked
+        name: gitleaks scan untracked files
+        entry: |
+          bash -c '
+            set -euo pipefail
+            mapfile -t untracked < <(git ls-files --others --exclude-standard)
+            [ "${#untracked[@]}" -eq 0 ] && exit 0
+            tmp=$(mktemp -d)
+            trap "rm -rf \"$tmp\"" EXIT
+            for f in "${untracked[@]}"; do
+              mkdir -p "$tmp/$(dirname "$f")"
+              cp "$f" "$tmp/$f"
+            done
+            gitleaks detect --no-git --source "$tmp" --redact -v
+          '
+        language: system
+        always_run: true
+        pass_filenames: false
+
+      # The exact staged diff - what `git commit` is actually about to
+      # record - which can differ from the working tree above if a file was
+      # staged and then edited again without re-staging.
+      - id: gitleaks-staged
+        name: gitleaks scan staged changes
+        entry: gitleaks protect --staged --redact -v
+        language: system
+        always_run: true
+        pass_filenames: false
+
+      # Full commit history via `git log`, so a secret that already made it
+      # into a prior commit still fails every subsequent commit until it's
+      # purged from history, not just the commit that introduced it.
+      - id: gitleaks-history
+        name: gitleaks scan commit history
+        entry: gitleaks detect --redact -v
+        language: system
+        always_run: true
+        pass_filenames: false
+        stages: [pre-commit, pre-push]
+
       # The sandbox's git-crypt filter is neutered to `cat` (see
       # .sbx/kit/spec.yaml), so `git add` there can stage plaintext straight
       # into the shared index without git ever noticing - a later host commit

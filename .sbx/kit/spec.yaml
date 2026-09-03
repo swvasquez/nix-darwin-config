@@ -34,10 +34,10 @@ environment:
     GIT_CONFIG_VALUE_3: /etc/git/hooks
 
 setup:
-  # Toolchain (nixfmt, shfmt, shellcheck, markdownlint, sponge, jq, prek)
-  # is pinned to this repo's own nixpkgs revision, not apt/npm, so `make
-  # format`/`make check` match the host exactly. Runs once at creation; `make
-  # sbx-up` re-syncs it after `make update` changes flake.lock.
+  # Toolchain (nixfmt, shfmt, shellcheck, markdownlint, sponge, jq, prek,
+  # gitleaks) is pinned to this repo's own nixpkgs revision, not apt/npm, so
+  # `make format`/`make check` match the host exactly. Runs once at creation;
+  # `make sbx-up` re-syncs it after `make update` changes flake.lock.
   install:
     # Single-user Nix, no daemon: a microVM has no init to run nix-daemon under.
     - command: |
@@ -63,6 +63,7 @@ setup:
         fi
         nixpkgs="github:NixOS/nixpkgs/${rev:-nixpkgs-25.11-darwin}"
         "$HOME/.nix-profile/bin/nix" profile install \
+          "$nixpkgs#gitleaks" \
           "$nixpkgs#jq" \
           "$nixpkgs#markdownlint-cli" \
           "$nixpkgs#moreutils" \
@@ -76,7 +77,7 @@ setup:
     # on every command doesn't grow PATH a copy at a time.
     - command: |
         set -eu
-        for tool in nix nixfmt shfmt shellcheck markdownlint sponge jq prek; do
+        for tool in nix nixfmt shfmt shellcheck markdownlint sponge jq prek gitleaks; do
           src="/home/agent/.nix-profile/bin/$tool"
           [ -x "$src" ] || { echo "error: $src missing or not executable" >&2; exit 1; }
           ln -sfn "$src" "/usr/local/bin/$tool"

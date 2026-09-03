@@ -13,6 +13,7 @@
 !.sbx/kit/**
 !.gitattributes
 !.gitignore
+!.gitleaks.toml
 !.pre-commit-config.yaml
 !flake.lock
 !flake.nix

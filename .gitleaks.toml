@@ -1,0 +1,13 @@
+# Extends gitleaks' built-in rule set; the allowlist below is the only
+# customization. It mirrors the top-level `exclude` in
+# .pre-commit-config.yaml and the `filter=git-crypt` paths in
+# .gitattributes: those files are git-crypt ciphertext on disk, so scanning
+# them can't find real secrets and would only risk noisy false positives.
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+  '''^config/''',
+  '''^versions\.csv$''',
+]

@@ -26,6 +26,7 @@
     pkgs.fzf
     pkgs.gh
     pkgs.git-crypt
+    pkgs.gitleaks
     pkgs.glow
     pkgs.gnumake # Update MacOS' outdated copy of Make
     pkgs.gnupg
