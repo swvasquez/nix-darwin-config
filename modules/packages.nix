@@ -8,9 +8,7 @@
   nixpkgs.config.allowUnfree = true;
 
   # Use overlays to customize nixpkgs
-  nixpkgs.overlays = [
-    inputs.nix-vscode-extensions.overlays.default
-  ];
+  nixpkgs.overlays = [ inputs.nix-vscode-extensions.overlays.default ];
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
@@ -47,6 +45,7 @@
     pkgs.openbao
     pkgs.pass
     pkgs.poppler-utils
+    pkgs.prek
     pkgs.ripgrep
     pkgs.rustup
     pkgs.shellcheck

@@ -1,6 +1,13 @@
 {
   "permissions": {
-    "defaultMode": "auto"
+    "defaultMode": "auto",
+    "deny": [
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git add*)",
+      "Bash(git stage*)",
+      "Bash(git stash*)"
+    ]
   },
   "skipAutoPermissionPrompt": true
 }

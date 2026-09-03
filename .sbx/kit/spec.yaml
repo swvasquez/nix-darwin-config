@@ -1,80 +1,47 @@
-# Kit for running Claude Code against this repository in a Docker Sandboxes
-# microVM. The sandbox is a Linux guest, so it can edit and review the
-# configuration but cannot run darwin-rebuild; applying changes stays on the
+# Kit for running Claude Code against this repo in a Docker Sandboxes microVM.
+# Linux guest: can edit/review but not run darwin-rebuild - that stays on the
 # host via `make build`.
 
-# The loader forks the grammar on schemaVersion: without it the file is decoded
-# as v1, whose struct has no `permissions` or `setup`, and loading fails.
+# Must be "2": v1's grammar has no `permissions`/`setup` and fails to load.
 schemaVersion: "2"
 kind: mixin
 name: nix-darwin-config
 
-# Open egress, so the agent can search the web and read documentation freely.
-# The LAN is closed by the --deny-network ranges `make sbx-up` passes at
-# creation, not here: a kit declares CIDR rules without applying them, so writing
-# them in this file would read as protection while doing nothing. Deny always
-# beats allow, so those ranges hold against this wildcard.
+# Open egress for web search/docs. LAN is blocked via --deny-network flags in
+# `make sbx-up`, not here - a kit declares CIDR rules without enforcing them.
 permissions:
   network:
     allow:
       - "**"
 
-# git-crypt encrypts `config/**` and `versions.csv`, and the filter that does it
-# is declared in the repository's own .git/config, which the bind mount carries
-# into the sandbox along with everything else. The sandbox has no git-crypt, so
-# every command that has to run that filter — `git diff`, `git show`, `git log
-# -p` over those paths — dies on a missing binary, and installing git-crypt here
-# would mean handing the sandbox the key that decrypts them.
-#
-# Passing the filter through untouched is enough to read: the sandbox sees the
-# encrypted blob, which is all it has any business seeing. It has to be said as
-# environment variables because .git/config outranks every configuration file
-# the sandbox could write, a global ~/.gitconfig included, and GIT_CONFIG_COUNT
-# is the one form that outranks .git/config in turn, being what `git -c` uses.
+# git-crypt encrypts config/** and versions.csv, but this sandbox has no
+# git-crypt binary (and shouldn't hold the key). These override its filters to
+# `cat` so reads (git diff/show/log -p) don't crash on a missing binary -
+# seeing ciphertext is fine, that's all the sandbox should see anyway. Set as
+# env vars, not .git/config, because env vars outrank config files and
+# .git/config is shared with the host.
 environment:
   variables:
     GIT_CONFIG_COUNT: "4"
-    # Working tree to blob, which is what `git status` and `git diff` compare.
     GIT_CONFIG_KEY_0: filter.git-crypt.clean
     GIT_CONFIG_VALUE_0: cat
-    # Blob to working tree. Needed to read history and not merely to check out:
-    # before a diff driver sees a blob, git materialises it the way the working
-    # tree would hold it.
     GIT_CONFIG_KEY_1: filter.git-crypt.smudge
     GIT_CONFIG_VALUE_1: cat
-    # The diff driver, which otherwise shells out to `git-crypt diff`. Encrypted
-    # paths read as the ciphertext they are.
     GIT_CONFIG_KEY_2: diff.git-crypt.textconv
     GIT_CONFIG_VALUE_2: cat
-    # Reading is what this buys, and writing is what it must not: see the hook
-    # installed below.
+    # This one blocks writes rather than passing reads through - see the hook below.
     GIT_CONFIG_KEY_3: core.hooksPath
     GIT_CONFIG_VALUE_3: /etc/git/hooks
 
 setup:
-  # `make check` and `make format` in the sandbox should produce what they
-  # produce on the host, not an approximation of it, so the toolchain they drive
-  # — nixfmt, shfmt, shellcheck, markdownlint, sponge and jq — is taken from the
-  # nixpkgs this repository already pins rather than from apt and npm, which
-  # carry their own versions and, on arm64, no nixfmt at all. That makes Nix
-  # itself the first thing to install.
-  #
-  # These run once, when the sandbox is created, so the toolchain follows the
-  # pin as of that moment: after `make update` changes flake.lock, `make sbx-up`
-  # is what moves the sandbox onto the new one.
+  # Toolchain (nixfmt, shfmt, shellcheck, markdownlint, sponge, jq, prek)
+  # is pinned to this repo's own nixpkgs revision, not apt/npm, so `make
+  # format`/`make check` match the host exactly. Runs once at creation; `make
+  # sbx-up` re-syncs it after `make update` changes flake.lock.
   install:
-    # A single-user store, not the daemon install: a microVM has no init to run
-    # nix-daemon under, and one user owning the store is the whole of what a
-    # single-agent sandbox needs from the multi-user setup. Creating /nix here
-    # and handing it to the agent is what keeps the installer on its non-root
-    # path, where it neither needs sudo nor a nixbld group. xz unpacks the
-    # release tarball and the image does not ship it.
-    #
-    # nix.conf is written before Nix exists because Nix reads it whenever it is
-    # there. Flakes are enabled so the agent can evaluate this repository, and
-    # the build users group is emptied so that a build still works if one is
-    # ever run as root, where the default names a group this image has not got.
+    # Single-user Nix, no daemon: a microVM has no init to run nix-daemon under.
     - command: |
+        set -eu
         apt-get update
         apt-get install -y --no-install-recommends xz-utils
         install -d -m 0755 -o agent -g agent /nix
@@ -82,57 +49,49 @@ setup:
         printf '%s\n' 'experimental-features = nix-command flakes' \
           'build-users-group =' > /etc/nix/nix.conf
       description: Install Nix's prerequisites and give the agent the store
-    # The store belongs to the agent, so Nix is installed as the agent. HOME and
-    # USER are set rather than assumed because the installer places the profile
-    # by them, and a wrong value here is a store the agent cannot reach.
-    #
-    # The revision comes from flake.lock, which is what makes these the host's
-    # versions rather than merely recent ones. It is read defensively: a
-    # workspace that is not mounted yet, or an image without jq, leaves the
-    # branch the flake tracks as the ref, which is the same release and a
-    # slightly newer point on it. The profile is left out of the shell files
-    # because nothing sources them for these tools — see the symlinks below.
+    # Revision comes from flake.lock, so this is the host's exact nixpkgs pin.
     - command: |
+        set -eu
         export HOME=/home/agent USER=agent
-        curl -sSf -L https://nixos.org/nix/install \
-          | sh -s -- --no-daemon --no-channel-add --no-modify-profile --yes
-        rev=$(jq -r '.nodes.nixpkgs.locked.rev // empty' \
-          "$WORKSPACE_DIR/flake.lock" 2>/dev/null || true)
+        installer=$(mktemp)
+        curl -sSfL -o "$installer" https://nixos.org/nix/install
+        sh "$installer" --no-daemon --no-channel-add --no-modify-profile --yes
+        rm -f "$installer"
+        rev=$(jq -r '.nodes.nixpkgs.locked.rev // empty' "$WORKSPACE_DIR/flake.lock" 2>/dev/null) || rev=
+        if [ -z "$rev" ]; then
+          echo 'warning: no nixpkgs rev in flake.lock; falling back to nixpkgs-25.11-darwin' >&2
+        fi
         nixpkgs="github:NixOS/nixpkgs/${rev:-nixpkgs-25.11-darwin}"
         "$HOME/.nix-profile/bin/nix" profile install \
           "$nixpkgs#jq" \
           "$nixpkgs#markdownlint-cli" \
           "$nixpkgs#moreutils" \
           "$nixpkgs#nixfmt-rfc-style" \
+          "$nixpkgs#prek" \
           "$nixpkgs#shellcheck" \
           "$nixpkgs#shfmt"
       user: "1000"
       description: Install Nix and the toolchain the Makefile drives
-    # Symlinks rather than a PATH entry. The profile's own profile.d script
-    # prepends to PATH unconditionally, and /etc/sandbox-persistent.sh is
-    # sourced before every command the agent runs, so putting either on that
-    # path grows PATH a copy at a time. A symlink in a directory that is already
-    # on PATH says the same thing once. Nix is linked alongside the tools so the
-    # agent can evaluate the flake; jq shadows the image's copy so that the
-    # whole toolchain is the one set of pinned versions.
+    # Symlinked rather than added to PATH, so re-sourcing sandbox-persistent.sh
+    # on every command doesn't grow PATH a copy at a time.
     - command: |
-        for tool in nix nixfmt shfmt shellcheck markdownlint sponge jq; do
-          ln -sfn "/home/agent/.nix-profile/bin/$tool" "/usr/local/bin/$tool"
+        set -eu
+        for tool in nix nixfmt shfmt shellcheck markdownlint sponge jq prek; do
+          src="/home/agent/.nix-profile/bin/$tool"
+          [ -x "$src" ] || { echo "error: $src missing or not executable" >&2; exit 1; }
+          ln -sfn "$src" "/usr/local/bin/$tool"
         done
       description: Put the toolchain on PATH for every user and shell
-    # The filter passes through in both directions, so a commit of an encrypted
-    # path would store the plaintext the host has in its working tree, and a
-    # push would publish it. This hook is where that stops: reads go through, a
-    # commit that touches a path git-crypt owns does not, and is left for the
-    # host to make. Taking over hooksPath costs nothing here, since the
-    # repository carries no hooks of its own beyond git's samples.
+    # Blocks commits touching git-crypt-encrypted paths: the read-through
+    # filters above can't encrypt on write, so that has to happen on the host.
     - command: |
+        set -eu
         mkdir -p /etc/git/hooks
         cat > /etc/git/hooks/pre-commit <<'HOOK'
         #!/bin/sh
-        # This sandbox has no git-crypt, so a staged path that git-crypt owns is
-        # staged as plaintext, and committing it would write a secret into the
-        # history in the clear.
+        # git-crypt encrypts these paths but this sandbox can't - block plaintext commits.
+        # Fail closed: any error here must block the commit, not let it through.
+        set -eu
         staged=$(git diff --cached --name-only --diff-filter=ACMR)
         [ -n "$staged" ] || exit 0
         encrypted=$(printf '%s\n' "$staged" |
@@ -146,31 +105,36 @@ setup:
         HOOK
         chmod 0755 /etc/git/hooks/pre-commit
       description: Refuse commits of the paths git-crypt encrypts
-    # Updates land in the agent's home, which is not on the host mount, so a
-    # recreate reverts to the image's release. Update on the create path instead.
+    # This sandbox has no working push credential anyway, but a Claude Code
+    # permission rule only inspects the literal command text, so it can't
+    # stop `git push` run indirectly (e.g. from inside a script). A git-level
+    # hook catches the operation itself, however it was invoked.
+    - command: |
+        set -eu
+        cat > /etc/git/hooks/pre-push <<'HOOK'
+        #!/bin/sh
+        printf 'This sandbox cannot push - do it from the host, which holds the real credentials.\n' >&2
+        exit 1
+        HOOK
+        chmod 0755 /etc/git/hooks/pre-push
+      description: Refuse all pushes from the sandbox
+    # Agent's home isn't host-mounted, so a recreate would revert an update
+    # made at startup - do it here instead.
     - command: claude update
       user: "1000"
   startup:
-    # The repository is bind-mounted, so a directory inside it is storage on the
-    # host and outlives the sandbox — session history and the stored login
-    # survive a rebuild. Written at startup rather than set in
-    # environment.variables because the workspace path is only known at runtime,
-    # and read back from /etc/sandbox-persistent.sh, which every login shell in
-    # the sandbox sources.
+    # Workspace is bind-mounted, so this directory persists across recreates -
+    # session history and the stored login survive a rebuild.
     - command:
         - sh
         - -c
         - >-
           mkdir -p "$WORKSPACE_DIR/.sbx/claude" &&
           chown agent:agent "$WORKSPACE_DIR/.sbx/claude" &&
-          echo "export CLAUDE_CONFIG_DIR=$WORKSPACE_DIR/.sbx/claude"
+          echo "export CLAUDE_CONFIG_DIR=\"$WORKSPACE_DIR/.sbx/claude\""
           > /etc/sandbox-persistent.sh
       user: "0"
-    # sbx seeds /home/agent/.claude/.credentials.json at creation with a decoy
-    # backed by the keychain token (the proxy injects the real one). The
-    # CLAUDE_CONFIG_DIR redirect above would hide that seed from the agent, so
-    # link it into the persistent directory; ln -sfn tolerates the seed
-    # appearing later.
+    # Preserves the login seed sbx placed before CLAUDE_CONFIG_DIR (above) hides it.
     - command:
         - sh
         - -c
@@ -179,18 +143,9 @@ setup:
           "$WORKSPACE_DIR/.sbx/claude/.credentials.json" &&
           chown -h agent:agent "$WORKSPACE_DIR/.sbx/claude/.credentials.json"
       user: "0"
-    # How the agent behaves in the sandbox is declared in settings.json beside
-    # this file, and reaches Claude Code as the policy settings it reads from
-    # /etc/claude-code on Linux. That tier is what makes the file authoritative:
-    # Claude Code never writes to it, so a declared setting cannot be undone by
-    # a `/config` edit the way one in .sbx/claude/settings.json can, and it
-    # applies to every agent in the sandbox rather than only the one `make
-    # sbx-agent` starts. Nothing else is locked down — permission rules from the
-    # repository still merge, and the mode can still be switched mid-session.
-    #
-    # Linked rather than copied so editing the file takes effect at the next
-    # launch, which is what keeps day-to-day configuration off the recreate
-    # path. Only adding the link needs a restart, since this runs at startup.
+    # Linked, not copied, so edits to settings.json take effect next launch.
+    # This tier is authoritative: unlike .sbx/claude/settings.json, Claude Code
+    # can't override it via /config.
     - command:
         - sh
         - -c

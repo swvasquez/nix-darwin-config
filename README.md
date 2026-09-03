@@ -30,16 +30,16 @@ distribution of Nix.
     make setup
     ```
 
-2. **Unlock secrets:**
-
-    ```bash
-    git-crypt unlock
-    ```
-
-3. **Build:**
+2. **Build:**
 
     ```bash
     make build CONFIG=<CONFIG_NAME>
+    ```
+
+3. **Install git hooks** (only needed for development, see [Development](#development)):
+
+    ```bash
+    make hooks
     ```
 
 ## Adding a New Machine
@@ -79,7 +79,7 @@ distribution of Nix.
 
 2. Add `<CONFIG_NAME>` to the `machines` list in `flake.nix`.
 
-3. Commit both files (config will be encrypted automatically by git-crypt).
+3. Commit both files.
 
 Options are typed, so a misspelled name or an out-of-range port fails the
 build with a message pointing at the mistake, rather than silently producing a
@@ -103,7 +103,7 @@ Remove Determinate Nix and related components:
 make uninstall
 ```
 
-## Development Utilities
+## Development
 
 ### Format Code
 

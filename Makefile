@@ -4,7 +4,7 @@
 
 MAKEFLAGS += --make-all
 SHELL := /bin/bash
-SHELLFLAGS += -o pipefail -e
+.SHELLFLAGS += -o pipefail -e
 
 # --------------------------------------------- BUILD ----------------------------------------------
 # Apply nix-darwin changes
@@ -116,47 +116,31 @@ sbx-shell:
 # Utilities
 # --------------------------------------------------------------------------------------------------
 
-SOURCE ?= .
-EXCLUDE := .sbx
+# File selection and traversal (which files, what to skip) live in
+# .pre-commit-config.yaml, not here. These targets just pick which hooks run.
 
-# $(call walk,<root>,<pruned dirs>,<name tests>,<command>)
-define walk
-find $(1) \( $(foreach d,$(2),-name $(d) -o) -false \) -prune -o -type f \( $(3) \) -exec $(4) {} +
-endef
+# Wire prek into this clone's git hooks, so every hook in
+# .pre-commit-config.yaml also runs on `git commit` (once per clone; `make
+# build` and the sbx kit already install the `prek` binary itself - this just
+# points git at it). Using prek, not pre-commit: pre-commit's nixpkgs build
+# crashes on aarch64-darwin.
+hooks:
+	prek install
 
-check: check-bash check-json
-	
-format: format-markdown format-nix format-json format-bash
+check:
+	prek run shellcheck --all-files
+	prek run jq-check --all-files
+	prek run git-crypt-verify-staged --all-files
 
-format-bash: FILES := -name '*.sh' -o -name '.bash*'
-format-bash: CMD   := shfmt -w -ln bash
-format-bash:
-	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
-
-format-json: FILES := -name '*.json'
-format-json: CMD   := sh -c 'for f; do jq . "$$f" | sponge "$$f"; done' sh
-format-json:
-	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
-
-format-markdown: FILES := -name '*.md'
-format-markdown: CMD   := markdownlint --fix
-format-markdown:
-	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
-
-format-nix: FILES := -name '*.nix'
-format-nix: CMD   := nixfmt
-format-nix:
-	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
-
-check-bash: FILES := -name '*.sh' -o -name '.bash*'
-check-bash: CMD   := shellcheck -s bash
-check-bash:
-	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
-
-check-json: FILES := -name '*.json'
-check-json: CMD   := sh -c 'jq type "$$@" >/dev/null' sh
-check-json:
-	$(call walk,${SOURCE},${EXCLUDE},${FILES},${CMD})
+# A fixer hook exits non-zero when it modifies a file (that's how prek flags
+# "this needed fixing" in CI) - the leading '-' keeps that from aborting the
+# remaining formatters here, since the point of `make format` is to fix
+# everything in one pass, not stop at the first thing that needed fixing.
+format:
+	-prek run shfmt --all-files
+	-prek run nixfmt --all-files
+	-prek run markdownlint --all-files
+	-prek run jq-format --all-files
 
 versions:
 	${SHELL} scripts/versions.sh

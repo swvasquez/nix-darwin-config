@@ -1,0 +1,78 @@
+# Local hooks only: every tool here is already installed system-wide via
+# modules/packages.nix, so `language: system` runs the binary directly
+# instead of having pre-commit manage a separate toolchain per hook.
+#
+# Pre-commit walks git-tracked files by default, which already keeps it out
+# of anything .gitignore keeps untracked. The exclude below is separate: it
+# keeps every hook off the paths .gitattributes marks `filter=git-crypt` -
+# those are decrypted plaintext on disk, and no hook has any business
+# rewriting secret content, formatter or not.
+exclude: ^(config/|versions\.csv$)
+
+repos:
+  - repo: local
+    hooks:
+      - id: shfmt
+        name: shfmt
+        entry: shfmt -w -ln bash
+        language: system
+        files: (^|/)([^/]*\.sh|\.bash[^/]*)$
+
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck -s bash
+        language: system
+        files: (^|/)([^/]*\.sh|\.bash[^/]*)$
+
+      - id: nixfmt
+        name: nixfmt
+        entry: nixfmt
+        language: system
+        types: [nix]
+
+      - id: markdownlint
+        name: markdownlint --fix
+        entry: markdownlint --fix
+        language: system
+        types: [markdown]
+
+      - id: jq-format
+        name: jq format json
+        entry: bash -c 'for f; do jq . "$f" | sponge "$f"; done' --
+        language: system
+        types: [json]
+
+      - id: jq-check
+        name: jq validate json
+        entry: bash -c 'jq type "$@" >/dev/null' --
+        language: system
+        types: [json]
+
+      # The sandbox's git-crypt filter is neutered to `cat` (see
+      # .sbx/kit/spec.yaml), so `git add` there can stage plaintext straight
+      # into the shared index without git ever noticing - a later host commit
+      # would then commit it as-is, since the clean filter only runs at `add`
+      # time, not at `commit` time. This runs on the host, where the real
+      # filter works, and refuses the commit if any staged git-crypt-tagged
+      # blob isn't actually ciphertext.
+      - id: git-crypt-verify-staged
+        name: verify staged git-crypt paths are encrypted
+        entry: |
+          bash -c '
+            set -euo pipefail
+            staged=$(git diff --cached --name-only --diff-filter=ACMR)
+            [ -n "$staged" ] || exit 0
+            mapfile -t encrypted < <(printf "%s\n" "$staged" | git check-attr --stdin filter | sed -n "s/: filter: git-crypt$//p")
+            [ "${#encrypted[@]}" -eq 0 ] && exit 0
+            status=0
+            for f in "${encrypted[@]}"; do
+              if ! git show ":$f" | head -c 10 | grep -qa GITCRYPT; then
+                printf "%s: staged content is not git-crypt ciphertext (encryption filter may be disabled)\n" "$f" >&2
+                status=1
+              fi
+            done
+            exit "$status"
+          '
+        language: system
+        always_run: true
+        pass_filenames: false
