@@ -146,6 +146,10 @@ setup:
         HOOK
         chmod 0755 /etc/git/hooks/pre-commit
       description: Refuse commits of the paths git-crypt encrypts
+    # Updates land in the agent's home, which is not on the host mount, so a
+    # recreate reverts to the image's release. Update on the create path instead.
+    - command: claude update
+      user: "1000"
   startup:
     # The repository is bind-mounted, so a directory inside it is storage on the
     # host and outlives the sandbox — session history and the stored login
