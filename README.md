@@ -1,6 +1,6 @@
 # nix-darwin-config
 
-This repository contains Nix configuration files managed via a `Makefile`. All
+This repository contains Nix configuration files managed via a `justfile`. All
 deployment steps are automated.
 
 > [!NOTE]
@@ -22,24 +22,25 @@ deployment steps are automated.
 ## Setup
 
 This configuration uses the [Determinate Systems](https://determinate.systems/)
-distribution of Nix.
+distribution of Nix. [`just`](https://github.com/casey/just) must be
+installed on the host (e.g. `brew install just`).
 
 1. **Install Nix:**
 
     ```bash
-    make setup
+    just setup
     ```
 
 2. **Build:**
 
     ```bash
-    make build CONFIG=<CONFIG_NAME>
+    just build <CONFIG_NAME>
     ```
 
 3. **Install git hooks** (only needed for development, see [Development](#development)):
 
     ```bash
-    make hooks
+    just hooks
     ```
 
 ## Adding a New Machine
@@ -92,7 +93,7 @@ Apply the configuration defined in `flake.nix`. The build also writes
 casks, and mas apps:
 
 ```bash
-make build CONFIG=<CONFIG_NAME>
+just build <CONFIG_NAME>
 ```
 
 ## Uninstall
@@ -100,7 +101,7 @@ make build CONFIG=<CONFIG_NAME>
 Remove Determinate Nix and related components:
 
 ```bash
-make uninstall
+just uninstall
 ```
 
 ## Development
@@ -110,7 +111,7 @@ make uninstall
 Format all Markdown, JSON, Bash, and Nix files in the current directory:
 
 ```bash
-make format
+just format
 ```
 
 ### Static Analysis
@@ -118,7 +119,7 @@ make format
 Run static checks on scripts (ShellCheck for Bash, syntax check for JSON):
 
 ```bash
-make check
+just check
 ```
 
 ## AI Assistance
@@ -126,16 +127,15 @@ make check
 Claude Code can be run against this repository inside a Docker Sandboxes
 microVM, isolated from the host and with the local network denied. The sandbox
 is described in [`.sbx/kit/spec.yaml`](.sbx/kit/spec.yaml) and driven by the
-[`Makefile`](Makefile), and Claude Code itself is configured in
+[`justfile`](justfile), and Claude Code itself is configured in
 [`.sbx/kit/settings.json`](.sbx/kit/settings.json). Running it requires `sbx`,
 which must be installed on the host.
 
 | Command | Description |
 | --- | --- |
-| `make sbx-up` | Build and start the sandbox, replacing any existing one |
-| `make sbx-login` | Sign in to Claude Code inside the sandbox |
-| `make sbx-agent` | Attach Claude Code to the running sandbox |
-| `make sbx-shell` | Open a login shell in the running sandbox |
+| `just sbx-up` | Build and start the sandbox, replacing any existing one |
+| `just sbx-agent` | Attach Claude Code to the running sandbox |
+| `just sbx-shell` | Open a login shell in the running sandbox |
 
 ## Notes
 

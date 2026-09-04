@@ -18,7 +18,7 @@
 !flake.lock
 !flake.nix
 !LICENSE
-!Makefile
+!justfile
 !README.md
 !TODO.md
 !versions.csv

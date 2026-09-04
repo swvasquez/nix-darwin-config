@@ -1,6 +1,6 @@
 # Kit for running Claude Code against this repo in a Docker Sandboxes microVM.
 # Linux guest: can edit/review but not run darwin-rebuild - that stays on the
-# host via `make build`.
+# host via `just build`.
 
 # Must be "2": v1's grammar has no `permissions`/`setup` and fails to load.
 schemaVersion: "2"
@@ -8,7 +8,7 @@ kind: mixin
 name: nix-darwin-config
 
 # Open egress for web search/docs. LAN is blocked via --deny-network flags in
-# `make sbx-up`, not here - a kit declares CIDR rules without enforcing them.
+# `just sbx-up`, not here - a kit declares CIDR rules without enforcing them.
 permissions:
   network:
     allow:
@@ -35,9 +35,9 @@ environment:
 
 setup:
   # Toolchain (nixfmt, shfmt, shellcheck, markdownlint, sponge, jq, prek,
-  # gitleaks) is pinned to this repo's own nixpkgs revision, not apt/npm, so
-  # `make format`/`make check` match the host exactly. Runs once at creation;
-  # `make sbx-up` re-syncs it after `make update` changes flake.lock.
+  # gitleaks, just) is pinned to this repo's own nixpkgs revision, not apt/npm, so
+  # `just format`/`just check` match the host exactly. Runs once at creation;
+  # `just sbx-up` re-syncs it after `just update` changes flake.lock.
   install:
     # Single-user Nix, no daemon: a microVM has no init to run nix-daemon under.
     - command: |
@@ -65,6 +65,7 @@ setup:
         "$HOME/.nix-profile/bin/nix" profile install \
           "$nixpkgs#gitleaks" \
           "$nixpkgs#jq" \
+          "$nixpkgs#just" \
           "$nixpkgs#markdownlint-cli" \
           "$nixpkgs#moreutils" \
           "$nixpkgs#nixfmt-rfc-style" \
@@ -72,12 +73,12 @@ setup:
           "$nixpkgs#shellcheck" \
           "$nixpkgs#shfmt"
       user: "1000"
-      description: Install Nix and the toolchain the Makefile drives
+      description: Install Nix and the toolchain the justfile drives
     # Symlinked rather than added to PATH, so re-sourcing sandbox-persistent.sh
     # on every command doesn't grow PATH a copy at a time.
     - command: |
         set -eu
-        for tool in nix nixfmt shfmt shellcheck markdownlint sponge jq prek gitleaks; do
+        for tool in nix nixfmt shfmt shellcheck markdownlint sponge jq prek gitleaks just; do
           src="/home/agent/.nix-profile/bin/$tool"
           [ -x "$src" ] || { echo "error: $src missing or not executable" >&2; exit 1; }
           ln -sfn "$src" "/usr/local/bin/$tool"
