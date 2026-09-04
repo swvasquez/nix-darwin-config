@@ -27,7 +27,7 @@ uninstall: uninstall-nix-darwin uninstall-determinate-nix
 # +----------------------------------------------------------------------------+
 
 default_config := "host00"
-nix_darwin_ver := "25.11"
+nix_darwin_ver := "26.05"
 
 determinate-nix:
     curl --proto '=https' --tlsv1.2 -sSf -L \

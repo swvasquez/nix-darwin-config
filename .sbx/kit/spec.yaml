@@ -59,9 +59,9 @@ setup:
         rm -f "$installer"
         rev=$(jq -r '.nodes.nixpkgs.locked.rev // empty' "$WORKSPACE_DIR/flake.lock" 2>/dev/null) || rev=
         if [ -z "$rev" ]; then
-          echo 'warning: no nixpkgs rev in flake.lock; falling back to nixpkgs-25.11-darwin' >&2
+          echo 'warning: no nixpkgs rev in flake.lock; falling back to nixpkgs-26.05-darwin' >&2
         fi
-        nixpkgs="github:NixOS/nixpkgs/${rev:-nixpkgs-25.11-darwin}"
+        nixpkgs="github:NixOS/nixpkgs/${rev:-nixpkgs-26.05-darwin}"
         "$HOME/.nix-profile/bin/nix" profile install \
           "$nixpkgs#gitleaks" \
           "$nixpkgs#jq" \

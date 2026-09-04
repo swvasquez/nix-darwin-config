@@ -6,7 +6,7 @@
 }:
 
 {
-  home.stateVersion = "25.11";
+  home.stateVersion = "26.05";
 
   # Dotfile mappings are defined in dotfiles/dotfiles.json.
   # Add entries there to symlink additional files without modifying this file.
