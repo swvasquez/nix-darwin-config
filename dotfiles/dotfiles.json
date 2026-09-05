@@ -78,5 +78,17 @@
   {
     "dest": "@syncDir@/.stignore",
     "src": "syncthing/.stignore"
+  },
+  {
+    "dest": ".config/git/config",
+    "src": "git/config"
+  },
+  {
+    "dest": ".config/git/ignore",
+    "src": "git/ignore"
+  },
+  {
+    "dest": "Library/Application Support/Code/User/settings.json",
+    "src": "vscode/settings.json"
   }
 ]

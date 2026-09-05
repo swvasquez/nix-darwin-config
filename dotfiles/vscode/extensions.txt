@@ -1,0 +1,9 @@
+# One extension id per line; installed by modules/install.nix. Removing a
+# line does not uninstall the extension.
+github.github-vscode-theme
+jnoortheen.nix-ide
+leanprover.lean4
+nefrob.vscode-just-syntax
+redhat.ansible
+tailscale.vscode-tailscale
+timonwong.shellcheck

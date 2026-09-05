@@ -109,7 +109,7 @@ in
         its settings, installed plugins, processing models and scripts, and
         project templates. It belongs inside `syncDir`, so that a second machine
         starts QGIS with the same configuration. Stated in full, not relative to
-        it. Applied by qgis.nix as `QGIS_CUSTOM_CONFIG_PATH`.
+        it. Applied by install.nix as `QGIS_CUSTOM_CONFIG_PATH`.
       '';
       example = "Sync/QGIS";
     };
@@ -119,7 +119,7 @@ in
       description = ''
         Directory, relative to the home directory, where an unlocked vault is
         decrypted. Must stay outside `syncDir`; asserted below. Applied by
-        cryptomator.nix as `cryptomator.mountPointsDir`.
+        install.nix as `cryptomator.mountPointsDir`.
       '';
       example = "Vaults";
     };

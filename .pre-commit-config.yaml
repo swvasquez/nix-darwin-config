@@ -1,5 +1,5 @@
 # Local hooks only: every tool here is already installed system-wide via
-# modules/packages.nix, so `language: system` runs the binary directly
+# modules/install.nix, so `language: system` runs the binary directly
 # instead of having pre-commit manage a separate toolchain per hook.
 #
 # Pre-commit walks git-tracked files by default, which already keeps it out

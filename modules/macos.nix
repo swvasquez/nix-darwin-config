@@ -1,6 +1,6 @@
-# macOS user-interface and input settings, plus the activation workarounds
-# needed to make some of them take effect.
-{ config, lib, ... }:
+# macOS user-interface and input settings. The activation steps that make some
+# of them take effect in the running session are in install.nix.
+{ ... }:
 
 {
   # Show hidden files in Finder
@@ -118,41 +118,4 @@
     "/System/Applications/System Settings.app"
   ];
 
-  system.activationScripts.postActivation.text = lib.mkAfter ''
-    # Without this, user defaults written earlier in activation (e.g. the
-    # symbolic hotkeys) only take effect after a logout/login; activateSettings
-    # makes the running session re-read them immediately. It is a private
-    # framework binary that must run inside the user's GUI session; activation
-    # runs under `set -e`, so skip it quietly if macOS ever removes it or there
-    # is no session (headless rebuilds).
-    activateSettings=/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings
-    if [ -x "$activateSettings" ]; then
-      launchctl asuser "$(id -u -- "${config.host.user}")" \
-        sudo --user="${config.host.user}" -- "$activateSettings" -u || true
-    fi
-
-    # Stop macOS from relaunching apps after a restart/shutdown. On macOS 26 the
-    # "reopen these apps" list is NOT the legacy ByHost/com.apple.loginwindow
-    # plist or the TALLogoutSavesState defaults key (both verified ignored via
-    # the unified log). loginwindow's PersistentAppsSupport loads the list from a
-    # group container instead:
-    #   ~/Library/Group Containers/group.com.apple.loginwindow.persistent-apps/persistantApps
-    # macOS rewrites that file at every shutdown and reads it at the next boot
-    # before activation runs, and there is no supported defaults/MDM key to turn
-    # it off. Its only top-level key is PersistentApps, so the fix is to empty
-    # that array and mark the file immutable (chflags uchg): the shutdown-time
-    # write is then blocked (direct write and atomic rename both verified), so
-    # nothing is left to relaunch after any restart — clean shutdown or forced
-    # power-off. Runs as the user (the file is in their home); nouchg first keeps
-    # rebuilds idempotent. To undo, delete this block and run once:
-    #   chflags nouchg ~/Library/Group\ Containers/group.com.apple.loginwindow.persistent-apps/persistantApps
-    launchctl asuser "$(id -u -- "${config.host.user}")" \
-      sudo --user="${config.host.user}" -- /bin/sh -c '
-        pa="/Users/${config.host.user}/Library/Group Containers/group.com.apple.loginwindow.persistent-apps/persistantApps"
-        [ -e "$pa" ] || exit 0
-        /usr/bin/chflags nouchg "$pa" 2>/dev/null || true
-        /usr/libexec/PlistBuddy -c "Delete :PersistentApps" -c "Add :PersistentApps array" "$pa" 2>/dev/null || true
-        /usr/bin/chflags uchg "$pa" || true
-      ' || true
-  '';
 }

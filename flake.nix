@@ -7,8 +7,6 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
-    nix-vscode-extensions.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -17,11 +15,10 @@
       nix-darwin,
       nixpkgs,
       home-manager,
-      nix-vscode-extensions,
     }:
     let
       # Each machine is described by config/<name>.nix, which sets the `host.*`
-      # options declared in modules/host.nix. Those options are read via
+      # options declared in modules/options.nix. Those options are read via
       # `config.host` by the modules below, so nothing is threaded through
       # specialArgs except the flake inputs themselves.
       mkSystem =
@@ -29,9 +26,12 @@
         nix-darwin.lib.darwinSystem {
           specialArgs = { inherit inputs; };
           modules = [
-            ./modules/host.nix
+            ./modules/options.nix
             hostModule
-            ./modules/darwin.nix
+            ./modules/core.nix
+            ./modules/install.nix
+            ./modules/macos.nix
+            ./modules/proxy.nix
             home-manager.darwinModules.home-manager
             ./modules/home-manager.nix
           ];

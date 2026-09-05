@@ -1,10 +1,10 @@
 # Local reverse proxy: maps friendly hostnames to services on this machine or
 # devices on the LAN. Routes are declared per machine as host.localRoutes; see
-# the option description in host.nix.
+# the option description in options.nix.
 #
-# Everything the proxy needs lives here: the generated Caddyfile, the /etc/hosts
-# entries that point those names at the loopback address, the launchd daemon
-# that runs Caddy, and the rotation policy for its logs.
+# The generated Caddyfile, the launchd daemon that runs Caddy, and the rotation
+# policy for its logs live here. The /etc/hosts entries that point the names at
+# the loopback address are written by install.nix.
 {
   config,
   pkgs,
@@ -58,15 +58,6 @@ let
   );
 in
 {
-  system.activationScripts.postActivation.text = lib.mkAfter ''
-    /usr/bin/sed -i "" '/# nix-local-proxy/d' /etc/hosts
-    {
-      ${lib.concatMapStrings (name: ''
-        echo "127.0.0.1 ${name} # nix-local-proxy"
-      '') (lib.attrNames routes)}
-    } >> /etc/hosts
-  '';
-
   launchd.daemons.caddy = {
     # Use `command` rather than serviceConfig.ProgramArguments: nix-darwin only
     # wraps the former in `/bin/wait4path /nix/store && exec ...`. Without that

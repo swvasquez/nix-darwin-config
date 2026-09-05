@@ -14,10 +14,11 @@ deployment steps are automated.
   Store apps are installed by their own tools and their versions are free to
   drift.
 - **Limited use of Home Manager.** Home Manager can manage program
-  configuration in fine detail. Here it mainly links dotfiles into place from
-  the mappings in `dotfiles/dotfiles.json`, similar to GNU Stow. Its options
-  step in when a value has to change per host. This means the dotfiles can be
-  copied and used outside of nix-darwin.
+  configuration in fine detail. Here it only links dotfiles into place from
+  the mappings in `dotfiles/dotfiles.json`, similar to GNU Stow. A value that
+  changes per host, such as the git identity, is a placeholder in the dotfile
+  that is filled in from `config/<CONFIG_NAME>.nix`. This means the dotfiles
+  can be copied and used outside of nix-darwin.
 
 ## Setup
 
@@ -46,7 +47,7 @@ installed on the host (e.g. `brew install just`).
 ## Adding a New Machine
 
 1. Add a new file `config/<CONFIG_NAME>.nix`. It sets the `host.*` options
-    declared in `modules/host.nix`; every option is mandatory, so a machine's
+    declared in `modules/options.nix`; every option is mandatory, so a machine's
     file describes it completely:
 
     ```nix

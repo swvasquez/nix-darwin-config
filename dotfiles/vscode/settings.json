@@ -1,0 +1,8 @@
+{
+  "chat.disableAIFeatures": true,
+  "editor.minimap.enabled": false,
+  "extensions.showRecommendationsOnlyOnDemand": true,
+  "files.autoSave": "afterDelay",
+  "telemetry.telemetryLevel": "off",
+  "workbench.colorTheme": "GitHub Dark"
+}

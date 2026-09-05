@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 #
-# Generates a CSV of installed versions for all declared packages: nixpkgs from
-# modules/packages.nix, and brews, casks, and Mac App Store apps from
-# modules/homebrew.nix.
+# Generates a CSV of installed versions for all packages declared in
+# modules/install.nix: nixpkgs, brews, casks, and Mac App Store apps.
 # Output format: name,version,type
 #
 # Usage: ./scripts/versions.sh
 
 set -euo pipefail
 
-PACKAGES_NIX="$(dirname "$0")/../modules/packages.nix"
-HOMEBREW_NIX="$(dirname "$0")/../modules/homebrew.nix"
+INSTALL_NIX="$(dirname "$0")/../modules/install.nix"
 OUTPUT="versions.csv"
 
 # For brews/casks: name is always single word, strip build metadata after comma
@@ -35,7 +33,7 @@ echo "name,version,type" >"$OUTPUT"
 
 # Extract nixpkgs packages (requires sudo)
 echo "  nixpkgs..."
-awk '/systemPackages = \[/,/\];/' "$PACKAGES_NIX" |
+awk '/systemPackages = \[/,/\];/' "$INSTALL_NIX" |
 	grep -E '^\s+pkgs\.' |
 	grep -oE 'pkgs\.\S+' |
 	sed 's/pkgs\.//' |
@@ -50,8 +48,8 @@ awk '/systemPackages = \[/,/\];/' "$PACKAGES_NIX" |
 # Homebrew explicitly refuses to run as root, so we drop back to the invoking
 # user via SUDO_USER when this script is run with sudo.
 ORIGINAL_USER="${SUDO_USER:-$USER}"
-sudo -u "$ORIGINAL_USER" bash -s "$HOMEBREW_NIX" "$OUTPUT" <<'EOF'
-HOMEBREW_NIX="$1"
+sudo -u "$ORIGINAL_USER" bash -s "$INSTALL_NIX" "$OUTPUT" <<'EOF'
+INSTALL_NIX="$1"
 OUTPUT="$2"
 
 # DO NOT REMOVE. Without this, the mas step below prints:
@@ -80,13 +78,13 @@ export -f mas_to_csv
 
 {
   echo "  brews..." >&2
-  awk '/brews = \[/,/\];/' "$HOMEBREW_NIX" \
+  awk '/brews = \[/,/\];/' "$INSTALL_NIX" \
     | grep -E '^\s+"[^"]+"' \
     | tr -d '" \t' \
     | xargs brew list --versions \
     | brew_to_csv brew
 
-  awk '/brews = \[/,/\];/' "$HOMEBREW_NIX" \
+  awk '/brews = \[/,/\];/' "$INSTALL_NIX" \
     | grep 'name = ' \
     | grep -oE '"[^"]+"' \
     | tr -d '"' \
@@ -94,14 +92,14 @@ export -f mas_to_csv
     | brew_to_csv brew
 
   echo "  casks..." >&2
-  awk '/casks = \[/,/\];/' "$HOMEBREW_NIX" \
+  awk '/casks = \[/,/\];/' "$INSTALL_NIX" \
     | grep -E '^\s+"[^"]+"' \
     | tr -d '" \t' \
     | xargs brew list --cask --versions \
     | brew_to_csv cask
 
   echo "  mas..." >&2
-  MAS_IDS=$(awk '/masApps/,/\};/' "$HOMEBREW_NIX" \
+  MAS_IDS=$(awk '/masApps/,/\};/' "$INSTALL_NIX" \
     | grep -oE '[0-9]{9,}')
   mas list \
     | grep -E "^($(echo "$MAS_IDS" | tr '\n' '|' | sed 's/|$//')) " \
