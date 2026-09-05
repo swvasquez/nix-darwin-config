@@ -11,7 +11,8 @@
   # Turn off nix-darwin’s management of the Nix installation
   nix.enable = false;
 
-  # Allow nix-darwin to configure Zsh
+  # Enabling this after the macOS 26.0 update made rebuilds fail on unexpected
+  # /etc/{zshrc,zprofile}; possibly fixed in a later nix-darwin.
   programs.zsh.enable = false;
 
   # Specify user using data from config/
@@ -19,7 +20,9 @@
     name = "${config.host.user}";
     home = "/Users/${config.host.user}";
     uid = config.host.uid;
-    shell = pkgs.bashInteractive; # Updates MacOS' outdated copy of bash
+    # Updates MacOS' outdated copy of bash. `bash -l` still lands in the old
+    # /bin/bash, as does the VS Code integrated terminal.
+    shell = pkgs.bashInteractive;
   };
   users.knownUsers = [ "${config.host.user}" ];
   system.primaryUser = "${config.host.user}";

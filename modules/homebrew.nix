@@ -21,17 +21,24 @@
     };
     taps = [ ];
     brews = [
+      # nixpkgs build fails on darwin
       "bitwarden-cli"
+      # nixpkgs helm is not usable on macOS
       "helm"
       "gemini-cli"
       "graphviz"
+      # nixpkgs syncthing has no launchd service
       {
         name = "syncthing";
         start_service = true;
         restart_service = "changed";
       }
+      # nixpkgs mas could not install Logic Pro
       "mas"
+      # nixpkgs yazi on 25.11 (25.5.31) dropped filetype colours under flavors;
+      # 26.05 unchecked
       "yazi"
+      # nixpkgs yt-dlp lags upstream by months, which breaks YouTube downloads
       "yt-dlp"
     ];
     casks = [
@@ -42,6 +49,7 @@
       "cryptomator"
       "discord"
       "firefox"
+      # nixpkgs Nerd Fonts did not install cleanly; fonts stay on casks
       "font-linux-libertine"
       "ghostty"
       "github"
@@ -60,6 +68,7 @@
       "raspberry-pi-imager"
       "sbx"
       "spotify"
+      # bundles its own tailscale CLI; the nixpkgs one mismatched its version
       "tailscale-app"
       "visual-studio-code"
       "winbox"

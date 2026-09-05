@@ -1,3 +1,5 @@
+# Home Manager is used mainly as a dotfile symlinker (Stow-style); packages
+# belong in packages.nix or homebrew.nix.
 {
   lib,
   pkgs,
@@ -8,7 +10,9 @@
 {
   home.stateVersion = "26.05";
 
-  # Dotfile mappings are defined in dotfiles/dotfiles.json.
+  # Dotfile mappings are defined in dotfiles/dotfiles.json. Starship's bash init
+  # lives in dotfiles/bash/.bashrc because programs.starship.enableBashIntegration
+  # never took effect.
   # Add entries there to symlink additional files without modifying this file.
   #
   # A destination may contain @syncDir@, which is replaced with host.syncDir so
