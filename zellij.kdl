@@ -1,0 +1,21 @@
+// Claude Code in the sandbox on the left, host shell in the repo on the right.
+// Started via `just sbx-agent`.
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab name="sandbox" focus=true {
+        pane split_direction="vertical" {
+            pane name="claude" command="sbx" {
+                args "exec" "-it" "nix-darwin-config" "bash" "-lc" "claude"
+            }
+            pane name="shell"
+        }
+    }
+}

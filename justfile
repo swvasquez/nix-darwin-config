@@ -74,9 +74,9 @@ sbx-up:
         --deny-network fe80::/10 \
         claude .
 
-# Attach Claude Code to the running sandbox
+# Open Zellij with Claude Code in the sandbox on the left and a host shell on the right
 sbx-agent:
-    sbx run --name nix-darwin-config
+    zellij --layout zellij.kdl
 
 # Open a login shell in the running sandbox
 sbx-shell:
