@@ -8,3 +8,10 @@ color-modes = true
 insert = "bar"
 normal = "block"
 select = "underline"
+
+# Hard-wrap the selection at text-width (Vim's gq)
+[keys.normal.g]
+q = ":reflow"
+
+[keys.select.g]
+q = ":reflow"

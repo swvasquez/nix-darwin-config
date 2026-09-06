@@ -20,3 +20,8 @@ language-servers = ["lean4"]
 [language-server.lean4]
 command = "lean"
 args = ["--server"]
+
+[[language]]
+name = "markdown"
+text-width = 80
+rulers = [80]
