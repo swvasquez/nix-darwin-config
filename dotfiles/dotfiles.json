@@ -32,8 +32,8 @@
     "src": "helix/config.toml"
   },
   {
-    "dest": ".config/helix/language.toml",
-    "src": "helix/language.toml"
+    "dest": ".config/helix/languages.toml",
+    "src": "helix/languages.toml"
   },
   {
     "dest": ".config/helix/themes/gruvbox.toml",
