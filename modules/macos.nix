@@ -36,8 +36,8 @@
   # Hide Dock when cursor is hovering elsewhere
   system.defaults.dock.autohide = true;
 
-  # Effectively disable Dock (never shows on hover; toggle with ⌥⌘D)
-  system.defaults.dock.autohide-delay = 1000.0;
+  # Delay before Dock appears on hover; a large value (e.g. 1000) effectively hides it always
+  system.defaults.dock.autohide-delay = 0.0;
 
   # Time it takes for the to Dock appear/hide
   system.defaults.dock.autohide-time-modifier = 0.15;
@@ -51,6 +51,9 @@
 
   # Disable desktop from showing when wallpaper is clicked
   system.defaults.WindowManager.EnableStandardClickToShowDesktop = false;
+
+  # Hide desktop items
+  system.defaults.WindowManager.StandardHideDesktopIcons = true;
 
   # Reduce motion (Accessibility): swap the space-switching/app-opening
   # animations for quick fades.
@@ -114,6 +117,7 @@
     "/Applications/Spotify.app"
     "/Applications/Ghostty.app"
     "/Applications/Zed.app"
+    "/Applications/Claude.app"
     "/Applications/Zotero.app"
     "/System/Applications/System Settings.app"
   ];
