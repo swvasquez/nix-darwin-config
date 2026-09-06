@@ -1,4 +1,4 @@
-# Copied from https://github.com/CptPotato/helix-themes/blob/main/schemes/gruvbox
+# Modified from https://github.com/CptPotato/helix-themes/blob/main/schemes/gruvbox
 
 "type" = "yellow"
 "constant" = "purple"
@@ -49,13 +49,17 @@
 
 "ui.background" = { bg = "bg0" }
 "ui.background.separator" = "grey0"
-"ui.cursor" = { fg = "bg0", bg = "fg0" }
+# Secondary cursors and selections are dimmer so the primary one stands out.
+"ui.cursor" = { fg = "bg0", bg = "grey1" }
+"ui.cursor.insert" = { fg = "bg0", bg = "grey0" }
+"ui.cursor.primary" = { fg = "bg0", bg = "fg0" }
+"ui.cursor.primary.insert" = { fg = "bg0", bg = "grey2" }
+"ui.cursor.primary.select" = { fg = "bg0", bg = "blue" }
 "ui.cursor.match" = { fg = "orange", bg = "bg_visual_yellow" }
-"ui.cursor.insert" = { fg = "bg0", bg = "grey2" }
-"ui.cursor.select" = { fg = "bg0", bg = "blue" }
 "ui.cursorline.primary" = { bg = "bg1" }
 "ui.cursorline.secondary" = { bg = "bg1" }
 "ui.selection" = { bg = "bg3" }
+"ui.selection.primary" = { bg = "bg_visual_blue" }
 "ui.linenr" = "grey0"
 "ui.linenr.selected" = "fg0"
 "ui.statusline" = { fg = "fg0", bg = "bg3" }
