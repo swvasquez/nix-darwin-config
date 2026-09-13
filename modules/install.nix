@@ -82,7 +82,7 @@ in
     pkgs.markdownlint-cli
     pkgs.moreutils
     pkgs.nodejs_22
-    pkgs.nixfmt-rfc-style
+    pkgs.nixfmt
     pkgs.openbao
     pkgs.pass
     pkgs.poppler-utils

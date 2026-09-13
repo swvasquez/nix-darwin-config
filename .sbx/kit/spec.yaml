@@ -68,7 +68,7 @@ setup:
           "$nixpkgs#just" \
           "$nixpkgs#markdownlint-cli" \
           "$nixpkgs#moreutils" \
-          "$nixpkgs#nixfmt-rfc-style" \
+          "$nixpkgs#nixfmt" \
           "$nixpkgs#prek" \
           "$nixpkgs#shellcheck" \
           "$nixpkgs#shfmt"
