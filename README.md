@@ -22,9 +22,18 @@ deployment steps are automated.
 
 ## Setup
 
+### Prerequisites
+
+nix-darwin manages Homebrew packages but does not install Homebrew itself. Setup
+steps and other utilities are driven by `just`. Install both before continuing:
+
+1. [Homebrew](https://brew.sh)
+2. [`just`](https://github.com/casey/just): `brew install just`
+
 This configuration uses the [Determinate Systems](https://determinate.systems/)
-distribution of Nix. [`just`](https://github.com/casey/just) must be
-installed on the host (e.g. `brew install just`).
+distribution of Nix which is installed in the first step below.
+
+### Steps
 
 1. **Install Nix:**
 
@@ -32,19 +41,23 @@ installed on the host (e.g. `brew install just`).
     just setup
     ```
 
-2. **Build:**
+2. **Configure** the machine in `config/<CONFIG_NAME>.nix`, see
+    [Configuration](#configuration).
+
+3. **Build:**
 
     ```bash
     just build <CONFIG_NAME>
     ```
 
-3. **Install git hooks** (only needed for development, see [Development](#development)):
+4. **Install git hooks** (only needed for development, see
+    [Development](#development)):
 
     ```bash
     just hooks
     ```
 
-## Adding a New Machine
+## Configuration
 
 1. Add a new file `config/<CONFIG_NAME>.nix`. It sets the `host.*` options
     declared in `modules/options.nix`; every option is mandatory, so a machine's
