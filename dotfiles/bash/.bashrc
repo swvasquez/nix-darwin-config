@@ -75,6 +75,7 @@ eval "$(direnv hook bash)"
 
 export EDITOR=hx
 export VISUAL=hx
+export SBX_NO_TELEMETRY=1
 
 # ------------------------------------------------------------------------------
 # $PATH updates
