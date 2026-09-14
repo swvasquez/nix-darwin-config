@@ -177,6 +177,7 @@ in
       "ghostty"
       "github"
       "google-chrome"
+      "homebrew-app"
       "iina"
       "iterm2"
       "keepassxc"
