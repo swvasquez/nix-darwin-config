@@ -145,7 +145,7 @@ setup:
           "$WORKSPACE_DIR/.sbx/claude/.credentials.json" &&
           chown -h agent:agent "$WORKSPACE_DIR/.sbx/claude/.credentials.json"
       user: "0"
-    # Linked, not copied, so edits to settings.json take effect next launch.
+    # Linked, not copied, so edits to it take effect next launch.
     # This tier is authoritative: unlike .sbx/claude/settings.json, Claude Code
     # can't override it via /config.
     - command:
@@ -153,6 +153,6 @@ setup:
         - -c
         - >-
           mkdir -p /etc/claude-code &&
-          ln -sfn "$WORKSPACE_DIR/.sbx/kit/settings.json"
+          ln -sfn "$WORKSPACE_DIR/.sbx/kit/managed-settings.json"
           /etc/claude-code/managed-settings.json
       user: "0"

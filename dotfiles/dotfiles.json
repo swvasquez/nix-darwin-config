@@ -16,6 +16,10 @@
     "src": "gemini/settings.json"
   },
   {
+    "dest": "/Library/Application Support/ClaudeCode/managed-settings.json",
+    "src": "claude/managed-settings.json"
+  },
+  {
     "dest": ".config/starship.toml",
     "src": "starship/starship.toml"
   },

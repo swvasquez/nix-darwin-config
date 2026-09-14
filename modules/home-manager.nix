@@ -1,7 +1,7 @@
 # Home Manager, enabled for the primary user with that user's configuration
 # inline. It only links dotfiles into place, Stow-style; packages belong in
 # install.nix.
-{ config, ... }:
+{ config, lib, ... }:
 
 {
   home-manager.useGlobalPkgs = true;
@@ -16,12 +16,16 @@
 
       # Dotfiles are mapped in dotfiles/dotfiles.json. A destination or file
       # contents may contain @syncDir@, @gitUserName@ or @gitUserEmail@, which
-      # are replaced with the matching host.* value. Starship's bash init lives
-      # in dotfiles/bash/.bashrc because
+      # are replaced with the matching host.* value. Home Manager only links
+      # within the home directory; entries with an absolute destination are
+      # skipped here and linked by install.nix instead. Starship's bash init
+      # lives in dotfiles/bash/.bashrc because
       # programs.starship.enableBashIntegration never took effect.
       home.file =
         let
-          mappings = builtins.fromJSON (builtins.readFile ../dotfiles/dotfiles.json);
+          mappings = builtins.filter (m: !lib.hasPrefix "/" m.dest) (
+            builtins.fromJSON (builtins.readFile ../dotfiles/dotfiles.json)
+          );
           substitute =
             builtins.replaceStrings
               [ "@syncDir@" "@gitUserName@" "@gitUserEmail@" ]

@@ -142,8 +142,8 @@ Claude Code can be run against this repository inside a Docker Sandboxes
 microVM, isolated from the host and with the local network denied. The sandbox
 is described in [`.sbx/kit/spec.yaml`](.sbx/kit/spec.yaml) and driven by the
 [`justfile`](justfile), and Claude Code itself is configured in
-[`.sbx/kit/settings.json`](.sbx/kit/settings.json). Running it requires `sbx`,
-which must be installed on the host.
+[`.sbx/kit/managed-settings.json`](.sbx/kit/managed-settings.json). Running it
+requires `sbx`, which must be installed on the host.
 
 | Command | Description |
 | --- | --- |

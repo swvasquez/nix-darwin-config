@@ -1,0 +1,105 @@
+{
+  "env": {
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "DISABLE_TELEMETRY": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_FEEDBACK_COMMAND": "1",
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.gnupg",
+        "~/.password-store",
+        "~/.aws",
+        "~/.config/gcloud",
+        "~/.config/gh",
+        "~/.docker/config.json",
+        "~/.npmrc",
+        "~/.netrc",
+        "~/.claude/.credentials.json",
+        "~/.zsh_history",
+        "~/.bash_history",
+        "~/.python_history",
+        "~/.psql_history",
+        "~/.mysql_history",
+        "~/.node_repl_history",
+        "~/.sqlite_history",
+        "~/.lesshst"
+      ],
+      "allowManagedReadPathsOnly": true
+    },
+    "credentials": {
+      "files": [
+        {
+          "path": "~/.ssh",
+          "mode": "deny"
+        }
+      ]
+    }
+  },
+  "permissions": {
+    "disableBypassPermissionsMode": "disable",
+    "deny": [
+      "mcp__terminal",
+      "Bash(pass:*)",
+      "Bash(gpg:*)",
+      "Bash(gpg2:*)",
+      "Read(~/.ssh/**)",
+      "Edit(~/.ssh/**)",
+      "Read(~/.gnupg/**)",
+      "Edit(~/.gnupg/**)",
+      "Read(~/.password-store/**)",
+      "Edit(~/.password-store/**)",
+      "Read(~/.aws/**)",
+      "Edit(~/.aws/**)",
+      "Read(~/.config/gcloud/**)",
+      "Edit(~/.config/gcloud/**)",
+      "Read(~/.config/gh/**)",
+      "Edit(~/.config/gh/**)",
+      "Read(~/.docker/config.json)",
+      "Edit(~/.docker/config.json)",
+      "Read(~/.npmrc)",
+      "Edit(~/.npmrc)",
+      "Read(~/.netrc)",
+      "Edit(~/.netrc)",
+      "Read(~/.claude/.credentials.json)",
+      "Edit(~/.claude/.credentials.json)",
+      "Read(~/.zsh_history)",
+      "Edit(~/.zsh_history)",
+      "Read(~/.bash_history)",
+      "Edit(~/.bash_history)",
+      "Read(~/.python_history)",
+      "Edit(~/.python_history)",
+      "Read(~/.psql_history)",
+      "Edit(~/.psql_history)",
+      "Read(~/.mysql_history)",
+      "Edit(~/.mysql_history)",
+      "Read(~/.node_repl_history)",
+      "Edit(~/.node_repl_history)",
+      "Read(~/.sqlite_history)",
+      "Edit(~/.sqlite_history)",
+      "Read(~/.lesshst)",
+      "Edit(~/.lesshst)",
+      "Read(./.env)",
+      "Edit(./.env)",
+      "Read(./.env.*)",
+      "Edit(./.env.*)",
+      "Read(./**/.env)",
+      "Edit(./**/.env)",
+      "Read(./**/.env.*)",
+      "Edit(./**/.env.*)",
+      "Read(./secrets/**)",
+      "Edit(./secrets/**)",
+      "Read(./**/*credentials*)",
+      "Edit(./**/*credentials*)",
+      "Read(./**/*secret*)",
+      "Edit(./**/*secret*)",
+      "Read(./.git/config)",
+      "Edit(./.git/config)"
+    ]
+  }
+}

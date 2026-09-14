@@ -40,6 +40,34 @@ let
   '';
 
   routes = config.host.localRoutes;
+
+  # Dotfiles whose destination is an absolute path. Home Manager only links
+  # within the home directory, so these are linked here as root, for files a
+  # program insists on finding under a system path such as /Library. The
+  # placeholders are substituted as in home-manager.nix.
+  systemDotfiles =
+    let
+      substitute =
+        builtins.replaceStrings
+          [ "@syncDir@" "@gitUserName@" "@gitUserEmail@" ]
+          [
+            config.host.syncDir
+            config.host.gitUserName
+            config.host.gitUserEmail
+          ];
+    in
+    map
+      (m: {
+        dest = substitute m.dest;
+        file = pkgs.writeText (baseNameOf m.dest) (
+          substitute (builtins.readFile (../dotfiles + "/${m.src}"))
+        );
+      })
+      (
+        builtins.filter (m: lib.hasPrefix "/" m.dest) (
+          builtins.fromJSON (builtins.readFile ../dotfiles/dotfiles.json)
+        )
+      );
 in
 {
   # The platform the configuration will be used on.
@@ -233,6 +261,16 @@ in
     # expects a plain root-owned file.
     /usr/bin/install -d -o root -g wheel -m 755 "${cryptomatorDir}"
     /usr/bin/install -o root -g wheel -m 644 ${cryptomatorConfig} "${cryptomatorFile}"
+
+    # System-level dotfiles ---------------------------------------------------
+    #
+    # Symlinked to the store, so the file is read-only and the user cannot
+    # change it; for example Claude Code's managed settings, which the agent
+    # must not be able to edit.
+    ${lib.concatMapStrings (m: ''
+      /bin/mkdir -p "${dirOf m.dest}"
+      /bin/ln -sfn ${m.file} "${m.dest}"
+    '') systemDotfiles}
 
     # Local proxy hostnames ---------------------------------------------------
     #
