@@ -101,5 +101,11 @@
       "Read(./.git/config)",
       "Edit(./.git/config)"
     ]
+  },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Thinking"
+    ]
   }
 }

@@ -81,5 +81,11 @@
       "Edit(./.sbx/claude/shell-snapshots/**)"
     ]
   },
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Thinking"
+    ]
+  }
 }
