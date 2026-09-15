@@ -13,7 +13,7 @@ layout {
     tab name="sandbox" focus=true {
         pane split_direction="vertical" {
             pane name="claude" command="sbx" {
-                args "exec" "-it" "nix-darwin-config" "bash" "-lc" "claude"
+                args "exec" "-it" "nix-darwin-config" "bash" "-lc" "claude; exec bash -l"
             }
             pane name="shell"
         }
