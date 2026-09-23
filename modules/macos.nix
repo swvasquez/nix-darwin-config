@@ -27,8 +27,8 @@
   # Enable Touch ID for Sudo
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  # Move Dock to the right side of the screen
-  system.defaults.dock.orientation = "right";
+  # Keep Dock at the bottom of the screen
+  system.defaults.dock.orientation = "bottom";
 
   # Prevent Dock from showing recently used applications
   system.defaults.dock.show-recents = false;
