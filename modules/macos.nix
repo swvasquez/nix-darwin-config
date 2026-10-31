@@ -114,11 +114,12 @@
   system.defaults.dock.persistent-apps = [
     "/Applications/Logseq-OG.app"
     "/Applications/Firefox.app"
-    "/Applications/Spotify.app"
     "/Applications/Ghostty.app"
+    "/Applications/Herdr.app"
     "/Applications/Zed.app"
     "/Applications/Claude.app"
     "/Applications/Zotero.app"
+    "/Applications/Spotify.app"
     "/System/Applications/System Settings.app"
   ];
 
