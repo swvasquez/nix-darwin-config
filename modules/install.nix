@@ -268,10 +268,18 @@ in
     # created up front so Syncthing has them to share before the apps first
     # run. Locking a vault only removes the mount; anything an editor or macOS
     # cached from it stays behind, unsynced.
+    #
+    # scratch/agents holds coding-agent sessions that belong to no project. It
+    # sits outside Projects so those sessions inherit no repository's CLAUDE.md,
+    # and outside any Git repository so nothing written there can be committed
+    # by accident. Nothing points a terminal at it: the Herdr app takes a
+    # folder per space rather than a default directory, so a space is pointed
+    # here once, by hand.
     ${asUser ''
       mkdir -p "${home}/${config.host.vaultDir}"
       mkdir -p "${home}/${config.host.mountDir}"
       mkdir -p "${home}/${config.host.qgisDir}"
+      mkdir -p "${home}/scratch/agents"
     ''}
 
     # Cryptomator admin config ------------------------------------------------
