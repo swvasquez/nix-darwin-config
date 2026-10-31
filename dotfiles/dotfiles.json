@@ -76,6 +76,14 @@
     "src": "zellij/config.kdl"
   },
   {
+    "dest": ".config/herdr-app/settings.json",
+    "src": "herdr-app/settings.json"
+  },
+  {
+    "dest": ".config/herdr-app/keys.json",
+    "src": "herdr-app/keys.json"
+  },
+  {
     "dest": "Library/Preferences/glow/glow.yml",
     "src": "glow/glow.yml"
   },

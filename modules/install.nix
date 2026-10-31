@@ -68,6 +68,27 @@ let
           builtins.fromJSON (builtins.readFile ../dotfiles/dotfiles.json)
         )
       );
+
+  # The Herdr desktop app is a client of herdr-core and will not start without
+  # it. Homebrew packages neither the core nor an app that bundles it, so the
+  # upstream release binary is wrapped here. Not logged by
+  # scripts/versions.sh, which only scrapes `pkgs.` entries.
+  herdr-core = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+    pname = "herdr-core";
+    version = "0.1.15";
+
+    src = pkgs.fetchurl {
+      url = "https://releases.herdr.dev/core/${finalAttrs.version}/herdr-core-macos-aarch64.tar.gz";
+      hash = "sha256-R+uoNn4GJqHvzth5X8sD1UNLJUHFqE14xQzALI+0n8g=";
+    };
+
+    sourceRoot = ".";
+
+    installPhase = ''
+      install -Dm755 herdr-core "$out/bin/herdr-core"
+      ln -s herdr-core "$out/bin/hc"
+    '';
+  });
 in
 {
   # The platform the configuration will be used on.
@@ -130,6 +151,7 @@ in
     pkgs.zls
     pkgs.zoxide
     pkgs.caddy
+    herdr-core
   ];
 
   # Needed to expose bash-preexec.sh at /run/current-system/sw/share/bash/
@@ -177,6 +199,7 @@ in
       "ghostty"
       "github"
       "google-chrome"
+      "herdr-app"
       "homebrew-app"
       "iina"
       "iterm2"
