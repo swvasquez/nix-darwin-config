@@ -7,6 +7,10 @@
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
 
+  # A file already in the way of a link is renamed with this extension, then
+  # linked over.
+  home-manager.backupFileExtension = "backup";
+
   # A Home Manager module, not a nix-darwin one: it sees Home Manager's options,
   # and the system configuration is reachable through `osConfig`.
   home-manager.users.${config.host.user} =
