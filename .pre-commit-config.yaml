@@ -109,7 +109,7 @@ repos:
         stages: [pre-commit, pre-push]
 
       # The sandbox's git-crypt filter is neutered to `cat` (see
-      # .sbx/kit/spec.yaml), so `git add` there can stage plaintext straight
+      # .sbx/kit/kit.yaml), so `git add` there can stage plaintext straight
       # into the shared index without git ever noticing - a later host commit
       # would then commit it as-is, since the clean filter only runs at `add`
       # time, not at `commit` time. This runs on the host, where the real

@@ -1,0 +1,40 @@
+# The sandbox's system-wide Codex defaults, copied to /etc/codex/config.toml
+# by kit.yaml. The same defaults as dotfiles/codex/config.toml on the host,
+# plus the proxy login below, which must not apply on the host. A separate
+# file because TOML can't append top-level keys after the other's tables.
+
+# Updates come from the pinned kit.
+check_for_update_on_startup = false
+
+# Auto-review, the only mode requirements.toml allows. Set here so Codex picks
+# it directly rather than by falling back.
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
+
+# From the config sbx/codex-mixin writes, which Codex doesn't read here (see
+# kit.yaml). The microVM is the sandbox, as for Claude, so Codex's own is off.
+sandbox_mode = "danger-full-access"
+mcp_oauth_credentials_store = "file"
+
+# Always use the proxy's ChatGPT login, as sbx/codex-mixin does only when a
+# login is stored on the host at create. Codex sends a sentinel and the proxy
+# swaps in the real token, so it never enters the sandbox. With no login
+# stored on the host, requests fail until `sbx secret set openai --oauth` is
+# run there; no rebuild needed. A sign-in inside the sandbox is refused.
+forced_login_method = "api"
+model_provider = "sandboxd"
+
+[model_providers.sandboxd]
+name = "Sandbox Proxy"
+base_url = "https://chatgpt.com/backend-api/codex"
+experimental_bearer_token = "oai-oat01-proxy-managed"
+requires_openai_auth = false
+
+[analytics]
+enabled = false
+
+[feedback]
+enabled = false
+
+[otel]
+exporter = "none"

@@ -20,6 +20,14 @@
     "src": "claude/managed-settings.json"
   },
   {
+    "dest": "/etc/codex/requirements.toml",
+    "src": "codex/requirements.toml"
+  },
+  {
+    "dest": "/etc/codex/config.toml",
+    "src": "codex/config.toml"
+  },
+  {
     "dest": ".config/starship.toml",
     "src": "starship/starship.toml"
   },

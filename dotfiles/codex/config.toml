@@ -1,0 +1,22 @@
+# System-wide Codex defaults, at /etc/codex/config.toml on the host. The
+# sandbox has its own copy, .sbx/kit/codex-config.toml, which adds the proxy
+# login; keep the two in step. Mirrors the env block of Claude Code's managed settings,
+# which turns off telemetry, error reporting and feedback. This is Codex's
+# lowest-priority config layer, so ~/.codex/config.toml can override it.
+
+# Updates come from Homebrew on the host and the pinned kit in the sandbox.
+check_for_update_on_startup = false
+
+# Auto-review, the only mode requirements.toml allows on either side. Set here
+# so Codex picks it directly rather than by falling back.
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
+
+[analytics]
+enabled = false
+
+[feedback]
+enabled = false
+
+[otel]
+exporter = "none"

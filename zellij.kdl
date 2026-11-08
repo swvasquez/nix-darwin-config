@@ -1,5 +1,5 @@
-// Claude Code in the sandbox on the left, host shell in the repo on the right.
-// Started via `just sbx-agent`.
+// An agent in the sandbox on the left, host shell in the repo on the right.
+// Started via `just sbx-agent [agent]`, which passes the agent in SBX_AGENT.
 layout {
     default_tab_template {
         pane size=1 borderless=true {
@@ -12,8 +12,9 @@ layout {
     }
     tab name="sandbox" focus=true {
         pane split_direction="vertical" {
-            pane name="claude" command="sbx" {
-                args "exec" "-it" "nix-darwin-config" "bash" "-lc" "claude; exec bash -l"
+            // Run through sh so SBX_AGENT expands on the host.
+            pane name="agent" command="sh" {
+                args "-c" "sbx exec -it nix-darwin-config bash -lc \"$SBX_AGENT; exec bash -l\""
             }
             pane name="shell"
         }

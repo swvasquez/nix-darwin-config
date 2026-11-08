@@ -1,0 +1,232 @@
+# syntax=docker/sandbox-kit:3
+# Kit for running Claude Code and Codex against this repo in a Docker Sandboxes
+# microVM. Linux guest: can edit/review but not run darwin-rebuild - that stays
+# on the host via `just build`.
+#
+# A mixin on the `shell` workload, beside Docker's sbx/claude-mixin and
+# sbx/codex-mixin (see `just sbx-up`). Those install both agents and wire their
+# logins through the proxy, so this kit only adds what is specific to this repo.
+# Declaration-only: no recipe, so no <stem>.dockerfile beside it.
+schemaVersion: "3"
+kind: mixin
+displayName: nix-darwin-config
+description: Toolchain, git-crypt guards and Claude Code and Codex settings for this repo.
+
+# The agents' config dirs and rules below have nothing to act on without
+# them. The hooks use apt-get and jq from the shell base.
+requires: ["claude", "codex", "deb/apt", "deb/jq"]
+
+capabilities:
+  # Open egress for web search/docs, and for the Nix install at create. LAN is
+  # blocked via --deny-network flags in `just sbx-up`, not here - a kit
+  # declares CIDR rules without enforcing them.
+  - type: com.docker.sandbox/network-policy@1
+    config:
+      install:
+        allow: ["**"]
+      runtime:
+        allow: ["**"]
+
+  - type: com.docker.sandbox/lifecycle@1
+    config:
+      # Toolchain (nixfmt, shfmt, shellcheck, markdownlint, sponge, jq, prek,
+      # gitleaks, just) is pinned to this repo's own nixpkgs revision, not
+      # apt/npm, so `just format`/`just check` match the host exactly. Runs once
+      # at creation; `just sbx-up` re-syncs it after `just update` changes
+      # flake.lock.
+      install:
+        # Single-user Nix, no daemon: a microVM has no init to run nix-daemon under.
+        - command: |
+            set -eu
+            apt-get update
+            apt-get install -y --no-install-recommends xz-utils
+            install -d -m 0755 -o agent -g agent /nix
+            mkdir -p /etc/nix
+            printf '%s\n' 'experimental-features = nix-command flakes' \
+              'build-users-group =' > /etc/nix/nix.conf
+          user: "0"
+          env: [HTTP_PROXY, HTTPS_PROXY, http_proxy, https_proxy]
+          description: Install Nix's prerequisites and give the agent the store
+        # Revision comes from flake.lock, so this is the host's exact nixpkgs pin.
+        - command: |
+            set -eu
+            export HOME=/home/agent USER=agent
+            installer=$(mktemp)
+            curl -sSfL -o "$installer" https://nixos.org/nix/install
+            sh "$installer" --no-daemon --no-channel-add --no-modify-profile --yes
+            rm -f "$installer"
+            rev=$(jq -r '.nodes.nixpkgs.locked.rev // empty' "$WORKSPACE_DIR/flake.lock" 2>/dev/null) || rev=
+            if [ -z "$rev" ]; then
+              echo 'warning: no nixpkgs rev in flake.lock; falling back to nixpkgs-26.05-darwin' >&2
+            fi
+            nixpkgs="github:NixOS/nixpkgs/${rev:-nixpkgs-26.05-darwin}"
+            "$HOME/.nix-profile/bin/nix" profile install \
+              "$nixpkgs#gitleaks" \
+              "$nixpkgs#jq" \
+              "$nixpkgs#just" \
+              "$nixpkgs#markdownlint-cli" \
+              "$nixpkgs#moreutils" \
+              "$nixpkgs#nixfmt" \
+              "$nixpkgs#prek" \
+              "$nixpkgs#shellcheck" \
+              "$nixpkgs#shfmt"
+          user: "1000"
+          env: [WORKSPACE_DIR, HTTP_PROXY, HTTPS_PROXY, http_proxy, https_proxy]
+          description: Install Nix and the toolchain the justfile drives
+        # Symlinked rather than added to PATH, so every user and shell gets the
+        # same tools without editing anyone's profile.
+        - command: |
+            set -eu
+            for tool in nix nixfmt shfmt shellcheck markdownlint sponge jq prek gitleaks just; do
+              src="/home/agent/.nix-profile/bin/$tool"
+              [ -x "$src" ] || { echo "error: $src missing or not executable" >&2; exit 1; }
+              ln -sfn "$src" "/usr/local/bin/$tool"
+            done
+          user: "0"
+          description: Put the toolchain on PATH for every user and shell
+        # git-crypt encrypts config/** and versions.csv, but this sandbox has no
+        # git-crypt binary (and shouldn't hold the key). These override its
+        # filters to `cat` so reads (git diff/show/log -p) don't crash on a
+        # missing binary - seeing ciphertext is fine, that's all the sandbox
+        # should see anyway. Env vars, not .git/config, because env vars outrank
+        # config files and .git/config is shared with the host. v3 has no
+        # environment block, so the login shell picks them up from profile.d;
+        # `just sbx-agent` and `just sbx-shell` both start one.
+        - command: |
+            set -eu
+            cat > /etc/profile.d/nix-darwin-config-git.sh <<'EOF'
+            export GIT_CONFIG_COUNT=4
+            export GIT_CONFIG_KEY_0=filter.git-crypt.clean
+            export GIT_CONFIG_VALUE_0=cat
+            export GIT_CONFIG_KEY_1=filter.git-crypt.smudge
+            export GIT_CONFIG_VALUE_1=cat
+            export GIT_CONFIG_KEY_2=diff.git-crypt.textconv
+            export GIT_CONFIG_VALUE_2=cat
+            # This one blocks writes rather than passing reads through - see the hook below.
+            export GIT_CONFIG_KEY_3=core.hooksPath
+            export GIT_CONFIG_VALUE_3=/etc/git/hooks
+            EOF
+            chmod 0644 /etc/profile.d/nix-darwin-config-git.sh
+          user: "0"
+          description: Route git-crypt filters to cat and git hooks to /etc/git/hooks
+        # Blocks commits touching git-crypt-encrypted paths: the read-through
+        # filters above can't encrypt on write, so that has to happen on the host.
+        - command: |
+            set -eu
+            mkdir -p /etc/git/hooks
+            cat > /etc/git/hooks/pre-commit <<'HOOK'
+            #!/bin/sh
+            # git-crypt encrypts these paths but this sandbox can't - block plaintext commits.
+            # Fail closed: any error here must block the commit, not let it through.
+            set -eu
+            staged=$(git diff --cached --name-only --diff-filter=ACMR)
+            [ -n "$staged" ] || exit 0
+            encrypted=$(printf '%s\n' "$staged" |
+              git check-attr --stdin filter |
+              sed -n 's/: filter: git-crypt$//p')
+            [ -n "$encrypted" ] || exit 0
+            printf 'git-crypt encrypts these paths and this sandbox cannot:\n' >&2
+            printf '%s\n' "$encrypted" >&2
+            printf 'Commit them from the host, which holds the key.\n' >&2
+            exit 1
+            HOOK
+            chmod 0755 /etc/git/hooks/pre-commit
+          user: "0"
+          description: Refuse commits of the paths git-crypt encrypts
+        # This sandbox has no working push credential anyway, but an agent
+        # permission rule only inspects the literal command text, so it can't
+        # stop `git push` run indirectly (e.g. from inside a script). A git-level
+        # hook catches the operation itself, however it was invoked.
+        - command: |
+            set -eu
+            cat > /etc/git/hooks/pre-push <<'HOOK'
+            #!/bin/sh
+            printf 'This sandbox cannot push - do it from the host, which holds the real credentials.\n' >&2
+            exit 1
+            HOOK
+            chmod 0755 /etc/git/hooks/pre-push
+          user: "0"
+          description: Refuse all pushes from the sandbox
+        # The agents' rules: Claude Code's managed settings, and Codex's
+        # requirements, defaults and PreToolUse hook. Copied root-owned into
+        # the VM's own /etc, not linked to the workspace, which both agents and
+        # anything on the host can write. Repo edits take effect at the next
+        # `just sbx-up`. Neither agent can override this tier from its own
+        # settings.
+        - command: |
+            set -eu
+            kit="$WORKSPACE_DIR/.sbx/kit"
+            install -D -o root -g root -m 0644 "$kit/managed-settings.json" /etc/claude-code/managed-settings.json
+            install -D -o root -g root -m 0644 "$kit/codex-requirements.toml" /etc/codex/requirements.toml
+            install -D -o root -g root -m 0644 "$kit/codex-config.toml" /etc/codex/config.toml
+            install -D -o root -g root -m 0644 "$kit/codex-deny-paths.sh" /etc/codex/hooks/deny-paths.sh
+          user: "0"
+          env: [WORKSPACE_DIR]
+          description: Install the agents' rule files, root-owned
+      startup:
+        # Workspace is bind-mounted, so this directory persists across
+        # recreates - session history and the stored login survive a rebuild.
+        - command:
+            - sh
+            - -c
+            - >-
+              mkdir -p "$WORKSPACE_DIR/.sbx/claude" &&
+              chown agent:agent "$WORKSPACE_DIR/.sbx/claude" &&
+              echo "export CLAUDE_CONFIG_DIR=\"$WORKSPACE_DIR/.sbx/claude\""
+              > /etc/profile.d/nix-darwin-config-claude.sh
+          user: "0"
+          env: [WORKSPACE_DIR]
+          description: Keep Claude's config dir in the workspace
+        # Same for Codex: its config, history and sessions (`codex resume`)
+        # survive a rebuild. Set from profile.d, like CLAUDE_CONFIG_DIR, so it
+        # doesn't clash with the CODEX_HOME sbx/codex-mixin sets in the image.
+        # Like Claude's settings.json, Codex's config.toml is its own file
+        # here; the one that kit rewrites in the VM's home on every create is
+        # not read, and its needed settings are in codex-config.toml instead.
+        - command:
+            - sh
+            - -c
+            - >-
+              d="$WORKSPACE_DIR/.sbx/codex" &&
+              mkdir -p "$d" &&
+              chown agent:agent "$d" &&
+              echo "export CODEX_HOME=\"$d\""
+              > /etc/profile.d/nix-darwin-config-codex.sh &&
+              if [ -L "$d/config.toml" ]; then rm -f "$d/config.toml"; fi
+          user: "0"
+          env: [WORKSPACE_DIR]
+          description: Keep Codex's home in the workspace
+        # Both agents always use the proxy's login, so the real tokens stay on
+        # the host and the sandbox only holds sentinels. Both login files stay
+        # on the VM's own disk, not the mounted workspace, so the host never
+        # sees them: the workspace path each agent reads is a link into the
+        # VM's home.
+        #
+        # sbx places Claude's, and catches a /login inside the sandbox.
+        # sbx/codex-mixin places Codex's only when a login is stored on the
+        # host at create, so it's written here on every boot instead, matching
+        # codex-config.toml. Without a host login, Codex fails to connect until
+        # `sbx secret set openai --oauth` is run there; no rebuild needed.
+        - command: |
+            set -eu
+            login() {
+              vm="$1" ws="$2"
+              mkdir -p "$(dirname "$vm")"
+              chown agent:agent "$(dirname "$vm")"
+              # An older layout of this kit kept the file in the workspace and
+              # linked the VM's path to it; move it back.
+              if [ -L "$vm" ]; then rm -f "$vm"; fi
+              if [ -f "$ws" ] && [ ! -L "$ws" ]; then
+                mv -f "$ws" "$vm"
+                chown agent:agent "$vm"
+              fi
+              ln -sfn "$vm" "$ws"
+              chown -h agent:agent "$ws"
+            }
+            login /home/agent/.claude/.credentials.json "$WORKSPACE_DIR/.sbx/claude/.credentials.json"
+            login /home/agent/.codex/auth.json "$WORKSPACE_DIR/.sbx/codex/auth.json"
+            printf '%s\n' '{ "OPENAI_API_KEY": "proxy-managed" }' > /home/agent/.codex/auth.json
+            chown agent:agent /home/agent/.codex/auth.json
+          user: "0"
+          env: [WORKSPACE_DIR]
+          description: Keep both agents' logins on the VM's own disk

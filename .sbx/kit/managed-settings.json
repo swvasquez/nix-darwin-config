@@ -78,7 +78,13 @@
       "Read(./.sbx/claude/projects/**/*.jsonl)",
       "Edit(./.sbx/claude/projects/**/*.jsonl)",
       "Read(./.sbx/claude/shell-snapshots/**)",
-      "Edit(./.sbx/claude/shell-snapshots/**)"
+      "Edit(./.sbx/claude/shell-snapshots/**)",
+      "Read(./.sbx/codex/auth.json)",
+      "Edit(./.sbx/codex/auth.json)",
+      "Read(./.sbx/codex/history.jsonl)",
+      "Edit(./.sbx/codex/history.jsonl)",
+      "Read(./.sbx/codex/sessions/**)",
+      "Edit(./.sbx/codex/sessions/**)"
     ]
   },
   "skipAutoPermissionPrompt": true,

@@ -58,13 +58,20 @@ init-flake:
     nix flake init -t nix-darwin/nix-darwin-{{ nix_darwin_ver }}
 
 # +----------------------------------------------------------------------------+
-# | Sandbox — run Claude Code inside a Docker Sandboxes microVM                |
+# | Sandbox — run Claude Code and Codex inside a Docker Sandboxes microVM      |
 # +----------------------------------------------------------------------------+
 
-# Denies LAN/link-local/CGNAT ranges; IPv6 egress stays open
-sbx-up:
-    sbx rm --force nix-darwin-config || true
-    sbx create --name nix-darwin-config --kit ./.sbx/kit \
+sbx := "nix-darwin-config"
+
+# Build the sandbox, then sign in any agent that isn't signed in yet
+sbx-up: sbx-build sbx-agent-login
+
+# Shell base plus Docker's Claude and Codex kits, then ours; v3 kits need sbx 0.51+
+# Replaces any existing sandbox. Denies LAN/link-local/CGNAT ranges; IPv6 egress stays open
+sbx-build:
+    sbx rm --force {{ sbx }} || true
+    sbx create --name {{ sbx }} \
+        --kit sbx/claude-mixin --kit sbx/codex-mixin --kit ./.sbx/kit \
         --deny-network 10.0.0.0/8 \
         --deny-network 172.16.0.0/12 \
         --deny-network 192.168.0.0/16 \
@@ -72,15 +79,21 @@ sbx-up:
         --deny-network 100.64.0.0/10 \
         --deny-network fc00::/7 \
         --deny-network fe80::/10 \
-        claude .
+        shell .
 
-# Open Zellij with Claude Code in the sandbox on the left and a host shell on the right
-sbx-agent:
-    zellij --layout zellij.kdl
+# Sign in each agent not yet signed in; logins are stored on the Mac for every sandbox
+# Codex signs in on the Mac; Claude inside the sandbox, where the proxy catches it
+sbx-agent-login:
+    sbx secret ls 2>/dev/null | grep -qi 'openai.*oauth' || sbx secret set openai --oauth
+    sbx secret ls 2>/dev/null | grep -qi 'anthropic.*oauth' || sbx exec -it {{ sbx }} bash -lc 'claude auth login'
+
+# Open Zellij with an agent in the sandbox on the left and a host shell on the right
+sbx-agent agent="claude":
+    SBX_AGENT={{ quote(agent) }} zellij --layout zellij.kdl
 
 # Open a login shell in the running sandbox
 sbx-shell:
-    sbx exec -it nix-darwin-config bash -l
+    sbx exec -it {{ sbx }} bash -l
 
 # +----------------------------------------------------------------------------+
 # | Utils — repo housekeeping: hooks, checks, formatting                       |

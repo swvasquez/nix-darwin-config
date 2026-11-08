@@ -138,17 +138,20 @@ just check
 
 ## AI Assistance
 
-Claude Code can be run against this repository inside a Docker Sandboxes
-microVM, isolated from the host and with the local network denied. The sandbox
-is described in [`.sbx/kit/spec.yaml`](.sbx/kit/spec.yaml) and driven by the
-[`justfile`](justfile), and Claude Code itself is configured in
-[`.sbx/kit/managed-settings.json`](.sbx/kit/managed-settings.json). Running it
-requires `sbx`, which must be installed on the host.
+Claude Code and Codex can be run against this repository inside a Docker
+Sandboxes microVM, isolated from the host and with the local network denied.
+The sandbox is described in [`.sbx/kit/kit.yaml`](.sbx/kit/kit.yaml) and driven
+by the [`justfile`](justfile), and Claude Code itself is configured in
+[`.sbx/kit/managed-settings.json`](.sbx/kit/managed-settings.json) and Codex in
+[`.sbx/kit/codex-requirements.toml`](.sbx/kit/codex-requirements.toml). Running
+it requires `sbx` 0.51.0 or later, which must be installed on the host.
 
 | Command | Description |
 | --- | --- |
-| `just sbx-up` | Build and start the sandbox, replacing any existing one |
-| `just sbx-agent` | Attach Claude Code to the running sandbox |
+| `just sbx-up` | Build the sandbox, then sign in any agent that isn't yet |
+| `just sbx-build` | Build and start the sandbox, replacing any existing one |
+| `just sbx-agent-login` | Sign in any agent not yet signed in |
+| `just sbx-agent [agent]` | Attach `claude` (default) or `codex` |
 | `just sbx-shell` | Open a login shell in the running sandbox |
 
 ## Notes

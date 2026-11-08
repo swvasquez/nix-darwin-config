@@ -1,0 +1,76 @@
+# Codex's equivalent of Claude Code's managed settings
+# (dotfiles/claude/managed-settings.json). Linked read-only from the store to
+# /etc/codex/requirements.toml, so Codex cannot change it. Codex falls back to
+# an allowed value when a setting conflicts with it.
+
+# Mirrors Claude's sandbox.enabled, failIfUnavailable and
+# disableBypassPermissionsMode: Codex's own sandbox stays on, with the
+# project rules below. It is the only profile allowed, so the built-ins
+# (":danger-full-access" included) are denied.
+default_permissions = "workspace-guarded"
+
+# Mirrors Claude's auto mode: a reviewer model checks each action Codex
+# would otherwise ask about. Only these values are allowed.
+allowed_approval_policies = ["on-request"]
+allowed_approvals_reviewers = ["auto_review"]
+
+# Mirrors Claude's mcp__terminal deny rule, which stops the Claude desktop app
+# reading its terminal. The ChatGPT desktop app reads this file too. Appshots
+# and Computer Use are how it reads other apps' windows, terminals included.
+allow_appshots = false
+
+[features]
+computer_use = false
+
+[allowed_permission_profiles]
+"workspace-guarded" = true
+
+# Mirrors Claude's denyRead list and its Read/Edit deny rules for the home
+# folder. Claude turns those rules into OS sandbox denies as well, so this
+# matches its behavior.
+[permissions.filesystem]
+deny_read = [
+  "~/.ssh",
+  "~/.gnupg",
+  "~/.password-store",
+  "~/.aws",
+  "~/.config/gcloud",
+  "~/.config/gh",
+  "~/.docker/config.json",
+  "~/.npmrc",
+  "~/.netrc",
+  "~/.claude/.credentials.json",
+  "~/.codex/auth.json",
+  "~/.zsh_history",
+  "~/.bash_history",
+  "~/.python_history",
+  "~/.psql_history",
+  "~/.mysql_history",
+  "~/.node_repl_history",
+  "~/.sqlite_history",
+  "~/.lesshst",
+]
+
+[permissions.workspace-guarded]
+description = "Workspace access without the project's secret files."
+extends = ":workspace"
+
+# Mirrors Claude's ./ deny rules. ":workspace_roots" is the current project,
+# as ./ is for Claude, so other repos are unaffected. Blocking .git/config
+# stops git in the project itself, as it does for Claude.
+[permissions.workspace-guarded.filesystem.":workspace_roots"]
+".env" = "deny"
+".env.*" = "deny"
+"**/.env" = "deny"
+"**/.env.*" = "deny"
+"secrets" = "deny"
+"**/*credentials*" = "deny"
+"**/*secret*" = "deny"
+".git/config" = "deny"
+
+# Mirrors Claude's Bash(pass:*) and Bash(gpg:*) deny rules.
+[rules]
+prefix_rules = [
+  { pattern = [{ token = "pass" }], decision = "forbidden", justification = "Password store access is not allowed." },
+  { pattern = [{ any_of = ["gpg", "gpg2"] }], decision = "forbidden", justification = "GPG access is not allowed." },
+]

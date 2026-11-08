@@ -189,8 +189,10 @@ in
     casks = [
       "bitwarden"
       "blackhole-16ch"
+      "chatgpt"
       "claude"
       "claude-code"
+      "codex"
       "cryptomator"
       "discord"
       "firefox"

@@ -1,0 +1,40 @@
+# Codex's equivalent of the sandbox's Claude Code managed settings
+# (managed-settings.json beside this file). Copied to
+# /etc/codex/requirements.toml by kit.yaml. Codex cannot override it.
+#
+# No sandbox or filesystem rules: codex-config.toml turns Codex's own sandbox
+# off because the microVM is the boundary, as Claude runs here with no OS
+# sandbox. Filesystem deny_read is enforced by that sandbox, so it would do
+# nothing. Command rules still apply.
+
+# Mirrors Claude's auto mode: a reviewer model checks each action Codex
+# would otherwise ask about. Only these values are allowed.
+allowed_approval_policies = ["on-request"]
+allowed_approvals_reviewers = ["auto_review"]
+
+# Mirrors Claude's Read/Edit deny rules, which Claude enforces on its own tools
+# here. See codex-deny-paths.sh, which kit.yaml copies into managed_dir.
+# Managed hooks are trusted by policy, and pinning the feature keeps them on.
+[features]
+hooks = true
+
+[hooks]
+managed_dir = "/etc/codex/hooks"
+
+[[hooks.PreToolUse]]
+matcher = "^(Bash|apply_patch)$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "sh /etc/codex/hooks/deny-paths.sh"
+timeout = 10
+statusMessage = "Checking for protected paths"
+
+# Mirrors Claude's Bash(git commit*), push, add, stage and stash deny rules,
+# and its Bash(pass:*) and Bash(gpg:*) rules.
+[rules]
+prefix_rules = [
+  { pattern = [{ token = "git" }, { any_of = ["commit", "push", "add", "stage", "stash"] }], decision = "forbidden", justification = "Commit and push from the host." },
+  { pattern = [{ token = "pass" }], decision = "forbidden", justification = "Password store access is not allowed." },
+  { pattern = [{ any_of = ["gpg", "gpg2"] }], decision = "forbidden", justification = "GPG access is not allowed." },
+]
