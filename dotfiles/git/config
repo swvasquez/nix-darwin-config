@@ -3,3 +3,7 @@
 	email = @gitUserEmail@
 [core]
 	editor = hx
+[transfer]
+	# Refuse URLs with a token or password in them, so none gets
+	# saved to a repo's .git/config.
+	credentialsInUrl = die
