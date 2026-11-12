@@ -29,8 +29,8 @@ capabilities:
 
   - type: com.docker.sandbox/lifecycle@1
     config:
-      # Toolchain (nixfmt, shfmt, shellcheck, markdownlint, sponge, jq, prek,
-      # gitleaks, just) is pinned to this repo's own nixpkgs revision, not
+      # Toolchain (git, nixfmt, shfmt, shellcheck, markdownlint, sponge, jq,
+      # prek, gitleaks, just) is pinned to this repo's own nixpkgs revision, not
       # apt/npm, so `just format`/`just check` match the host exactly. Runs once
       # at creation; `just sbx-up` re-syncs it after `just update` changes
       # flake.lock.
@@ -39,14 +39,14 @@ capabilities:
         - command: |
             set -eu
             apt-get update
-            apt-get install -y --no-install-recommends xz-utils
+            apt-get install -y --no-install-recommends xz-utils mount
             install -d -m 0755 -o agent -g agent /nix
             mkdir -p /etc/nix
             printf '%s\n' 'experimental-features = nix-command flakes' \
               'build-users-group =' > /etc/nix/nix.conf
           user: "0"
           env: [HTTP_PROXY, HTTPS_PROXY, http_proxy, https_proxy]
-          description: Install Nix's prerequisites and give the agent the store
+          description: Install Nix's and the covers' prerequisites and give the agent the store
         # Revision comes from flake.lock, so this is the host's exact nixpkgs pin.
         - command: |
             set -eu
@@ -61,6 +61,7 @@ capabilities:
             fi
             nixpkgs="github:NixOS/nixpkgs/${rev:-nixpkgs-26.05-darwin}"
             "$HOME/.nix-profile/bin/nix" profile install \
+              "$nixpkgs#git" \
               "$nixpkgs#gitleaks" \
               "$nixpkgs#jq" \
               "$nixpkgs#just" \
@@ -77,68 +78,59 @@ capabilities:
         # same tools without editing anyone's profile.
         - command: |
             set -eu
-            for tool in nix nixfmt shfmt shellcheck markdownlint sponge jq prek gitleaks just; do
+            for tool in nix git nixfmt shfmt shellcheck markdownlint sponge jq prek gitleaks just; do
               src="/home/agent/.nix-profile/bin/$tool"
               [ -x "$src" ] || { echo "error: $src missing or not executable" >&2; exit 1; }
               ln -sfn "$src" "/usr/local/bin/$tool"
             done
           user: "0"
           description: Put the toolchain on PATH for every user and shell
-        # git-crypt encrypts config/** and versions.csv, but this sandbox has no
-        # git-crypt binary (and shouldn't hold the key). These override its
-        # filters to `cat` so reads (git diff/show/log -p) don't crash on a
-        # missing binary - seeing ciphertext is fine, that's all the sandbox
-        # should see anyway. Env vars, not .git/config, because env vars outrank
-        # config files and .git/config is shared with the host. v3 has no
-        # environment block, so the login shell picks them up from profile.d;
-        # `just sbx-agent` and `just sbx-shell` both start one.
+        # The sandbox's only git config; an agent env that set GIT_CONFIG_COUNT
+        # would replace it. attr.tree is the empty tree
+        # (`git hash-object -t tree /dev/null`), so git ignores .gitattributes
+        # and never runs git-crypt. git comes from nixpkgs with the rest of the
+        # toolchain, so it matches the host's version.
+        # The rest: hooks from /etc/git/hooks, no remote transports, no tokens
+        # in URLs. Env vars, because they outrank .git/config, which is shared
+        # with the host. v3 has no environment block, so login shells read
+        # them from profile.d.
         - command: |
             set -eu
             cat > /etc/profile.d/nix-darwin-config-git.sh <<'EOF'
             export GIT_CONFIG_COUNT=4
-            export GIT_CONFIG_KEY_0=filter.git-crypt.clean
-            export GIT_CONFIG_VALUE_0=cat
-            export GIT_CONFIG_KEY_1=filter.git-crypt.smudge
-            export GIT_CONFIG_VALUE_1=cat
-            export GIT_CONFIG_KEY_2=diff.git-crypt.textconv
-            export GIT_CONFIG_VALUE_2=cat
-            # This one blocks writes rather than passing reads through - see the hook below.
-            export GIT_CONFIG_KEY_3=core.hooksPath
-            export GIT_CONFIG_VALUE_3=/etc/git/hooks
+            export GIT_CONFIG_KEY_0=attr.tree
+            export GIT_CONFIG_VALUE_0=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+            export GIT_CONFIG_KEY_1=core.hooksPath
+            export GIT_CONFIG_VALUE_1=/etc/git/hooks
+            export GIT_CONFIG_KEY_2=protocol.allow
+            export GIT_CONFIG_VALUE_2=never
+            export GIT_CONFIG_KEY_3=transfer.credentialsInUrl
+            export GIT_CONFIG_VALUE_3=die
             EOF
             chmod 0644 /etc/profile.d/nix-darwin-config-git.sh
           user: "0"
-          description: Route git-crypt filters to cat and git hooks to /etc/git/hooks
-        # Blocks commits touching git-crypt-encrypted paths: the read-through
-        # filters above can't encrypt on write, so that has to happen on the host.
+          description: Hide git-crypt from git and set the sandbox's git config
+        # sbx starts the sandbox even when a startup step fails. Without the
+        # startup step's marker, git-crypt's plain-text files may be exposed,
+        # so every login shell exits here, and with it any agent it would
+        # start. Named 00- so it runs before the other profile.d scripts. A
+        # non-login `sbx exec` still works for reading the startup log.
         - command: |
             set -eu
-            mkdir -p /etc/git/hooks
-            cat > /etc/git/hooks/pre-commit <<'HOOK'
-            #!/bin/sh
-            # git-crypt encrypts these paths but this sandbox can't - block plaintext commits.
-            # Fail closed: any error here must block the commit, not let it through.
-            set -eu
-            staged=$(git diff --cached --name-only --diff-filter=ACMR)
-            [ -n "$staged" ] || exit 0
-            encrypted=$(printf '%s\n' "$staged" |
-              git check-attr --stdin filter |
-              sed -n 's/: filter: git-crypt$//p')
-            [ -n "$encrypted" ] || exit 0
-            printf 'git-crypt encrypts these paths and this sandbox cannot:\n' >&2
-            printf '%s\n' "$encrypted" >&2
-            printf 'Commit them from the host, which holds the key.\n' >&2
-            exit 1
-            HOOK
-            chmod 0755 /etc/git/hooks/pre-commit
+            cat > /etc/profile.d/00-nix-darwin-config-guard.sh <<'EOF'
+            [ -e /run/nix-darwin-config-covered-ok ] ||
+              { echo 'kit.yaml: stub covers failed, see /var/log/sbx-kit-startup.log' >&2; exit 1; }
+            EOF
+            chmod 0644 /etc/profile.d/00-nix-darwin-config-guard.sh
           user: "0"
-          description: Refuse commits of the paths git-crypt encrypts
+          description: Refuse login shells unless the stub covers are on
         # This sandbox has no working push credential anyway, but an agent
         # permission rule only inspects the literal command text, so it can't
         # stop `git push` run indirectly (e.g. from inside a script). A git-level
         # hook catches the operation itself, however it was invoked.
         - command: |
             set -eu
+            mkdir -p /etc/git/hooks
             cat > /etc/git/hooks/pre-push <<'HOOK'
             #!/bin/sh
             printf 'This sandbox cannot push - do it from the host, which holds the real credentials.\n' >&2
@@ -164,6 +156,58 @@ capabilities:
           env: [WORKSPACE_DIR]
           description: Install the agents' rule files, root-owned
       startup:
+        # Locks the sandbox down on every start, inside the VM only; the
+        # host's files are untouched. In order:
+        # - The agent stops being root. The base image gives it passwordless
+        #   sudo, and the docker group, which is root through the socket. sbx
+        #   adds that group to every command regardless of /etc/group, so the
+        #   socket is made root-only instead. Then it checks the result as
+        #   the agent, so a new route to root in a later sbx stops the start
+        #   rather than going unnoticed.
+        # - .git is mounted read-only over itself, so no git write works,
+        #   however it's run. This goes first: mounts under .git made before
+        #   it wouldn't carry over. The files the host runs or loads without
+        #   a review step are read-only too: the kit and .gitattributes
+        #   (the next start's rules), the commit hooks, Claude's project
+        #   settings, and the justfile and scripts `just build` runs. Edit
+        #   them from the host.
+        # - An empty folder covers the git-crypt key.
+        # - Each git-crypt pattern in .gitattributes gets the matching stub
+        #   from .sbx/kit/stubs, read-only. A `dir/**` pattern covers the
+        #   whole folder, so files the host adds later stay hidden too. A
+        #   pattern with no stub, such as `*.key`, makes mount fail.
+        # sbx starts the sandbox even when a startup step fails. So if any
+        # of this fails, the trap covers the whole workspace with an empty
+        # folder, which holds for every process, login shell or not. The
+        # marker is written only once all of it worked; the guard above
+        # tells login shells why the workspace is empty.
+        - command: |
+            set -euf
+            ws="$WORKSPACE_DIR"
+            rm -f /run/nix-darwin-config-covered-ok
+            trap '[ -e /run/nix-darwin-config-covered-ok ] || mount -t tmpfs -o ro tmpfs "$ws"' EXIT
+            rm -f /etc/sudoers.d/agent
+            chown root:root /var/run/docker.sock
+            chmod 0600 /var/run/docker.sock
+            command -v runuser >/dev/null
+            if runuser -u agent -- sudo -n true 2>/dev/null; then echo 'kit.yaml: agent still has sudo' >&2; exit 1; fi
+            if runuser -u agent -- docker info >/dev/null 2>&1; then echo 'kit.yaml: agent still has docker' >&2; exit 1; fi
+            mount --bind -o ro "$ws/.git" "$ws/.git"
+            for f in .sbx/kit .gitattributes .pre-commit-config.yaml .claude justfile scripts; do
+              mount --bind -o ro "$ws/$f" "$ws/$f"
+            done
+            if [ -d "$ws/.git/git-crypt" ]; then
+              mount -t tmpfs -o ro,size=4k tmpfs "$ws/.git/git-crypt"
+            fi
+            patterns=$(sed -n 's/^\([^#[:space:]]*\).*filter=git-crypt.*/\1/p' "$ws/.gitattributes" 2>/dev/null) || true
+            for p in $patterns; do
+              path=${p%/\*\*}
+              mount --bind -o ro "$ws/.sbx/kit/stubs/$path" "$ws/$path"
+            done
+            : > /run/nix-darwin-config-covered-ok
+          user: "0"
+          env: [WORKSPACE_DIR]
+          description: Cover git-crypt's plain-text files with stubs and hide its key
         # Workspace is bind-mounted, so this directory persists across
         # recreates - session history and the stored login survive a rebuild.
         - command:

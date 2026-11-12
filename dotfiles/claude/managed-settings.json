@@ -4,7 +4,13 @@
     "DISABLE_TELEMETRY": "1",
     "DISABLE_ERROR_REPORTING": "1",
     "DISABLE_FEEDBACK_COMMAND": "1",
-    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
+    "GIT_OPTIONAL_LOCKS": "0",
+    "GIT_CONFIG_COUNT": "2",
+    "GIT_CONFIG_KEY_0": "attr.tree",
+    "GIT_CONFIG_VALUE_0": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+    "GIT_CONFIG_KEY_1": "protocol.allow",
+    "GIT_CONFIG_VALUE_1": "never"
   },
   "sandbox": {
     "enabled": true,
@@ -44,6 +50,10 @@
   "permissions": {
     "disableBypassPermissionsMode": "disable",
     "deny": [
+      "Bash(git apply *)",
+      "Bash(git checkout *)",
+      "Bash(git clean *)",
+      "Bash(git restore *)",
       "mcp__terminal",
       "Bash(pass:*)",
       "Bash(gpg:*)",
@@ -98,8 +108,8 @@
       "Edit(./**/*credentials*)",
       "Read(./**/*secret*)",
       "Edit(./**/*secret*)",
-      "Read(./.git/config)",
-      "Edit(./.git/config)"
+      "Read(./.git/git-crypt/**)",
+      "Edit(./.git/**)"
     ]
   },
   "spinnerVerbs": {

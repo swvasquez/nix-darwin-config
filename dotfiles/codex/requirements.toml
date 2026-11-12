@@ -56,8 +56,9 @@ description = "Workspace access without the project's secret files."
 extends = ":workspace"
 
 # Mirrors Claude's ./ deny rules. ":workspace_roots" is the current project,
-# as ./ is for Claude, so other repos are unaffected. Blocking .git/config
-# stops git in the project itself, as it does for Claude.
+# as ./ is for Claude, so other repos are unaffected. .git stays readable so
+# git works, and read-only so nothing changes its state. :workspace already
+# does this; the rule makes it explicit. Mirrors Claude's Edit(./.git/**).
 [permissions.workspace-guarded.filesystem.":workspace_roots"]
 ".env" = "deny"
 ".env.*" = "deny"
@@ -66,11 +67,15 @@ extends = ":workspace"
 "secrets" = "deny"
 "**/*credentials*" = "deny"
 "**/*secret*" = "deny"
-".git/config" = "deny"
+".git" = "read"
+".git/git-crypt" = "deny"
 
-# Mirrors Claude's Bash(pass:*) and Bash(gpg:*) deny rules.
+# Mirrors Claude's Bash(git ...) deny rules, and its Bash(pass:*) and
+# Bash(gpg:*) rules. .git is read-only, so only git commands that change
+# files outside it need a rule.
 [rules]
 prefix_rules = [
+  { pattern = [{ token = "git" }, { any_of = ["apply", "checkout", "clean", "restore"] }], decision = "forbidden", justification = "Agents may not change project files with git." },
   { pattern = [{ token = "pass" }], decision = "forbidden", justification = "Password store access is not allowed." },
   { pattern = [{ any_of = ["gpg", "gpg2"] }], decision = "forbidden", justification = "GPG access is not allowed." },
 ]

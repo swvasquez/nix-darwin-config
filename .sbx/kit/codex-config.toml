@@ -38,3 +38,10 @@ enabled = false
 
 [otel]
 exporter = "none"
+
+# Mirrors GIT_OPTIONAL_LOCKS in Claude's managed env: git skips the optional
+# index refresh, so status doesn't write to the shared .git. The rest of the
+# sandbox's git config, remote transports included, comes from kit.yaml's
+# profile.d list; setting GIT_CONFIG_COUNT here would replace it.
+[shell_environment_policy.set]
+GIT_OPTIONAL_LOCKS = "0"

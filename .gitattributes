@@ -1,2 +1,2 @@
 config/** filter=git-crypt diff=git-crypt
-versions.csv filter=git-crypt diff=git-crypt
+/versions.csv filter=git-crypt diff=git-crypt

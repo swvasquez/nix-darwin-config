@@ -4,17 +4,17 @@
     "DISABLE_TELEMETRY": "1",
     "DISABLE_ERROR_REPORTING": "1",
     "DISABLE_FEEDBACK_COMMAND": "1",
-    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
+    "GIT_OPTIONAL_LOCKS": "0"
   },
   "permissions": {
     "defaultMode": "auto",
     "disableBypassPermissionsMode": "disable",
     "deny": [
-      "Bash(git commit*)",
-      "Bash(git push*)",
-      "Bash(git add*)",
-      "Bash(git stage*)",
-      "Bash(git stash*)",
+      "Bash(git apply *)",
+      "Bash(git checkout *)",
+      "Bash(git clean *)",
+      "Bash(git restore *)",
       "mcp__terminal",
       "Bash(pass:*)",
       "Bash(gpg:*)",
@@ -69,8 +69,7 @@
       "Edit(./**/*credentials*)",
       "Read(./**/*secret*)",
       "Edit(./**/*secret*)",
-      "Read(./.git/config)",
-      "Edit(./.git/config)",
+      "Edit(./.git/**)",
       "Read(./.sbx/claude/.credentials.json)",
       "Edit(./.sbx/claude/.credentials.json)",
       "Read(./.sbx/claude/history.jsonl)",

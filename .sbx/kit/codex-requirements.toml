@@ -30,11 +30,12 @@ command = "sh /etc/codex/hooks/deny-paths.sh"
 timeout = 10
 statusMessage = "Checking for protected paths"
 
-# Mirrors Claude's Bash(git commit*), push, add, stage and stash deny rules,
-# and its Bash(pass:*) and Bash(gpg:*) rules.
+# Mirrors Claude's Bash(git ...) deny rules, and its Bash(pass:*) and
+# Bash(gpg:*) rules. .git is read-only, so only git commands that change
+# files outside it need a rule.
 [rules]
 prefix_rules = [
-  { pattern = [{ token = "git" }, { any_of = ["commit", "push", "add", "stage", "stash"] }], decision = "forbidden", justification = "Commit and push from the host." },
+  { pattern = [{ token = "git" }, { any_of = ["apply", "checkout", "clean", "restore"] }], decision = "forbidden", justification = "Agents may not change project files with git." },
   { pattern = [{ token = "pass" }], decision = "forbidden", justification = "Password store access is not allowed." },
   { pattern = [{ any_of = ["gpg", "gpg2"] }], decision = "forbidden", justification = "GPG access is not allowed." },
 ]

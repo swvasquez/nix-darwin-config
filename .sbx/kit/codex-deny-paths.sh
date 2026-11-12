@@ -45,7 +45,7 @@ ${home}/\.lesshst
 (^|[/[:space:]\"'=])secrets/
 credentials
 secret
-\.git/config
+\.git/git-crypt
 \.sbx/claude/(\.credentials\.json|history\.jsonl|projects/|shell-snapshots/)
 \.sbx/codex/(auth\.json|history\.jsonl|sessions/)
 "
