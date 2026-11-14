@@ -181,7 +181,7 @@ capabilities:
         # - .git is mounted read-only over itself, so no git write works,
         #   however it's run. This goes first: mounts under .git made before
         #   it wouldn't carry over. The files the host runs or loads without
-        #   a review step are read-only too: the kit, Claude's global
+        #   a review step are read-only too: the kit, the agents' user
         #   instructions and .gitattributes (the next start's rules), the
         #   commit hooks, Claude's project settings, and the justfile and
         #   scripts `just build` runs. Edit them from the host.
@@ -207,7 +207,7 @@ capabilities:
             if runuser -u agent -- sudo -n true 2>/dev/null; then echo 'kit.yaml: agent still has sudo' >&2; exit 1; fi
             if runuser -u agent -- docker info >/dev/null 2>&1; then echo 'kit.yaml: agent still has docker' >&2; exit 1; fi
             mount --bind -o ro "$ws/.git" "$ws/.git"
-            for f in .sbx/kit dotfiles/claude/CLAUDE.md .gitattributes .pre-commit-config.yaml .claude justfile scripts; do
+            for f in .sbx/kit dotfiles/claude/CLAUDE.md dotfiles/codex/AGENTS.md .gitattributes .pre-commit-config.yaml .claude justfile scripts; do
               mount --bind -o ro "$ws/$f" "$ws/$f"
             done
             if [ -d "$ws/.git/git-crypt" ]; then
@@ -243,6 +243,7 @@ capabilities:
         # Like Claude's settings.json, Codex's config.toml is its own file
         # here; the one that kit rewrites in the VM's home on every create is
         # not read, and its needed settings are in codex-config.toml instead.
+        # Its AGENTS.md links to the same user instructions the host uses.
         - command:
             - sh
             - -c
@@ -250,6 +251,7 @@ capabilities:
               d="$WORKSPACE_DIR/.sbx/codex" &&
               mkdir -p "$d" &&
               chown agent:agent "$d" &&
+              ln -sfn ../../dotfiles/codex/AGENTS.md "$d/AGENTS.md" &&
               echo "export CODEX_HOME=\"$d\""
               > /etc/profile.d/nix-darwin-config-codex.sh &&
               if [ -L "$d/config.toml" ]; then rm -f "$d/config.toml"; fi

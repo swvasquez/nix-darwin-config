@@ -36,6 +36,10 @@
     "src": "codex/rules/agents.rules"
   },
   {
+    "dest": ".codex/AGENTS.md",
+    "src": "codex/AGENTS.md"
+  },
+  {
     "dest": ".config/starship.toml",
     "src": "starship/starship.toml"
   },
