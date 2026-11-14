@@ -21,6 +21,8 @@ allow_appshots = false
 
 [features]
 computer_use = false
+# Mirrors Claude's autoMemoryEnabled.
+memories = false
 
 [allowed_permission_profiles]
 "workspace-guarded" = true

@@ -118,6 +118,7 @@
       "Edit(./.git/**)"
     ]
   },
+  "autoMemoryEnabled": false,
   "spinnerVerbs": {
     "mode": "replace",
     "verbs": [

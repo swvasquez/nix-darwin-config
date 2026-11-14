@@ -17,6 +17,7 @@ allowed_approvals_reviewers = ["auto_review"]
 # Managed hooks are trusted by policy, and pinning the feature keeps them on.
 [features]
 hooks = true
+memories = false
 
 [hooks]
 managed_dir = "/etc/codex/hooks"
