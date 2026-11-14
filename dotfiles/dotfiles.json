@@ -20,6 +20,10 @@
     "src": "claude/managed-settings.json"
   },
   {
+    "dest": ".claude/CLAUDE.md",
+    "src": "claude/CLAUDE.md"
+  },
+  {
     "dest": "/etc/codex/requirements.toml",
     "src": "codex/requirements.toml"
   },
