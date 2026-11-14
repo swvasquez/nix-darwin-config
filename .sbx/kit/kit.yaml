@@ -155,6 +155,20 @@ capabilities:
           user: "0"
           env: [WORKSPACE_DIR]
           description: Install the agents' rule files, root-owned
+        # Shows both agents' login status when an interactive login shell
+        # starts, as `just sbx-shell` opens. Agents start in non-interactive
+        # shells, so they skip it. Named zz- so it runs after the profile.d
+        # scripts that set the agents' config dirs. Rerun it with `sbx-status`.
+        - command: |
+            set -eu
+            install -D -o root -g root -m 0755 "$WORKSPACE_DIR/.sbx/kit/status.sh" /usr/local/bin/sbx-status
+            cat > /etc/profile.d/zz-nix-darwin-config-status.sh <<'EOF'
+            case $- in *i*) sbx-status ;; esac
+            EOF
+            chmod 0644 /etc/profile.d/zz-nix-darwin-config-status.sh
+          user: "0"
+          env: [WORKSPACE_DIR]
+          description: Show the agents' login status in interactive shells
       startup:
         # Locks the sandbox down on every start, inside the VM only; the
         # host's files are untouched. In order:

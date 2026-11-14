@@ -15,6 +15,9 @@
   "sandbox": {
     "enabled": true,
     "failIfUnavailable": true,
+    "excludedCommands": [
+      "codex *"
+    ],
     "filesystem": {
       "denyRead": [
         "~/.ssh",
@@ -27,6 +30,7 @@
         "~/.npmrc",
         "~/.netrc",
         "~/.claude/.credentials.json",
+        "~/.codex/auth.json",
         "~/.zsh_history",
         "~/.bash_history",
         "~/.python_history",
@@ -78,6 +82,8 @@
       "Edit(~/.netrc)",
       "Read(~/.claude/.credentials.json)",
       "Edit(~/.claude/.credentials.json)",
+      "Read(~/.codex/auth.json)",
+      "Edit(~/.codex/auth.json)",
       "Read(~/.zsh_history)",
       "Edit(~/.zsh_history)",
       "Read(~/.bash_history)",

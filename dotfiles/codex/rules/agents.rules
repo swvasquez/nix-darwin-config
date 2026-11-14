@@ -1,0 +1,16 @@
+# Lets Codex call Claude Code, linked to /etc/codex/rules/agents.rules. An
+# allow rule runs the command outside Codex's sandbox. Claude needs that to
+# reach its login and its own state, and it cannot start its own sandbox
+# inside Codex's. Claude then applies its managed settings, sandbox included.
+# The reverse is sandbox.excludedCommands in Claude's managed settings.
+#
+# TODO: Revisit once Claude Code fixes excludedCommands on macOS
+# (https://github.com/anthropics/claude-code/issues/98259). As of 2.1.311,
+# "codex *" is ignored and codex still runs sandboxed, so Claude cannot call
+# Codex yet. `codex --version` from Claude tests it: no "could not create PATH
+# aliases" warning means the exclusion works. Codex calling Claude is untested.
+prefix_rule(
+    pattern = ["claude"],
+    decision = "allow",
+    justification = "Claude Code runs under its own sandbox and managed settings.",
+)

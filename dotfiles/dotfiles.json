@@ -28,6 +28,10 @@
     "src": "codex/config.toml"
   },
   {
+    "dest": "/etc/codex/rules/agents.rules",
+    "src": "codex/rules/agents.rules"
+  },
+  {
     "dest": ".config/starship.toml",
     "src": "starship/starship.toml"
   },
