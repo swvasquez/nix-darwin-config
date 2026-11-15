@@ -183,8 +183,8 @@ capabilities:
         #   it wouldn't carry over. The files the host runs or loads without
         #   a review step are read-only too: the kit, the agents' user
         #   instructions and .gitattributes (the next start's rules), the
-        #   commit hooks, Claude's project settings, and the justfile and
-        #   scripts `just build` runs. Edit them from the host.
+        #   commit hooks, Claude's project settings, and the scripts
+        #   `just build` runs. Edit them from the host.
         # - An empty folder covers the git-crypt key.
         # - Each git-crypt pattern in .gitattributes gets the matching stub
         #   from .sbx/kit/stubs, read-only. A `dir/**` pattern covers the
@@ -207,7 +207,7 @@ capabilities:
             if runuser -u agent -- sudo -n true 2>/dev/null; then echo 'kit.yaml: agent still has sudo' >&2; exit 1; fi
             if runuser -u agent -- docker info >/dev/null 2>&1; then echo 'kit.yaml: agent still has docker' >&2; exit 1; fi
             mount --bind -o ro "$ws/.git" "$ws/.git"
-            for f in .sbx/kit dotfiles/claude/CLAUDE.md dotfiles/codex/AGENTS.md .gitattributes .pre-commit-config.yaml .claude justfile scripts; do
+            for f in .sbx/kit dotfiles/claude/CLAUDE.md dotfiles/codex/AGENTS.md .gitattributes .pre-commit-config.yaml .claude scripts; do
               mount --bind -o ro "$ws/$f" "$ws/$f"
             done
             if [ -d "$ws/.git/git-crypt" ]; then
