@@ -31,6 +31,15 @@ command = "sh /etc/codex/hooks/deny-paths.sh"
 timeout = 10
 statusMessage = "Checking for protected paths"
 
+# Mirrors the SessionStart hook in managed-settings.json: both agents
+# get the same sandbox marker in context at session start.
+[[hooks.SessionStart]]
+
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = "printf '%s\\n' '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"Environment: sandbox VM. The workspace is bind-mounted from the host; workspace files belong to the host.\"}}'"
+timeout = 10
+
 # Mirrors Claude's Bash(git ...) deny rules, and its Bash(pass:*) and
 # Bash(gpg:*) rules. .git is read-only, so only git commands that change
 # files outside it need a rule.

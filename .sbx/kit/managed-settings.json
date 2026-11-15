@@ -94,5 +94,18 @@
       "Thinking"
     ]
   },
-  "editorMode": "vim"
+  "editorMode": "vim",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s\\n' '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"Environment: sandbox VM. The workspace is bind-mounted from the host; workspace files belong to the host.\"}}'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
 }
