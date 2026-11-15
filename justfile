@@ -107,6 +107,7 @@ hooks:
 
 @check:
     prek run shellcheck --files {{ all_files }}
+    prek run hadolint --files {{ all_files }}
     prek run jq-check --files {{ all_files }}
     prek run git-crypt-verify-staged --all-files
     prek run gitleaks-untracked --all-files

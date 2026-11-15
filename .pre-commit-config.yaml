@@ -44,6 +44,13 @@ repos:
         language: system
         types: [markdown]
 
+      - id: hadolint
+        name: hadolint
+        entry: hadolint
+        language: system
+        # types: [dockerfile] misses *.dockerfile, as sbx kit recipes are named
+        files: (^|/)((Dockerfile|Containerfile)(\.[^/]*)?|[^/]*\.dockerfile)$
+
       - id: jq-format
         name: jq format json
         entry: bash -c 'for f; do jq . "$f" | sponge "$f"; done' --

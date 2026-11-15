@@ -98,6 +98,7 @@ in
     pkgs.gnumake # Update MacOS' outdated copy of Make
     pkgs.gnupg
     pkgs.go
+    pkgs.hadolint
     pkgs.helix
     pkgs.hyperfine
     pkgs.jq
