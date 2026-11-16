@@ -237,6 +237,15 @@ in
   # conflict, not a merge.
   launchd.user.envVariables.QGIS_CUSTOM_CONFIG_PATH = "${home}/${config.host.qgisDir}";
 
+  # sbx -----------------------------------------------------------------------
+  #
+  # Kit sources sbx may install from: its defaults, plus localhost/ for kit
+  # images built on this machine, as `just sbx-image` does. The value replaces
+  # sbx's whole list. Set here rather than with `sbx settings set`, which writes
+  # an undocumented file sbx also modifies. Same launchd caveat as QGIS: run
+  # `sbx daemon restart` after a rebuild that changes it.
+  launchd.user.envVariables.DOCKER_SANDBOXES_KIT_ALLOWED_SOURCES = ''["docker.io/","dhi.io/","localhost/"]'';
+
   # Activation ----------------------------------------------------------------
   #
   # Shell steps that run at the end of every rebuild, after packages are
