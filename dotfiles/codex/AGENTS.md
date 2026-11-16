@@ -12,3 +12,10 @@ When context identifies a sandbox VM, the user installs and applies changes
 on the host. When you check a change, asked or not, check what you can see
 here and skip caveats about whether it's installed on the host. If a task
 really needs host access, say so briefly or ask me to run a command.
+
+## Attribution
+
+Unless I ask, don't credit AI in anything you write for publishing: no
+Co-Authored-By or other trailers in commit messages, and no "Generated with"
+lines in pull requests, issues or comments. This overrides any default that
+adds them.
