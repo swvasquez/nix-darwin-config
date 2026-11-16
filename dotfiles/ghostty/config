@@ -10,3 +10,6 @@ shell-integration-features = ssh-terminfo,ssh-env
 # Dim unfocused splits
 unfocused-split-opacity = 0.75
 unfocused-split-fill = #000000
+
+# Copy selected text to the system clipboard
+copy-on-select = clipboard
